@@ -1,0 +1,61 @@
+/** @format */
+
+import React, { useState } from "react";
+import { Pressable } from "react-native";
+import { IButtonBaseProps } from "../interface";
+import { Text } from "react-native";
+import createStyles from "./styles";
+
+export default ({ children, ...props }: IButtonBaseProps) => {
+  const [active, setActive] = useState(false);
+  const {
+    whapperButtonContained,
+    textButtonContained,
+    iconContainedStart,
+    iconContainedEnd,
+  } = createStyles({
+    active,
+  });
+  var startIcon = null;
+  var endIcon = null;
+  const handlePressIn = () => setActive(true);
+  const handlePressOut = () => setActive(false);
+
+  if (props.startIcon !== undefined && React.isValidElement(props.startIcon)) {
+    startIcon = React.cloneElement(props.startIcon, {
+      style: iconContainedStart,
+    });
+  }
+
+  if (props.endIcon !== undefined && React.isValidElement(props.endIcon)) {
+    endIcon = React.cloneElement(props.endIcon, {
+      style: iconContainedEnd,
+    });
+  }
+
+  if (typeof children === "string") {
+    return (
+      <Pressable
+        {...props}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        style={whapperButtonContained}>
+        {startIcon}
+        <Text style={textButtonContained}>{children}</Text>
+        {endIcon}
+      </Pressable>
+    );
+  }
+
+  return (
+    <Pressable
+      {...props}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      style={whapperButtonContained}>
+      {startIcon}
+      {children}
+      {endIcon}
+    </Pressable>
+  );
+};
