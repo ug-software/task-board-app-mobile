@@ -17,8 +17,11 @@ const createStyles = styled<
     alignItems: "center",
     flexDirection: "row",
     backgroundColor: !active
-      ? theme.pallet.primary.primary
-      : ligten(theme.pallet.primary.primary, 20),
+      ? "transparent"
+      : ligten(theme.pallet.primary.primary, 95),
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderColor: theme.pallet.primary.primary,
     marginTop: mt ? mt : 0,
     marginBottom: mb ? mb : 0,
     marginLeft: ml ? ml : 0,
@@ -26,10 +29,7 @@ const createStyles = styled<
   },
   textButtonContained: {
     fontSize: 15,
-    color:
-      textColorBasedOnBackground(theme.pallet.primary.primary) === "dark"
-        ? theme.pallet.primary.text
-        : theme.pallet.primary.background,
+    color: theme.pallet.primary.primary,
   },
   iconContainedStart: {
     marginRight: 10,

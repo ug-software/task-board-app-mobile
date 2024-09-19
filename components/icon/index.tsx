@@ -3,12 +3,23 @@
 import React from "react";
 import { TextStyle } from "react-native";
 import * as IconLibrary from "@expo/vector-icons";
-import { AntDesignIcons, MaterialCommunityIcons } from "./names";
+import {
+  AntDesignIcons,
+  MaterialCommunityIcons,
+  FontAwesomeIcons,
+  FatherIcons,
+} from "./names";
 
 type IconType = keyof typeof IconLibrary;
 type IconName<T extends IconType> = T extends "AntDesign"
   ? AntDesignIcons
-  : MaterialCommunityIcons;
+  : T extends "MaterialCommunityIcons"
+  ? MaterialCommunityIcons
+  : T extends "FontAwesome"
+  ? FontAwesomeIcons
+  : T extends "Feather"
+  ? FatherIcons
+  : never;
 
 interface IconProps<T extends IconType> {
   type: T;
@@ -18,7 +29,7 @@ interface IconProps<T extends IconType> {
   style?: TextStyle;
 }
 
-const IconComponent = <T extends IconType>({
+const Icon = <T extends IconType>({
   type,
   name,
   size = 24,
@@ -35,4 +46,4 @@ const IconComponent = <T extends IconType>({
   return <Icon name={name} size={size} color={color} style={style} />;
 };
 
-export default IconComponent;
+export default Icon;

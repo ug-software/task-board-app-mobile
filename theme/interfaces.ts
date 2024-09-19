@@ -18,10 +18,21 @@ export interface Theme {
   };
   font: {
     fontSize: {
-      small: number;
-      medium: number;
-      large: number;
+      h1: number;
+      h2: number;
+      h3: number;
+      h4: number;
+      h5: number;
+      h6: number;
+      paragraph: number;
+      subtitle: number;
     };
     fontFamilly: string;
+    color: {
+      primary: string;
+      secundary: string;
+      light: string;
+      dark: string;
+    };
   };
 }

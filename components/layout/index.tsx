@@ -3,16 +3,25 @@
 import React from "react";
 import { ReactNode } from "react";
 import { View } from "react-native";
+import { AppBar } from "./components";
+import createStyles from "./styles";
 
-interface IProps {
+export interface LayoutProps {
   children: ReactNode;
   layoutOn: boolean;
 }
 
-export default ({ children, layoutOn }: IProps) => {
-  if (!layoutOn) {
-    return children;
+export default (props: LayoutProps) => {
+  if (!props.layoutOn) {
+    return props.children;
   }
 
-  return <View>{children}</View>;
+  const { whapperLayout, containerApp } = createStyles(props);
+
+  return (
+    <View style={whapperLayout}>
+      <View style={containerApp}>{props.children}</View>
+      <AppBar />
+    </View>
+  );
 };

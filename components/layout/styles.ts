@@ -1,8 +1,18 @@
 /** @format */
 
 import styled from "@/theme/styled";
+import { LayoutProps } from ".";
+import { Dimensions } from "react-native";
 
-export const whapperLayoutApp = styled({
-  height: "100%",
-  width: "100%",
+export default styled<LayoutProps>(({ layoutOn }) => {
+  const { width, height } = Dimensions.get("window");
+  return {
+    whapperLayout: {
+      height: "100%",
+      width: "100%",
+    },
+    containerApp: {
+      height: layoutOn ? height - 30 : height,
+    },
+  };
 });

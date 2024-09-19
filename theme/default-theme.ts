@@ -12,9 +12,20 @@ const theme: Theme = {
   font: {
     fontFamilly: "Roboto",
     fontSize: {
-      large: 16,
-      medium: 12,
-      small: 8,
+      h1: 26,
+      h2: 24,
+      h3: 22,
+      h4: 18,
+      h5: 16,
+      h6: 14,
+      paragraph: 12,
+      subtitle: 10,
+    },
+    color: {
+      dark: grey[50],
+      light: grey[800],
+      primary: purple[300],
+      secundary: amber[300],
     },
   },
   pallet: {

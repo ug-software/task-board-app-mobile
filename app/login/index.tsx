@@ -1,32 +1,47 @@
 /** @format */
 
 import React from "react";
-import { View, Text } from "react-native";
+import createStyles from "./styles";
+import { View, Image } from "react-native";
+import { useRouter } from "@/hooks";
+import { Button, Icon, IconButton, TextField } from "@/components";
 
 export default () => {
+  const {
+    whapperLoginView,
+    containerLoginView,
+    headerLoginView,
+    backgroundInitial,
+  } = createStyles({});
+  const { redirect } = useRouter();
+
   return (
-    <View>
-      <Text>Login</Text>
+    <View style={whapperLoginView}>
+      <Image
+        source={require("../../assets/images/background-colors-circles.png")}
+        //@ts-ignore
+        style={backgroundInitial}
+      />
+      <View style={headerLoginView}>
+        <IconButton variant='outlined' onPress={redirect("/")}>
+          <Icon type='MaterialCommunityIcons' name='arrow-left-thick' />
+        </IconButton>
+      </View>
+      <View style={containerLoginView}>
+        <TextField
+          style={{ marginBottom: 10 }}
+          label='E-mail'
+          variant='filed'
+        />
+        <TextField
+          style={{ marginBottom: 20 }}
+          label='Password'
+          variant='filed'
+        />
+        <Button fullWidth variant='contained' onPress={redirect("/")}>
+          Login
+        </Button>
+      </View>
     </View>
   );
 };
-
-/* 
-  <WhapperLoginView>
-      <BackgroundInitial
-        source={require("../../assets/images/background-colors-circles.png")}
-      />
-      <HeaderLoginView>
-        <Link asChild href='/'>
-          <IconButton icon='arrow-left-thick' />
-        </Link>
-      </HeaderLoginView>
-      <ContainerLoginView>
-        <TextInput label='E-mail' />
-        <TextInput label='Password' />
-        <Button asLink href='/'>
-          Começar
-        </Button>
-      </ContainerLoginView>
-    </WhapperLoginView>
-*/

@@ -29,9 +29,12 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Layout layoutOn={false}>
+      <Layout layoutOn={true}>
         <Stack>
           <Stack.Screen name='index' options={{ headerShown: false }} />
+          <Stack.Screen name='login' options={{ headerShown: false }} />
+          <Stack.Screen name='signin' options={{ headerShown: false }} />
+          <Stack.Screen name='dashboard' options={{ headerShown: false }} />
           <Stack.Screen name='+not-found' />
         </Stack>
       </Layout>
