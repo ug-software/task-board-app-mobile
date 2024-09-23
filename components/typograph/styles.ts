@@ -5,7 +5,18 @@ import { TypographProps } from ".";
 import { gutter } from "@/theme/constants";
 
 export default styled<TypographProps>(
-  ({ theme, color, variant, fontWeight, gutterBottom, pb, pl, pr, pt }) => ({
+  ({
+    theme,
+    color,
+    variant,
+    fontWeight,
+    fontSize,
+    gutterBottom,
+    pb,
+    pl,
+    pr,
+    pt,
+  }) => ({
     textWhapper: {
       ...(color !== undefined
         ? {
@@ -14,7 +25,7 @@ export default styled<TypographProps>(
         : {
             color: theme.pallet.primary.text,
           }),
-      fontSize: theme.font.fontSize[variant],
+      fontSize: fontSize ? fontSize : theme.font.fontSize[variant],
       fontWeight: fontWeight !== undefined ? fontWeight : "normal",
       marginBottom: gutterBottom ? gutter[variant] : 0,
       paddingBottom: pb,

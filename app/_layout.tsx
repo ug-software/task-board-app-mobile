@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import React from "react";
 import ThemeProvider from "@/theme";
 import defaultTheme from "@/theme/default-theme";
-import { Layout } from "@/components";
+import Layout from "@/components/layout";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -35,6 +35,7 @@ export default function RootLayout() {
           <Stack.Screen name='login' options={{ headerShown: false }} />
           <Stack.Screen name='signin' options={{ headerShown: false }} />
           <Stack.Screen name='dashboard' options={{ headerShown: false }} />
+          <Stack.Screen name='scredule' options={{ headerShown: false }} />
           <Stack.Screen name='+not-found' />
         </Stack>
       </Layout>

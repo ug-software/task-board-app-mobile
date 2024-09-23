@@ -20,6 +20,7 @@ export default styled<{ isActive?: boolean }>(({ theme, isActive }) => ({
     justifyContent: "center",
   },
   iconButtonAppBar: {
+    fontSize: 25,
     backgroundColor: isActive
       ? ligten(theme.pallet.primary.main, 85)
       : "transparent",

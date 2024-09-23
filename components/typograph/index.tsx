@@ -15,7 +15,7 @@ type Variant =
   | "paragraph"
   | "subtitle";
 export interface TypographProps {
-  children: string;
+  children: string | string[] | number | number[];
   variant: Variant;
   color?: Color;
   gutterBottom?: boolean;
@@ -24,9 +24,11 @@ export interface TypographProps {
   pr?: number;
   pt?: number;
   fontWeight?: TextStyle["fontWeight"];
+  fontSize?: TextStyle["fontSize"];
+  style?: TextStyle;
 }
 
 export default (props: TypographProps) => {
   const { textWhapper } = createStyles(props);
-  return <Text style={textWhapper}>{props.children}</Text>;
+  return <Text style={[textWhapper, props.style]}>{props.children}</Text>;
 };

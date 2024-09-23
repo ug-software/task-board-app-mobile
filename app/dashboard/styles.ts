@@ -14,7 +14,9 @@ export default styled(({ theme }) => ({
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    paddingVertical: 20,
+    marginTop: 40,
+    zIndex: 0,
+    paddingBottom: 20,
     paddingHorizontal: 20,
   },
   whapperGreetings: {
@@ -52,7 +54,7 @@ export default styled(({ theme }) => ({
   whapperTasksGroups: {},
   flatListTaksGroups: {
     paddingHorizontal: 20,
-    height: "55%",
+    height: "58%",
   },
   containerTaskGroup: {
     display: "flex",

@@ -26,14 +26,14 @@ interface AppBarButtomProps {
 export const appBar: AppBarButtomProps[] = [
   {
     href: "/dashboard",
-    label: "Dashboard",
+    label: "Inicio",
     Icon: (props: { style: ViewStyle | TextStyle | ImageStyle }) => {
       return <Icon {...props} name='home' type='AntDesign' />;
     },
   },
   {
-    href: "/calendar",
-    label: "Calendário",
+    href: "/scredule",
+    label: "Agenda",
     Icon: (props: { style: ViewStyle | TextStyle | ImageStyle }) => {
       return <Icon {...props} name='calendar' type='Feather' />;
     },

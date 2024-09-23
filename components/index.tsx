@@ -1,5 +1,4 @@
 /** @format */
-import Layout from "./layout";
 import Button from "./button";
 import TextField from "./text-field";
 import IconButton from "./icon-button";
@@ -11,7 +10,6 @@ import CircularProgress from "./circular-progress";
 import Card from "./card";
 
 export {
-  Layout,
   Button,
   TextField,
   IconButton,

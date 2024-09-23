@@ -1,4 +1,5 @@
 /** @format */
 
 import AppBar from "./app-bar";
-export { AppBar };
+import TollbarApp from "./topbar-app";
+export { AppBar, TollbarApp };

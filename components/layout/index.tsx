@@ -3,7 +3,7 @@
 import React from "react";
 import { ReactNode } from "react";
 import { View } from "react-native";
-import { AppBar } from "./components";
+import { AppBar, TollbarApp } from "./components";
 import createStyles from "./styles";
 
 export interface LayoutProps {
@@ -25,3 +25,4 @@ export default (props: LayoutProps) => {
     </View>
   );
 };
+export { TollbarApp };
