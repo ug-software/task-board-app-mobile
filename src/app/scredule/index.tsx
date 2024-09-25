@@ -156,7 +156,9 @@ export default () => {
                     styles.whapperIconTaskGroup,
                   ]}>
                   <Icon
+                    //@ts-ignore
                     name={item.icon.name}
+                    //@ts-ignore
                     type={item.icon.package}
                     color={item.icon.color}
                   />

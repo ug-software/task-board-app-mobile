@@ -36,6 +36,7 @@ export default function RootLayout() {
           <Stack.Screen name='signin' options={{ headerShown: false }} />
           <Stack.Screen name='dashboard' options={{ headerShown: false }} />
           <Stack.Screen name='scredule' options={{ headerShown: false }} />
+          <Stack.Screen name='projects' options={{ headerShown: false }} />
           <Stack.Screen name='+not-found' />
         </Stack>
       </Layout>
