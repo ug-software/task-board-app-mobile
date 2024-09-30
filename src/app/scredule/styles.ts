@@ -8,8 +8,30 @@ export default styled(({ theme }) => ({
     backgroundColor: theme.pallet.primary.background,
     height: "100%",
   },
+  mouthAndYear: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   whapperFilters: {
     marginTop: 10,
+  },
+  whapperAction: {
+    position: "absolute",
+    bottom: 290,
+    right: 0,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    padding: 10,
+  },
+  containerTasks: {
+    position: "relative",
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
   whapperTask: {
     paddingHorizontal: 10,
@@ -40,7 +62,7 @@ export default styled(({ theme }) => ({
     flexDirection: "row",
   },
   taskIconClock: {
-    fontSize: 18,
+    fontSize: 14,
     paddingRight: 5,
     color: theme.pallet.primary.primary,
   },

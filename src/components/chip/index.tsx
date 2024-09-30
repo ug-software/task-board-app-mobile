@@ -6,16 +6,20 @@ import { Text, View } from "react-native";
 import createStyles from "./styles";
 import Typograph from "../typograph";
 
-interface ChipProps {
+export interface ChipProps {
   children: ReactNode;
+  color?: string;
 }
 
-export default ({ children }: ChipProps) => {
-  const styles = createStyles({});
+export default ({ children, ...props }: ChipProps) => {
+  const styles = createStyles(props);
 
   if (typeof children === "string") {
     return (
-      <Typograph variant='paragraph' style={styles.whapperChip}>
+      <Typograph
+        color={props.color}
+        variant='paragraph'
+        style={styles.whapperChip}>
         {children}
       </Typograph>
     );

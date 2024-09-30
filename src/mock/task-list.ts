@@ -5,7 +5,10 @@ const tasksList = [
     name: "Criar mock para API",
     description: "",
     date: new Date(),
-    status: "Aberto",
+    status: {
+      color: "#fdff00",
+      value: "Aberto",
+    },
     group: "Office Project",
     icon: {
       package: "MaterialCommunityIcons",
@@ -17,7 +20,10 @@ const tasksList = [
     name: "Criar Dashboard de ações",
     description: "",
     date: new Date(),
-    status: "Em progresso",
+    status: {
+      color: "#fea50e",
+      value: "Em progresso",
+    },
     group: "Personal Project",
     icon: {
       package: "MaterialCommunityIcons",
@@ -29,7 +35,10 @@ const tasksList = [
     name: "Fisica Aplicada II",
     description: "",
     date: new Date(),
-    status: "Concludo",
+    status: {
+      color: "#1f7f15",
+      value: "Concluido",
+    },
     group: "Daily Study",
     icon: {
       package: "Entypo",

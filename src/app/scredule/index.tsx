@@ -8,86 +8,105 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   Text,
+  PanResponder,
 } from "react-native";
 import { TollbarApp } from "@/src/components/layout";
 import {
   Button,
   Card,
   Chip,
+  Drag,
+  GrowingViewer,
   Icon,
   IconButton,
   Typograph,
 } from "@/src/components";
 import DateButtom from "./components/date-button";
+import Calendary from "./components/calendary";
 import createStyles from "./styles";
 import tasksList from "@/src/mock/task-list";
-import { formatInHours } from "@/src/utils/date";
+import { DateTime, formatInHours, getDaysTheMouth } from "@/src/utils/date";
 import { ligten } from "@/src/theme/styled";
+import { mouths } from "@/src/constants/calendary";
 
-const initialDates = [
-  new Date(2024, 8, 16),
-  new Date(2024, 8, 17),
-  new Date(2024, 8, 18),
-  new Date(2024, 8, 19),
-  new Date(2024, 8, 20),
-  new Date(2024, 8, 21),
-  new Date(2024, 8, 22),
-];
+interface Calendary {
+  day: Date;
+  dates: DateTime[];
+  month: number;
+  year: number;
+}
 
 const filters = ["Todos", "A fazer", "Em progresso", "Inativos", "Concluidos"];
 
 export default () => {
   const styles = createStyles({});
   const flatListRef = useRef<FlatList>(null);
-  const [dates, setDates] = useState<Date[]>(initialDates);
-  const [observable, setObservable] = useState({
-    initial: false,
-    final: false,
+  var currentDay = new Date();
+
+  const [calendary, setCalendary] = useState<Calendary>({
+    day: currentDay,
+    dates: getDaysTheMouth(currentDay.getMonth(), currentDay.getFullYear()),
+    month: currentDay.getMonth(),
+    year: currentDay.getFullYear(),
   });
+
+  const handleChangeCalendary = (
+    horizontal: "left" | "right" | null | string
+  ) => {
+    var mouth = calendary.day.getMonth();
+    var year = calendary.day.getFullYear();
+
+    if (horizontal === "right") {
+      if (calendary.day.getMonth() + 1 > 11) {
+        mouth = 0;
+        year = year + 1;
+      } else {
+        mouth = mouth + 1;
+      }
+
+      setCalendary((state) => ({
+        day: new Date(state.day.getFullYear(), state.day.getMonth() + 1, 1),
+        dates: getDaysTheMouth(mouth, year),
+        month: mouth,
+        year: year,
+      }));
+    }
+
+    if (horizontal === "left") {
+      if (calendary.day.getMonth() - 1 < 0) {
+        mouth = 11;
+        year = year - 1;
+      } else {
+        mouth = mouth - 1;
+      }
+
+      setCalendary((state) => ({
+        day: new Date(state.day.getFullYear(), state.day.getMonth() - 1, 1),
+        dates: getDaysTheMouth(mouth, year),
+        month: mouth,
+        year: year,
+      }));
+    }
+  };
+
+  const handleSetDateCurrent = () => {
+    setCalendary((state) => ({
+      day: currentDay,
+      dates: getDaysTheMouth(currentDay.getMonth(), currentDay.getFullYear()),
+      month: currentDay.getMonth(),
+      year: currentDay.getFullYear(),
+    }));
+  };
 
   useEffect(() => {
     // Rolando para o dia 10 após a montagem do componente
     if (flatListRef.current !== null) {
-      flatListRef.current.scrollToIndex({ index: 3, animated: true });
+      flatListRef.current.scrollToIndex({
+        index: calendary.day.getDate() - 1,
+        animated: true,
+      });
     }
   }, []);
-
-  useEffect(() => {
-    if (observable.initial) {
-      console.log("chegou ao inicio");
-      /*var firstDate = dates[0];
-      var week = Array.from({ length: 7 }).map((x, index) => {
-        var date = new Date(firstDate);
-        return new Date(date.setDate(date.getDate() - index - 1));
-      });
-      setDates((state) => [...week.reverse(), ...state]);*/
-    }
-  }, [observable]);
-
-  const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
-
-    // Verifica se está no início
-    //var isAtStart = contentOffset.x < -1;
-    console.log({
-      initial: observable.initial,
-    });
-    if (contentOffset.x < -1) {
-      setObservable((state) => ({ ...state, initial: true }));
-    } else {
-      setObservable((state) => ({ ...state, initial: false }));
-    }
-
-    // Verifica se está no final
-    /*if (contentOffset.x + layoutMeasurement.width >= contentSize.width) {
-      var lastDate = dates[-1];
-      var newWeek = Array(7).map((x) => {
-        return new Date(lastDate.setDate(lastDate.getDate() - x));
-      });
-      console.log(newWeek);
-      //setDates((state) => [...newWeek, ...state]);
-    }*/
-  };
 
   return (
     <View style={styles.whapperScredule}>
@@ -100,36 +119,66 @@ export default () => {
         <IconButton id='button-return-page' variant='outlined'>
           <Icon size={28} type='MaterialCommunityIcons' name='arrow-left' />
         </IconButton>
-        <Typograph variant='h3' fontWeight='500'>
-          Setembro
-        </Typograph>
-        <IconButton id='button-select-date' variant='outlined'>
-          <Icon size={28} type='MaterialCommunityIcons' name='calendar' />
+        <View style={styles.mouthAndYear}>
+          <Typograph variant='h3' fontWeight='500'>
+            {mouths[calendary.month].full}
+          </Typograph>
+          <Typograph variant='subtitle' fontWeight='500'>
+            {calendary.year}
+          </Typograph>
+        </View>
+        <IconButton
+          onPress={handleSetDateCurrent}
+          id='button-return-page'
+          variant='outlined'>
+          <Icon
+            size={28}
+            type='MaterialCommunityIcons'
+            name='calendar-outline'
+          />
         </IconButton>
       </TollbarApp>
-      <SafeAreaView id='dates'>
-        <FlatList
-          ref={flatListRef}
-          onScroll={onScroll}
-          getItemLayout={(item, index) => ({
-            length: 75,
-            offset: 50,
-            index,
-          })}
-          contentContainerStyle={{ alignItems: "center" }}
-          data={dates}
-          renderItem={({ index, item }) => (
-            <DateButtom
-              key={index}
-              day={item.getDay()}
-              date={item.getDate()}
-              mounth={item.getMonth()}
-            />
-          )}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-        />
-      </SafeAreaView>
+      <GrowingViewer
+        durationAnimation={0}
+        maxHeight={425}
+        minHeight={125}
+        id='dates'>
+        {(Open, Close) => (
+          <>
+            <Close durationAnimation={100}>
+              <FlatList
+                ref={flatListRef}
+                getItemLayout={(item, index) => ({
+                  length: 75,
+                  offset: 50,
+                  index,
+                })}
+                contentContainerStyle={{ alignItems: "center" }}
+                data={calendary.dates}
+                renderItem={({ index, item }) => (
+                  <DateButtom
+                    key={index}
+                    day={item.day}
+                    year={item.year}
+                    month={item.month}
+                    date={item.dayOfTheWeek.abbreviated}
+                  />
+                )}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+              />
+            </Close>
+            <Open durationAnimation={100}>
+              <Drag
+                height='100%'
+                width='100%'
+                onDragPress={handleChangeCalendary}>
+                <Calendary month={calendary.month} year={calendary.year} />
+              </Drag>
+            </Open>
+          </>
+        )}
+      </GrowingViewer>
       <SafeAreaView id='dates' style={styles.whapperFilters}>
         <FlatList
           horizontal
@@ -142,7 +191,7 @@ export default () => {
           )}
         />
       </SafeAreaView>
-      <SafeAreaView id='tasks' style={styles.whapperTask}>
+      <SafeAreaView id='tasks' style={styles.containerTasks}>
         <FlatList
           showsHorizontalScrollIndicator={false}
           data={tasksList}
@@ -178,11 +227,16 @@ export default () => {
                     {formatInHours(item.date)}
                   </Typograph>
                 </View>
-                <Chip>{item.status}</Chip>
+                <Chip color={item.status.color}>{item.status.value}</Chip>
               </View>
             </Card>
           )}
         />
+        <View style={styles.whapperAction}>
+          <IconButton variant='contained'>
+            <Icon type='MaterialCommunityIcons' name='plus' />
+          </IconButton>
+        </View>
       </SafeAreaView>
     </View>
   );

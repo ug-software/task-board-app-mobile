@@ -1,23 +1,26 @@
 /** @format */
 
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { View, Text, StyleSheet, Animated, PanResponder } from "react-native";
 
 const App = () => {
-  const height = useRef(new Animated.Value(200)).current; // Altura inicial da view ajustável
+  const height = useRef(new Animated.Value(200)).current;
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleOpen = () => {
+    setIsOpen(true);
     Animated.timing(height, {
-      toValue: 400, // Retorna à altura original
-      duration: 600,
+      toValue: 600,
+      duration: 400,
       useNativeDriver: false,
     }).start();
   };
 
   const handleClose = () => {
+    setIsOpen(false);
     Animated.timing(height, {
-      toValue: 200, // Retorna à altura original
-      duration: 600,
+      toValue: 200,
+      duration: 400,
       useNativeDriver: false,
     }).start();
   };
@@ -25,28 +28,16 @@ const App = () => {
   const panResponder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: (evt, gestureState) => {
-        //return gestureState.dy !== 0; // Permitir movimento se houver movimento vertical
-        return true;
+        return gestureState.dy !== 0;
       },
       onPanResponderMove: (evt, gestureState) => {
-        console.log(gestureState.dx);
-        if (gestureState.dx < 0) {
+        if (gestureState.dy > 10) {
           handleOpen();
         }
 
-        if (gestureState.dx > 0) {
+        if (gestureState.dy < 0) {
           handleClose();
         }
-      },
-      onPanResponderRelease: (evt, gestureState) => {
-        // Se o usuário arrastar mais de um certo limite, defina a altura mínima
-        /*if (gestureState.dy > 100) {
-          Animated.timing(height, {
-            toValue: 400, // Retorna à altura original
-            duration: 600,
-            useNativeDriver: false,
-          }).start();
-        }*/
       },
     })
   ).current;
@@ -77,7 +68,7 @@ const styles = StyleSheet.create({
     minHeight: 200,
   },
   dragArea: {
-    height: 20, // Área para arrastar
+    height: 20,
     backgroundColor: "black",
     borderRadius: 10,
     paddingHorizontal: 10,

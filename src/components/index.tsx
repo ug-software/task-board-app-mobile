@@ -9,6 +9,9 @@ import Tollbar from "./tollbar";
 import CircularProgress from "./circular-progress";
 import Card from "./card";
 import Chip from "./chip";
+import GrowingViewer from "./growing-viewer";
+import Drag from "./drag";
+
 export {
   Button,
   TextField,
@@ -20,4 +23,6 @@ export {
   CircularProgress,
   Card,
   Chip,
+  GrowingViewer,
+  Drag,
 };
