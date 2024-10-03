@@ -23,7 +23,6 @@ export default ({ children, ...props }: TopbarApp) => {
 
   return (
     <View style={styles.whapperTopbarApp}>
-      <Tollbar />
       <View style={styles.containerTopbarApp}>{children}</View>
     </View>
   );

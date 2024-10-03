@@ -63,11 +63,20 @@ export default styled<Omit<IButtonBaseProps, "children"> & { active: boolean }>(
     },
     iconButtonBaseStart: {
       marginRight: 10,
-      fontSize: 15,
+
       color:
         textColorBasedOnBackground(theme.pallet.primary.primary) === "dark"
           ? theme.pallet.primary.text
           : theme.pallet.primary.background,
+      ...(size === "small" && {
+        fontSize: 20,
+      }),
+      ...((size === "medium" || size === undefined) && {
+        fontSize: 25,
+      }),
+      ...(size === "large" && {
+        fontSize: 30,
+      }),
     },
     iconButtonBaseEnd: {
       marginLeft: 10,
@@ -76,6 +85,15 @@ export default styled<Omit<IButtonBaseProps, "children"> & { active: boolean }>(
         textColorBasedOnBackground(theme.pallet.primary.primary) === "dark"
           ? theme.pallet.primary.text
           : theme.pallet.primary.background,
+      ...(size === "small" && {
+        fontSize: 20,
+      }),
+      ...((size === "medium" || size === undefined) && {
+        fontSize: 25,
+      }),
+      ...(size === "large" && {
+        fontSize: 30,
+      }),
     },
   })
 );

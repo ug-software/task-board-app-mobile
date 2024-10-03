@@ -2,7 +2,7 @@
 
 import { styled } from "@/src/theme";
 import { TopbarApp } from ".";
-import { darken } from "@/src/theme/styled";
+import { darken, ligten } from "@/src/theme/styled";
 
 export default styled<Omit<TopbarApp, "children">>(
   ({
@@ -15,13 +15,6 @@ export default styled<Omit<TopbarApp, "children">>(
     ...props
   }) => ({
     whapperTopbarApp: {
-      //position: "absolute",
-      //justifyContent,
-      //alignItems,
-      //flexDirection,
-      //zIndex: 1,
-      //backgroundColor: "red",
-      //backgroundColor: theme.pallet.primary.background,
       ...(borderVisible
         ? {
             borderBottomWidth: 1,

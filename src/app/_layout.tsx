@@ -8,6 +8,7 @@ import React from "react";
 import ThemeProvider from "@/src/theme";
 import defaultTheme from "@/src/theme/default-theme";
 import Layout from "@/src/components/layout";
+import LayoutContext from "../context/layout";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -28,18 +29,20 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <Layout layoutOn={true}>
-        <Stack>
-          <Stack.Screen name='index' options={{ headerShown: false }} />
-          <Stack.Screen name='login' options={{ headerShown: false }} />
-          <Stack.Screen name='signin' options={{ headerShown: false }} />
-          <Stack.Screen name='dashboard' options={{ headerShown: false }} />
-          <Stack.Screen name='scredule' options={{ headerShown: false }} />
-          <Stack.Screen name='projects' options={{ headerShown: false }} />
-          <Stack.Screen name='+not-found' />
-        </Stack>
-      </Layout>
-    </ThemeProvider>
+    <LayoutContext>
+      <ThemeProvider theme={defaultTheme}>
+        <Layout layoutOn={true}>
+          <Stack>
+            <Stack.Screen name='index' options={{ headerShown: false }} />
+            <Stack.Screen name='login' options={{ headerShown: false }} />
+            <Stack.Screen name='signin' options={{ headerShown: false }} />
+            <Stack.Screen name='dashboard' options={{ headerShown: false }} />
+            <Stack.Screen name='scredule' options={{ headerShown: false }} />
+            <Stack.Screen name='projects' options={{ headerShown: false }} />
+            <Stack.Screen name='+not-found' />
+          </Stack>
+        </Layout>
+      </ThemeProvider>
+    </LayoutContext>
   );
 }

@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { TollbarApp } from "@/src/components/layout";
 import {
+  Avatar,
   Button,
   Card,
   Chip,
@@ -110,15 +111,7 @@ export default () => {
 
   return (
     <View style={styles.whapperScredule}>
-      <TollbarApp
-        pl={20}
-        pr={20}
-        flexDirection='row'
-        justifyContent='space-between'
-        alignItems='center'>
-        <IconButton id='button-return-page' variant='outlined'>
-          <Icon size={28} type='MaterialCommunityIcons' name='arrow-left' />
-        </IconButton>
+      <View style={styles.mouthAndYearInfo}>
         <View style={styles.mouthAndYear}>
           <Typograph variant='h3' fontWeight='500'>
             {mouths[calendary.month].full}
@@ -127,17 +120,22 @@ export default () => {
             {calendary.year}
           </Typograph>
         </View>
-        <IconButton
-          onPress={handleSetDateCurrent}
-          id='button-return-page'
-          variant='outlined'>
-          <Icon
-            size={28}
-            type='MaterialCommunityIcons'
-            name='calendar-outline'
-          />
-        </IconButton>
-      </TollbarApp>
+        <View style={styles.actionsScredule}>
+          <IconButton
+            onPress={handleSetDateCurrent}
+            id='button-return-page'
+            variant='outlined'>
+            <Icon
+              size={28}
+              type='MaterialCommunityIcons'
+              name='calendar-outline'
+            />
+          </IconButton>
+          <IconButton variant='contained'>
+            <Icon type='MaterialCommunityIcons' name='plus' />
+          </IconButton>
+        </View>
+      </View>
       <GrowingViewer
         durationAnimation={0}
         maxHeight={425}
@@ -232,11 +230,7 @@ export default () => {
             </Card>
           )}
         />
-        <View style={styles.whapperAction}>
-          <IconButton variant='contained'>
-            <Icon type='MaterialCommunityIcons' name='plus' />
-          </IconButton>
-        </View>
+        <View style={styles.whapperAction}></View>
       </SafeAreaView>
     </View>
   );

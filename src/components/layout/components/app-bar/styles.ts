@@ -12,6 +12,7 @@ export default styled<{ isActive?: boolean }>(({ theme, isActive }) => ({
     height: 70,
     borderTopWidth: 1,
     borderColor: darken(theme.pallet.primary.background, 8),
+    zIndex: 99999,
   },
   buttonAppBar: {
     display: "flex",

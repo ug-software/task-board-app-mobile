@@ -7,11 +7,24 @@ export default styled(({ theme }) => ({
   whapperScredule: {
     backgroundColor: theme.pallet.primary.background,
     height: "100%",
+    paddingTop: 10,
+  },
+  mouthAndYearInfo: {
+    display: "flex",
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
   },
   mouthAndYear: {
     display: "flex",
-    justifyContent: "center",
+    alignItems: "stretch",
+    paddingLeft: 10,
+  },
+  actionsScredule: {
+    display: "flex",
     alignItems: "center",
+    flexDirection: "row",
   },
   whapperFilters: {
     marginTop: 10,

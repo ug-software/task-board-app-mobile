@@ -1,16 +1,11 @@
 /** @format */
 
-import {
-  Dimensions,
-  ImageStyle,
-  StyleSheet,
-  TextStyle,
-  ViewStyle,
-} from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 import { Theme } from "../interfaces";
 import useTheme from "../use-theme";
 import ligten from "./ligten";
 import darken from "./darken";
+import alpha from "./alpha";
 import { textColorBasedOnBackground, luminance } from "./luminance";
 
 type ContextStyleType<T> = ContextStyle & T;
@@ -29,4 +24,4 @@ export default function styled<T>(
   };
 }
 
-export { ligten, darken, luminance, textColorBasedOnBackground };
+export { ligten, darken, luminance, textColorBasedOnBackground, alpha };

@@ -2,4 +2,5 @@
 
 import AppBar from "./app-bar";
 import TollbarApp from "./topbar-app";
-export { AppBar, TollbarApp };
+import Layout from "./layout-config";
+export { AppBar, TollbarApp, Layout };

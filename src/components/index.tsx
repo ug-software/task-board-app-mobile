@@ -11,6 +11,7 @@ import Card from "./card";
 import Chip from "./chip";
 import GrowingViewer from "./growing-viewer";
 import Drag from "./drag";
+import Dialog from "./dialog";
 
 export {
   Button,
@@ -25,4 +26,5 @@ export {
   Chip,
   GrowingViewer,
   Drag,
+  Dialog,
 };
