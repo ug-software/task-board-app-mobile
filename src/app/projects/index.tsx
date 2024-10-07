@@ -20,17 +20,31 @@ export default () => {
   const styles = createStyles({});
   const [action, setAction] = useState({
     open: false,
+    isSearch: false,
     type: null,
     item: null,
   });
   return (
     <View style={styles.whapperProjects}>
-      <TextField
-        fullWidth
-        label='Qual projeto deseja achar ?'
-        variant='filed'
-        style={{ marginTop: 10 }}
-      />
+      <View style={styles.headerProjects}>
+        {action.isSearch && (
+          <TextField
+            label='Qual projeto deseja achar ?'
+            variant='filed'
+            style={{ width: "80%" }}
+          />
+        )}
+        <IconButton
+          onPress={() =>
+            setAction((state) => ({ ...state, isSearch: !state.isSearch }))
+          }
+          variant='outlined'>
+          <Icon type='Octicons' name='search' />
+        </IconButton>
+        <IconButton variant='contained'>
+          <Icon type='MaterialCommunityIcons' name='plus' />
+        </IconButton>
+      </View>
       <SafeAreaView style={styles.containerProjects}>
         <FlatList
           data={tasksGroup}
@@ -78,7 +92,7 @@ export default () => {
       <ButtonSheet
         onRequestClose={() => setAction((state) => ({ ...state, open: false }))}
         open={action.open}
-        height={400}>
+        height={200}>
         {[
           {
             name: "Editar",
@@ -87,6 +101,7 @@ export default () => {
                 style={styles.menuDialogIcon}
                 type='MaterialIcons'
                 name='mode-edit'
+                size={30}
               />
             ),
           },
@@ -97,13 +112,16 @@ export default () => {
                 style={styles.menuDialogIcon}
                 type='MaterialIcons'
                 name='delete'
+                size={30}
               />
             ),
           },
         ].map(({ name, Icon }, index) => (
           <Pressable key={index} style={styles.menuDialogItem}>
             <Icon />
-            <Typograph variant='h6'>{name}</Typograph>
+            <Typograph variant='h5' fontWeight={500}>
+              {name}
+            </Typograph>
           </Pressable>
         ))}
       </ButtonSheet>

@@ -1,7 +1,7 @@
 /** @format */
 
 import { styled } from "@/src/theme";
-import { ligten, darken, textColorBasedOnBackground } from "@/src/theme/styled";
+import { ligten, darken } from "@/src/theme/styled";
 import { TextFieldBase } from "..";
 
 const createStyles = styled<Omit<TextFieldBase, "label"> & { active: boolean }>(

@@ -2,8 +2,20 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { ReactNode } from "react";
-import { Animated, Modal, PanResponder, View } from "react-native";
+import {
+  Animated,
+  Easing,
+  Modal,
+  PanResponder,
+  Pressable,
+  View,
+} from "react-native";
 import createStyles from "./styles";
+import {
+  Gesture,
+  GestureDetector,
+  GestureHandlerRootView,
+} from "react-native-gesture-handler";
 
 interface ButtonSheetProps {
   children: ReactNode;
@@ -18,52 +30,69 @@ export default ({
   open,
   onRequestClose,
 }: ButtonSheetProps) => {
-  const styles = createStyles({});
-  const translateY = useRef(new Animated.Value(0)).current;
+  const duration = 300;
+  const styles = createStyles({ height });
+  const [isOpen, setIsOpen] = useState(false);
+  const translateY = useRef(new Animated.Value(height)).current;
 
-  const panResponder = useRef(
-    PanResponder.create({
-      onMoveShouldSetPanResponder: (evt, gestureState) => {
-        return true;
-      },
-      onPanResponderMove: (evt, gestureState) => {
-        translateY.setValue(gestureState.dy);
-      },
-      onPanResponderRelease: (evt, gestureState) => {
-        console.log("gestureState.dy", gestureState.dy);
-        if (gestureState.dy > 20) {
-          handleClose();
-        } else {
-          handleOpen();
-        }
-      },
+  const pan = Gesture.Pan()
+    .minDistance(1)
+    .onFinalize((event) => {
+      if (event.translationY > 5) {
+        handleClose();
+      }
     })
-  ).current;
+    .runOnJS(true);
 
   const handleClose = () => {
     Animated.timing(translateY, {
-      toValue: 0,
-      duration: 300,
+      toValue: height,
+      duration: duration,
+      easing: Easing.inOut(Easing.ease),
       useNativeDriver: true,
     }).start();
-    onRequestClose();
+    setTimeout(() => onRequestClose(), duration);
   };
 
   const handleOpen = () => {
     Animated.timing(translateY, {
-      toValue: height,
-      duration: 300,
+      toValue: 0,
+      duration: duration,
+      easing: Easing.inOut(Easing.ease),
       useNativeDriver: true,
     }).start();
   };
 
+  useEffect(() => {
+    setIsOpen(open);
+  }, [open]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (isOpen) {
+        handleOpen();
+      } else {
+        handleClose();
+      }
+    }, 100);
+  }, [isOpen]);
+
   return (
-    <Modal visible={open} onRequestClose={onRequestClose} transparent>
+    <Modal visible={isOpen} onRequestClose={handleClose} transparent>
       <View style={styles.whapperButtonSheet}>
-        <Animated.View style={[styles.containerButtonSheet, { translateY }]}>
-          <View {...panResponder.panHandlers} style={styles.whapperDot}>
-            <View style={styles.dot} />
-          </View>
+        <Pressable onPress={handleClose} style={{ height: "100%" }} />
+        <Animated.View
+          style={[
+            styles.containerButtonSheet,
+            { transform: [{ translateY }] },
+          ]}>
+          <GestureHandlerRootView style={styles.whapperGesture}>
+            <GestureDetector gesture={pan}>
+              <View style={styles.whapperDot}>
+                <View style={styles.dot} />
+              </View>
+            </GestureDetector>
+          </GestureHandlerRootView>
           <View>{children}</View>
         </Animated.View>
       </View>

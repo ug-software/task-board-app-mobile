@@ -14,8 +14,10 @@ export default styled(({ theme }) => ({
   headerProjects: {
     display: "flex",
     flexDirection: "row",
-    alignItems: "center",
     width: "100%",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    minHeight: 55,
   },
   containerProjects: {
     height: "100%",
@@ -52,8 +54,9 @@ export default styled(({ theme }) => ({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    height: 40,
-    width: 120,
+    paddingHorizontal: 10,
+    height: 50,
+    width: "100%",
   },
   menuDialogIcon: {
     color: theme.pallet.primary.primary,

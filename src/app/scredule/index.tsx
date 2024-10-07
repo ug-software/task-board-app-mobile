@@ -1,18 +1,8 @@
 /** @format */
 
 import React, { useEffect, useRef, useState } from "react";
+import { SafeAreaView, View, FlatList } from "react-native";
 import {
-  SafeAreaView,
-  View,
-  FlatList,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  Text,
-  PanResponder,
-} from "react-native";
-import { TollbarApp } from "@/src/components/layout";
-import {
-  Avatar,
   Button,
   Card,
   Chip,
