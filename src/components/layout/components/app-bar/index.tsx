@@ -46,16 +46,10 @@ export const appBar: AppBarButtomProps[] = [
     },
   },
   {
-    href: "/profile",
-    label: "Perfil",
+    href: "/setting",
+    label: "Configuração",
     Icon: (props: { style: ViewStyle | TextStyle | ImageStyle }) => {
-      return (
-        <Icon
-          {...props}
-          name='account-group-outline'
-          type='MaterialCommunityIcons'
-        />
-      );
+      return <Icon {...props} name='setting' type='AntDesign' />;
     },
   },
 ];

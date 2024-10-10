@@ -9,11 +9,20 @@ import ThemeProvider from "@/src/theme";
 import defaultTheme from "@/src/theme/default-theme";
 import Layout from "@/src/components/layout";
 import LayoutContext from "../context/layout";
+import { drizzle } from "drizzle-orm/expo-sqlite";
+import { openDatabaseSync, SQLiteProvider } from "expo-sqlite/next";
+import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
+import { View, Text, ActivityIndicator } from "react-native";
+import migrations from "../../drizzle/migrations";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+const DB_NAME = "database.db";
+const expoDb = openDatabaseSync(DB_NAME);
+const db = drizzle(expoDb);
 
 export default function RootLayout() {
+  const { success, error } = useMigrations(db, migrations);
   const [loaded] = useFonts({
     SpaceMono: require("@/assets/fonts/SpaceMono-Regular.ttf"),
   });
@@ -28,21 +37,36 @@ export default function RootLayout() {
     return null;
   }
 
+  if (error) {
+    return (
+      <View>
+        <Text>Migration error: {error.message}</Text>
+      </View>
+    );
+  }
+
+  if (!success) {
+    return <ActivityIndicator />;
+  }
+
   return (
-    <LayoutContext>
+    <SQLiteProvider databaseName={DB_NAME}>
       <ThemeProvider theme={defaultTheme}>
-        <Layout layoutOn={true}>
-          <Stack>
-            <Stack.Screen name='index' options={{ headerShown: false }} />
-            <Stack.Screen name='login' options={{ headerShown: false }} />
-            <Stack.Screen name='signin' options={{ headerShown: false }} />
-            <Stack.Screen name='dashboard' options={{ headerShown: false }} />
-            <Stack.Screen name='scredule' options={{ headerShown: false }} />
-            <Stack.Screen name='projects' options={{ headerShown: false }} />
-            <Stack.Screen name='+not-found' />
-          </Stack>
-        </Layout>
+        <LayoutContext>
+          <Layout layoutOn={true}>
+            <Stack>
+              <Stack.Screen name='index' options={{ headerShown: false }} />
+              <Stack.Screen name='login' options={{ headerShown: false }} />
+              <Stack.Screen name='signin' options={{ headerShown: false }} />
+              <Stack.Screen name='dashboard' options={{ headerShown: false }} />
+              <Stack.Screen name='scredule' options={{ headerShown: false }} />
+              <Stack.Screen name='projects' options={{ headerShown: false }} />
+              <Stack.Screen name='setting' options={{ headerShown: false }} />
+              <Stack.Screen name='+not-found' />
+            </Stack>
+          </Layout>
+        </LayoutContext>
       </ThemeProvider>
-    </LayoutContext>
+    </SQLiteProvider>
   );
 }

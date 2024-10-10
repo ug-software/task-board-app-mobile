@@ -35,15 +35,6 @@ export default ({
   const [isOpen, setIsOpen] = useState(false);
   const translateY = useRef(new Animated.Value(height)).current;
 
-  const pan = Gesture.Pan()
-    .minDistance(1)
-    .onFinalize((event) => {
-      if (event.translationY > 5) {
-        handleClose();
-      }
-    })
-    .runOnJS(true);
-
   const handleClose = () => {
     Animated.timing(translateY, {
       toValue: height,
@@ -62,6 +53,15 @@ export default ({
       useNativeDriver: true,
     }).start();
   };
+
+  const pan = Gesture.Pan()
+    .minDistance(1)
+    .onFinalize((event) => {
+      if (event.translationY > 5) {
+        handleClose();
+      }
+    })
+    .runOnJS(true);
 
   useEffect(() => {
     setIsOpen(open);
