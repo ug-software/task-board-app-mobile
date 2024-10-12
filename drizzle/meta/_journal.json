@@ -8,6 +8,13 @@
       "when": 1728587117987,
       "tag": "0000_blue_shard",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1728691253553,
+      "tag": "0001_special_iron_fist",
+      "breakpoints": true
     }
   ]
 }

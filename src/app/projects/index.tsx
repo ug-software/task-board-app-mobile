@@ -39,7 +39,11 @@ export default () => {
             setAction((state) => ({ ...state, isSearch: !state.isSearch }))
           }
           variant='outlined'>
-          <Icon type='Octicons' name='search' />
+          <Icon
+            type='Octicons'
+            //@ts-ignore
+            name='search'
+          />
         </IconButton>
         <IconButton variant='contained'>
           <Icon type='MaterialCommunityIcons' name='plus' />
@@ -100,6 +104,7 @@ export default () => {
               <Icon
                 style={styles.menuDialogIcon}
                 type='MaterialIcons'
+                //@ts-ignore
                 name='mode-edit'
                 size={30}
               />
@@ -111,6 +116,7 @@ export default () => {
               <Icon
                 style={styles.menuDialogIcon}
                 type='MaterialIcons'
+                //@ts-ignore
                 name='delete'
                 size={30}
               />

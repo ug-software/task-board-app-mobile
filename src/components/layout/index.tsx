@@ -13,14 +13,9 @@ import { useLayout } from "@/src/hooks";
 
 export interface LayoutProps {
   children: ReactNode;
-  layoutOn: boolean;
 }
 
 export default (props: LayoutProps) => {
-  if (!props.layoutOn) {
-    return props.children;
-  }
-
   const { barAppShow, headerShow } = useLayout();
   const { whapperLayout } = createStyles(props);
 

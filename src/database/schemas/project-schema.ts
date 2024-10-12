@@ -9,4 +9,6 @@ export default sqliteTable("projects", {
   description: text("description"),
   updated_at: text("updated_at").default(sql`(CURRENT_TIMESTAMP)`),
   created_at: text("created_at").default(sql`(CURRENT_TIMESTAMP)`),
+  icon: text("icon").notNull(),
+  color: text("color").notNull(),
 });

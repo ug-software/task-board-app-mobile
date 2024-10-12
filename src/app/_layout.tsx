@@ -53,7 +53,7 @@ export default function RootLayout() {
     <SQLiteProvider databaseName={DB_NAME}>
       <ThemeProvider theme={defaultTheme}>
         <LayoutContext>
-          <Layout layoutOn={true}>
+          <Layout>
             <Stack>
               <Stack.Screen name='index' options={{ headerShown: false }} />
               <Stack.Screen name='login' options={{ headerShown: false }} />
