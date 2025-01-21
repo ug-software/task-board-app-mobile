@@ -9,11 +9,7 @@ import {
   Modal,
   Pressable,
 } from "react-native";
-<<<<<<< HEAD
 import styleSheet from "./styles";
-=======
-import createStyles from "./styles";
->>>>>>> 53bf1b033942eaac05f9323669705213eda5359a
 import { Card, Dialog, Icon, TextField, Typograph } from "@/src/components";
 import tasksGroup from "@/src/mock/tasks-group";
 import { ligten } from "@/src/theme/styled";
@@ -35,6 +31,7 @@ export default () => {
       <View style={styles.headerProjects}>
         {action.isSearch && (
           <TextField
+            name="project-name"
             label='Qual projeto deseja achar ?'
             variant='filed'
             style={{ width: "80%" }}

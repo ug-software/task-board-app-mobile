@@ -1,6 +1,6 @@
 /** @format */
 
-import { Card, Icon, TextField, Typograph , } from "@/src/components";
+import { Button, Card, Icon, TextField, Typograph , } from "@/src/components";
 import BottomSheet from "@/src/components/button/sheet";
 import { IconProps } from "@/src/components/icon";
 import { FlatList, Pressable, SafeAreaView, ScrollView, View } from "react-native";
@@ -102,26 +102,29 @@ export default () => {
   };
 
   return(
-    <ScrollView style={styles.whapperPageProject}>
-      <Typograph pb={20} pt={10} fontWeight={"500"} variant="h3">Adicionar Projeto:</Typograph>
-      <View style={styles.containerTextField}>
-        <TextField name="name" fullWidth variant="filed" label="Nome do projeto:*" onChangeText={(text) => setProject(state => ({...state, name: text}))} />
-      </View>
-      <View style={styles.containerTextField}>
-        <TextField name="description" multiline numberOfLines={10} fullWidth variant="filed" label="Descrição:*" onChangeText={(text) => setProject(state => ({...state, description: text}))} />
-      </View>
-      <View style={styles.containerColorAndIcon}>
-        <View style={styles.whapperColorAndIcon}>
-          <Typograph variant="h6">Selecione o Icone:</Typograph>
-            <CardIcon handleChangeModal={handleChangeModal("icon")} handleChangeIcon={handleChangeIcon} open={modalOpen.icon} name={icons[project.icon].name} type={icons[project.icon].package}/>
-            <Typograph variant="paragraph">Icone Selecionado</Typograph>
+    <ScrollView contentContainerStyle={styles.whapperPageProject}>
+      <View>
+        <Typograph pb={20} pt={10} fontWeight={"500"} variant="h3">Adicionar Projeto:</Typograph>
+        <View style={styles.containerTextField}>
+          <TextField name="name" fullWidth variant="filed" label="Nome do projeto:*" onChangeText={(text) => setProject(state => ({...state, name: text}))} />
         </View>
-        <View style={styles.whapperColorAndIcon}>
-          <Typograph variant="h6">Selecione a Cor:</Typograph>
-            <CardColor handleChangeModal={handleChangeModal("color")} handleChangeColor={handleChangeColor} open={modalOpen.color} color={project.color}/>
-            <Typograph variant="paragraph">Cor Selecionada</Typograph>
+        <View style={styles.containerTextField}>
+          <TextField name="description" multiline numberOfLines={10} fullWidth variant="filed" label="Descrição:*" onChangeText={(text) => setProject(state => ({...state, description: text}))} />
+        </View>
+        <View style={styles.containerColorAndIcon}>
+          <View style={styles.whapperColorAndIcon}>
+            <Typograph variant="h6">Selecione o Icone:</Typograph>
+              <CardIcon handleChangeModal={handleChangeModal("icon")} handleChangeIcon={handleChangeIcon} open={modalOpen.icon} name={icons[project.icon].name} type={icons[project.icon].package}/>
+              <Typograph variant="paragraph">Icone Selecionado</Typograph>
+          </View>
+          <View style={styles.whapperColorAndIcon}>
+            <Typograph variant="h6">Selecione a Cor:</Typograph>
+              <CardColor handleChangeModal={handleChangeModal("color")} handleChangeColor={handleChangeColor} open={modalOpen.color} color={project.color}/>
+              <Typograph variant="paragraph">Cor Selecionada</Typograph>
+          </View>
         </View>
       </View>
+      <Button variant="contained">Salvar</Button>
     </ScrollView>
   );
 };

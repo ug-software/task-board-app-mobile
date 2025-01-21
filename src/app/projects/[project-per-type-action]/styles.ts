@@ -19,10 +19,15 @@ export const styleSheetColor = styled<{color: string}>()(({color}) => ({
 
 export const styleSheetPageProject = styled<{color: string}>()(({ color, theme }) => ({
     whapperPageProject: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
         height: "100%",
         width: "100%",
         backgroundColor: theme.pallet.primary.background,
-        paddingHorizontal: 10,
+        paddingRight: 20,
+        paddingLeft: 10,
+        paddingBottom: 10
     },
     containerTextField: {
         marginBottom: 15,
