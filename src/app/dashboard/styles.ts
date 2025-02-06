@@ -1,7 +1,7 @@
 /** @format */
 
 import { styled } from "@/src/theme";
-import { ligten } from "@/src/theme/styled";
+import { lighten } from "@/src/theme/styled";
 
 export default styled()(({ theme }) => ({
   whapperDashboard: {
@@ -41,7 +41,7 @@ export default styled()(({ theme }) => ({
     borderRadius: 20,
     paddingHorizontal: 10,
     paddingVertical: 20,
-    backgroundColor: ligten(theme.pallet.primary.primary, 85),
+    backgroundColor: lighten(theme.pallet.primary.primary, 85),
   },
   actionsTodayTaskPercent: {
     display: "flex",

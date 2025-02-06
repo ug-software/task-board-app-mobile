@@ -13,6 +13,7 @@ import GrowingViewer from "./growing-viewer";
 import Drag from "./drag";
 import Dialog from "./dialog";
 import { ListItem } from "./list";
+import Alert from "./alert";
 export {
   Button,
   TextField,
@@ -27,5 +28,6 @@ export {
   GrowingViewer,
   Drag,
   Dialog,
-  ListItem
+  ListItem,
+  Alert
 };

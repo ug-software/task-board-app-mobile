@@ -1,7 +1,7 @@
 /** @format */
 
 import { styled } from "@/src/theme";
-import { darken, ligten } from "@/src/theme/styled";
+import { darken, lighten } from "@/src/theme/styled";
 import { IconButtonBase } from ".";
 
 const styleSheet = styled<Omit<IconButtonBase, "ref"> & { active: boolean }>()(({ active, theme, borderVisible, variant }) => ({
@@ -14,7 +14,7 @@ const styleSheet = styled<Omit<IconButtonBase, "ref"> & { active: boolean }>()((
       width: 40,
       height: 40,
       backgroundColor: active
-        ? ligten(theme.pallet.primary.primary, 95)
+        ? lighten(theme.pallet.primary.primary, 95)
         : "transparent",
     }),
     ...(variant === "contained" && {
@@ -25,8 +25,8 @@ const styleSheet = styled<Omit<IconButtonBase, "ref"> & { active: boolean }>()((
       width: 40,
       height: 40,
       backgroundColor: active
-        ? ligten(theme.pallet.primary.primary, 95)
-        : ligten(theme.pallet.primary.primary, 85),
+        ? lighten(theme.pallet.primary.primary, 95)
+        : lighten(theme.pallet.primary.primary, 85),
     }),
     ...(borderVisible && {
       borderStyle: "solid",

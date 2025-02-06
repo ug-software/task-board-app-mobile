@@ -2,7 +2,7 @@
 
 import { styled } from "@/src/theme";
 import { TopbarApp } from ".";
-import { darken, ligten } from "@/src/theme/styled";
+import { darken, lighten } from "@/src/theme/styled";
 
 export default styled<Omit<TopbarApp, "children">>()(({
   alignItems,

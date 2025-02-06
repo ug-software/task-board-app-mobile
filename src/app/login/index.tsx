@@ -4,7 +4,7 @@ import React from "react";
 import styleSheet from "./styles";
 import { View, Image } from "react-native";
 import { useRouter } from "@/src/hooks";
-import { Button, Icon, IconButton, TextField } from "@/src/components";
+import { Alert, Button, Icon, IconButton, TextField } from "@/src/components";
 
 export default () => {
   const {

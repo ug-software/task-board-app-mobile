@@ -4,9 +4,12 @@ import { Button, Card, Icon, TextField, Typograph , } from "@/src/components";
 import BottomSheet from "@/src/components/button/sheet";
 import { IconProps } from "@/src/components/icon";
 import { FlatList, Pressable, SafeAreaView, ScrollView, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styleSheetColor, styleSheetIcon, styleSheetPageProject } from "./styles"
 import { colors, icons } from "@/src/constants";
+import { useForm, useProject } from "@/src/hooks";
+import Project from "@/src/interfaces/project";
+import { useLocalSearchParams } from "expo-router";
 
 interface CardIconProjectProps extends IconProps<any> {
   open: boolean,
@@ -30,6 +33,7 @@ const CardIcon = ({ name, type, open, handleChangeIcon, handleChangeModal, ...pr
           renderItem={({index, item}) => (
             <Pressable onPress={() => handleChangeIcon(item)}>
               <Card key={index} style={styles.whapperIcon}>
+                {/*@ts-ignore*/}
                 <Icon size={3 * 16} name={icons[item].name} type={icons[item].package} />
               </Card>
             </Pressable>
@@ -75,56 +79,119 @@ const CardColor = ({color, open, handleChangeColor, handleChangeModal} : CardCol
 };
 
 export default () => {
-  const [project, setProject] = useState({
-    name: "",
-    description: "",
-    icon: "#ICO0001",
-    color: "#FFFF"
+  const styles = styleSheetPageProject();
+  const params = useLocalSearchParams();  
+  const { handleSaveNewProject, handleUpdateProject, handleValidationProject, findProjectPerId } = useProject();
+  const handleSubmitProject = params['project-per-type-action'] === 'edit' ? handleUpdateProject : handleSaveNewProject;
+
+  const {
+    values,
+    errors,
+    handleChange,
+    handleSubmit,
+    setValues
+  } = useForm<Partial<Project>>({
+    initialValues: {
+      name: "",
+      description: "",
+      icon: "#ICO0001",
+      color: "#FFFF"
+    },
+    onSubmit: handleSubmitProject,
+    onValidation: handleValidationProject
   });
   const [modalOpen, setModalOpen] = useState({
     color: false,
     icon: false
   });
-  const styles = styleSheetPageProject();
 
   const handleChangeModal = (modal: "color" | "icon") => {
     return () => setModalOpen(state => ({...state, [modal]: !state[modal] }))
   };
 
   const handleChangeColor = (color: string) => {
-    setProject(state => ({...state, color}))
+    handleChange({name: "color", value: color })
     setModalOpen(state => ({...state, color: false}));
   };
 
   const handleChangeIcon = (icon: string) => {    
-    setProject(state => ({...state, icon}));
+    handleChange({ name: "icon", value: icon });
     setModalOpen(state => ({...state, icon: false}));
   };
+
+  useEffect(() => {
+    if(params['project-per-type-action'] === 'edit'){
+      var id = params['id'];
+      
+      (async () => {
+        if(typeof id !== "string") return;
+
+        const projectPerId = await findProjectPerId(Number.parseInt(id));
+        
+        if(projectPerId !== null){
+          setValues(projectPerId);
+        }
+      })();
+    }    
+  }, []);
 
   return(
     <ScrollView contentContainerStyle={styles.whapperPageProject}>
       <View>
         <Typograph pb={20} pt={10} fontWeight={"500"} variant="h3">Adicionar Projeto:</Typograph>
         <View style={styles.containerTextField}>
-          <TextField name="name" fullWidth variant="filed" label="Nome do projeto:*" onChangeText={(text) => setProject(state => ({...state, name: text}))} />
+          <TextField 
+            fullWidth 
+            name="name" 
+            variant="filed" 
+            label="Nome do projeto:*"
+            value={values.name}
+            onChangeText={(text) => handleChange({ name: "name", value: text })}
+            error={Boolean(errors?.name)}
+            helperText={errors?.name}
+          />
         </View>
         <View style={styles.containerTextField}>
-          <TextField name="description" multiline numberOfLines={10} fullWidth variant="filed" label="Descrição:*" onChangeText={(text) => setProject(state => ({...state, description: text}))} />
+          <TextField 
+            multiline 
+            fullWidth 
+            name="description" 
+            numberOfLines={10} 
+            variant="filed" 
+            label="Descrição:*"
+            value={values.description}
+            onChangeText={(text) => handleChange({ name: "description", value: text })}
+            error={Boolean(errors?.description)}
+            helperText={errors?.description}
+          />
         </View>
         <View style={styles.containerColorAndIcon}>
           <View style={styles.whapperColorAndIcon}>
             <Typograph variant="h6">Selecione o Icone:</Typograph>
-              <CardIcon handleChangeModal={handleChangeModal("icon")} handleChangeIcon={handleChangeIcon} open={modalOpen.icon} name={icons[project.icon].name} type={icons[project.icon].package}/>
+            
+              <CardIcon 
+                open={modalOpen.icon}
+                //@ts-ignore
+                name={values.icon ? icons[values.icon].name : "customerservice"} 
+                type={values.icon ? icons[values.icon].package : "AntDesign"}
+                handleChangeIcon={handleChangeIcon} 
+                handleChangeModal={handleChangeModal("icon")} 
+              />
               <Typograph variant="paragraph">Icone Selecionado</Typograph>
           </View>
           <View style={styles.whapperColorAndIcon}>
             <Typograph variant="h6">Selecione a Cor:</Typograph>
-              <CardColor handleChangeModal={handleChangeModal("color")} handleChangeColor={handleChangeColor} open={modalOpen.color} color={project.color}/>
+              <CardColor 
+                open={modalOpen.color} 
+                color={values.color ? values.color : "#FFFF"}
+                handleChangeColor={handleChangeColor} 
+                handleChangeModal={handleChangeModal("color")} 
+              />
               <Typograph variant="paragraph">Cor Selecionada</Typograph>
           </View>
         </View>
       </View>
-      <Button variant="contained">Salvar</Button>
+      <Button variant="contained" onPress={handleSubmit}>Salvar</Button>
     </ScrollView>
   );
 };

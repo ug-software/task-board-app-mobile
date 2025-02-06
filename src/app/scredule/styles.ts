@@ -1,7 +1,7 @@
 /** @format */
 
 import { styled } from "@/src/theme";
-import { ligten } from "@/src/theme/styled";
+import { lighten } from "@/src/theme/styled";
 
 export default styled()(({ theme }) => ({
   whapperScredule: {

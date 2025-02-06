@@ -1,12 +1,11 @@
 /** @format */
-
 import { sql } from "drizzle-orm";
 import { text, integer, sqliteTable } from "drizzle-orm/sqlite-core";
 
 export default sqliteTable("projects", {
-  id: integer("id").primaryKey(),
+  id: integer("id").primaryKey().notNull(),
   name: text("name").notNull(),
-  description: text("description"),
+  description: text("description").notNull(),
   updated_at: text("updated_at").default(sql`(CURRENT_TIMESTAMP)`),
   created_at: text("created_at").default(sql`(CURRENT_TIMESTAMP)`),
   icon: text("icon").notNull(),

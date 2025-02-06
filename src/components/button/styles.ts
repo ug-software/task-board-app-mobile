@@ -2,7 +2,7 @@
 
 import { styled } from "@/src/theme";
 import { IButtonBaseProps } from "./interface";
-import { ligten, textColorBasedOnBackground } from "@/src/theme/styled";
+import { lighten, textColorBasedOnBackground } from "@/src/theme/styled";
 
 export default styled<Omit<IButtonBaseProps, "children"> & { active: boolean }>()(({ variant, theme, fullWidth, active, mt, mb, ml, mr, size }) => ({
   whapperButtonBase: {
@@ -20,20 +20,20 @@ export default styled<Omit<IButtonBaseProps, "children"> & { active: boolean }>(
     ...(variant === "contained" && {
       backgroundColor: !active
         ? theme.pallet.primary.primary
-        : ligten(theme.pallet.primary.primary, 20),
+        : lighten(theme.pallet.primary.primary, 20),
     }),
     ...(variant === "outlined" && {
       backgroundColor: !active
         ? "transparent"
-        : ligten(theme.pallet.primary.primary, 95),
+        : lighten(theme.pallet.primary.primary, 95),
       borderStyle: "solid",
       borderWidth: 1,
       borderColor: theme.pallet.primary.primary,
     }),
     ...(variant === "text" && {
       backgroundColor: !active
-        ? ligten(theme.pallet.primary.primary, 90)
-        : ligten(theme.pallet.primary.primary, 85),
+        ? lighten(theme.pallet.primary.primary, 90)
+        : lighten(theme.pallet.primary.primary, 85),
     }),
     ...(size === "small" && {
       height: 38,

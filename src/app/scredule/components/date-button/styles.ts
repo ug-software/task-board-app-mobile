@@ -1,7 +1,7 @@
 /** @format */
 
 import { styled } from "@/src/theme";
-import { ligten, darken } from "@/src/theme/styled";
+import { lighten, darken } from "@/src/theme/styled";
 
 export default styled<{ isCurrentDate: boolean; isActive?: boolean }>()(({ theme, isCurrentDate, isActive }) => ({
   whapperDateButtom: {
@@ -25,7 +25,7 @@ export default styled<{ isCurrentDate: boolean; isActive?: boolean }>()(({ theme
           width: 65,
         }),
     ...(isActive && {
-      backgroundColor: ligten(theme.pallet.primary.main, 85),
+      backgroundColor: lighten(theme.pallet.primary.main, 85),
     }),
   },
   textColor: {

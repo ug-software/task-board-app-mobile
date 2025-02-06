@@ -15,12 +15,12 @@ const initialValuesContext: ContextLoading = {
   showLoading: () => {},
 };
 
-export const LayoutContext =
+export const LoadingContext =
   createContext<ContextLoading>(initialValuesContext);
 
 export default ({ children }: { children: ReactNode }) => {
   const values = initialValues();
   return (
-    <LayoutContext.Provider value={values}>{children}</LayoutContext.Provider>
+    <LoadingContext.Provider value={values}>{children}</LoadingContext.Provider>
   );
 };

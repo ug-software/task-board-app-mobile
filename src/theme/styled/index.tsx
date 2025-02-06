@@ -3,7 +3,7 @@
 import { Dimensions, ImageStyle, StyleSheet, TextStyle, ViewProps, ViewStyle } from "react-native";
 import { Theme } from "../interfaces";
 import useTheme from "../use-theme";
-import ligten from "./ligten";
+import lighten from "./lighten";
 import darken from "./darken";
 import alpha from "./alpha";
 import { textColorBasedOnBackground, luminance } from "./luminance";
@@ -33,7 +33,8 @@ export default function styled<T extends {}>() {
       if(typeof callback === "function" && props !== undefined) 
         return callback({ theme, width, ...props });
     
-      return callback({theme, width});
+      //@ts-ignore
+      return callback({ theme, width });
     }
   }
 }
@@ -65,4 +66,4 @@ export function styledV2<T extends {}>(component: Component) {
   }
 }
 
-export { ligten, darken, luminance, textColorBasedOnBackground, alpha };
+export { lighten, darken, luminance, textColorBasedOnBackground, alpha };

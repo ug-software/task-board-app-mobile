@@ -1,7 +1,7 @@
 /** @format */
 
 import { styled } from "@/src/theme";
-import { darken, ligten } from "@/src/theme/styled";
+import { darken, lighten } from "@/src/theme/styled";
 
 export default styled<{ isActive?: boolean }>()(({ theme, isActive }) => ({
   whapperAppBar: {
@@ -12,7 +12,7 @@ export default styled<{ isActive?: boolean }>()(({ theme, isActive }) => ({
     height: 70,
     borderTopWidth: 1,
     borderColor: darken(theme.pallet.primary.background, 8),
-    zIndex: 99999,
+    zIndex: 1000,
   },
   buttonAppBar: {
     display: "flex",
@@ -23,7 +23,7 @@ export default styled<{ isActive?: boolean }>()(({ theme, isActive }) => ({
   iconButtonAppBar: {
     fontSize: 25,
     backgroundColor: isActive
-      ? ligten(theme.pallet.primary.main, 85)
+      ? lighten(theme.pallet.primary.main, 85)
       : "transparent",
     padding: 5,
     borderRadius: 3,

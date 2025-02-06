@@ -1,6 +1,6 @@
 /** @format */
 
-import { ligten } from "@/src/theme/styled";
+import { lighten } from "@/src/theme/styled";
 import useTheme from "@/src/theme/use-theme";
 import React from "react";
 import CircularProgress from "react-native-circular-progress-indicator";
@@ -37,8 +37,8 @@ export default ({
       }
       inActiveStrokeColor={
         strokeColor === "default"
-          ? ligten(theme.pallet.primary.main, 50)
-          : ligten(strokeColor, 85)
+          ? lighten(theme.pallet.primary.main, 50)
+          : lighten(strokeColor, 85)
       }
       radius={size}
       inActiveStrokeWidth={strokeSize}

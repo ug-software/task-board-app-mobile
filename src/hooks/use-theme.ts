@@ -4,7 +4,7 @@ import { ContextTheme } from "@/src/theme";
 import { useContext } from "react";
 
 export default () => {
-  var { theme } = useContext(ContextTheme);
+  var { pallet } = useContext(ContextTheme);
 
-  return theme;
+  return pallet;
 };

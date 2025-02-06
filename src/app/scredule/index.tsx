@@ -17,7 +17,7 @@ import Calendary from "./components/calendary";
 import styleSheet from "./styles";
 import tasksList from "@/src/mock/task-list";
 import { DateTime, formatInHours, getDaysTheMouth } from "@/src/utils/date";
-import { ligten } from "@/src/theme/styled";
+import { lighten } from "@/src/theme/styled";
 import { mouths } from "@/src/constants/calendary";
 
 interface Calendary {
@@ -189,7 +189,7 @@ export default () => {
                 <Typograph variant='h6'>{item.group}</Typograph>
                 <View
                   style={[
-                    { backgroundColor: ligten(item.icon.color, 85) },
+                    { backgroundColor: lighten(item.icon.color, 85) },
                     styles.whapperIconTaskGroup,
                   ]}>
                   <Icon

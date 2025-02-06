@@ -13,7 +13,7 @@ import {
 import { FlatList, SafeAreaView, Text, View } from "react-native";
 import React from "react";
 import styleSheet from "./styles";
-import { ligten } from "@/src/theme/styled";
+import { lighten } from "@/src/theme/styled";
 import tasksGroup from "@/src/mock/tasks-group";
 
 const colors = [
@@ -85,7 +85,7 @@ export default () => {
               <View style={styles.infoTaskGroup}>
                 <View
                   style={[
-                    { backgroundColor: ligten(item.icon.color, 85) },
+                    { backgroundColor: lighten(item.icon.color, 85) },
                     styles.iconTaskGroup,
                   ]}>
                   <Icon

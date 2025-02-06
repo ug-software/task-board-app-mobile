@@ -1,75 +1,74 @@
 /** @format */
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
-  Text,
   SafeAreaView,
   FlatList,
-  Modal,
   Pressable,
 } from "react-native";
 import styleSheet from "./styles";
-import { Card, Dialog, Icon, TextField, Typograph } from "@/src/components";
-import tasksGroup from "@/src/mock/tasks-group";
-import { ligten } from "@/src/theme/styled";
+import { Card, Icon, Typograph } from "@/src/components";
+import { icons } from "@/src/constants";
+import { lighten } from "@/src/theme/styled";
 import IconButton from "@/src/components/icon-button";
 import ButtonSheet from "@/src/components/button/sheet";
-import { useRouter } from "@/src/hooks";
+import { useProject, useRouter } from "@/src/hooks";
+import Project from "@/src/interfaces/project";
+
+interface StateProjectPage {
+  open: boolean,
+  type: null | string,
+  item: undefined | Project,
+}
 
 export default () => {
   const styles = styleSheet();
   const { redirect } = useRouter();
-  const [action, setAction] = useState({
+  const { getAllProjects } = useProject();
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [action, setAction] = useState<StateProjectPage>({
     open: false,
-    isSearch: false,
     type: null,
-    item: null,
+    item: undefined,
   });
+
+  useEffect(() => {
+    (async () => {
+      var data = await getAllProjects();      
+      if(data !== null){
+        setProjects(data);
+      }
+    })()
+    return;
+  }, [])
+
   return (
     <View style={styles.whapperProjects}>
       <View style={styles.headerProjects}>
-        {action.isSearch && (
-          <TextField
-            name="project-name"
-            label='Qual projeto deseja achar ?'
-            variant='filed'
-            style={{ width: "80%" }}
-          />
-        )}
-        <IconButton
-          onPress={() =>
-            setAction((state) => ({ ...state, isSearch: !state.isSearch }))
-          }
-          variant='outlined'>
-          <Icon
-            type='Octicons'
-            //@ts-ignore
-            name='search'
-          />
-        </IconButton>
-        <IconButton onPress={redirect("/projects/edit")} variant='contained'>
+        {/*@ts-ignore*/}
+        <IconButton onPress={redirect({ pathname: "/projects/add" })} variant='contained'>
           <Icon type='MaterialCommunityIcons' name='plus' />
         </IconButton>
       </View>
       <SafeAreaView style={styles.containerProjects}>
         <FlatList
-          data={tasksGroup}
+          data={projects}
           renderItem={({ index, item }) => (
             <Card key={index} style={styles.containerProject}>
               <View style={styles.infoProject}>
                 <View style={styles.infoNameProject}>
                   <View
                     style={[
-                      { backgroundColor: ligten(item.icon.color, 85) },
+                      { backgroundColor: lighten(item.color, 85) },
                       styles.iconProject,
                     ]}>
                     <Icon
                       //@ts-ignore
-                      type={item.icon.package}
+                      type={icons[item.icon].package}
                       //@ts-ignore
-                      name={item.icon.name}
-                      color={item.icon.color}
+                      name={icons[item.icon].name}
+                      color={item.color}
                       size={35}
                     />
                   </View>
@@ -79,9 +78,8 @@ export default () => {
                 </View>
                 <IconButton
                   variant='outlined'
-                  onPress={() =>
-                    setAction((state) => ({ ...state, open: true }))
-                  }>
+                  onPress={() => setAction((state) => ({ ...state, open: true, item }))}
+                >
                   <Icon type='MaterialCommunityIcons' name='dots-vertical' />
                 </IconButton>
               </View>
@@ -100,39 +98,31 @@ export default () => {
         onRequestClose={() => setAction((state) => ({ ...state, open: false }))}
         open={action.open}
         height={200}>
-        {[
-          {
-            name: "Editar",
-            Icon: () => (
-              <Icon
+          {/*@ts-ignore*/}
+          <Pressable onPress={redirect({ pathname: `/projects/edit?id=${action.item?.id}` })} style={styles.menuDialogItem}>
+            <Icon
                 style={styles.menuDialogIcon}
                 type='MaterialIcons'
                 //@ts-ignore
                 name='mode-edit'
-                size={30}
+                size={25}
               />
-            ),
-          },
-          {
-            name: "Deletar",
-            Icon: () => (
-              <Icon
+            <Typograph variant='h5' fontWeight={500}>
+              Editar
+            </Typograph>
+          </Pressable>
+          <Pressable  style={styles.menuDialogItem}>
+            <Icon
                 style={styles.menuDialogIcon}
                 type='MaterialIcons'
                 //@ts-ignore
                 name='delete'
-                size={30}
+                size={25}
               />
-            ),
-          },
-        ].map(({ name, Icon }, index) => (
-          <Pressable key={index} style={styles.menuDialogItem}>
-            <Icon />
             <Typograph variant='h5' fontWeight={500}>
-              {name}
+              Deletar
             </Typograph>
           </Pressable>
-        ))}
       </ButtonSheet>
     </View>
   );

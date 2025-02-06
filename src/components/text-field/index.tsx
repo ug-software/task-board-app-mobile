@@ -9,6 +9,8 @@ export interface TextFieldBase extends TextInputProps {
   label: string;
   fullWidth?: boolean;
   width?: DimensionValue | undefined;
+  error?: boolean;
+  helperText?: string
 }
 
 interface TextFieldProps extends TextFieldBase {

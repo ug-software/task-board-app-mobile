@@ -1,6 +1,7 @@
 /** @format */
 
 import amber from "./colors/amber";
+import blue from "./colors/blue";
 import green from "./colors/green";
 import grey from "./colors/grey";
 import purple from "./colors/purple";
@@ -29,6 +30,8 @@ const theme: Theme = {
     },
   },
   pallet: {
+    info: blue[500],
+    warning: amber[500],
     success: green[500],
     error: red[500],
     primary: {

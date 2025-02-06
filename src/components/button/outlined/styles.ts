@@ -1,7 +1,7 @@
 /** @format */
 
 import { styled } from "@/src/theme";
-import { ligten, textColorBasedOnBackground } from "@/src/theme/styled";
+import { lighten, textColorBasedOnBackground } from "@/src/theme/styled";
 import { IButtonBaseProps } from "../interface";
 
 const styleSheet = styled<Omit<IButtonBaseProps, "children"> & { active: boolean }>()(({ theme, active, fullWidth, mt, mb, mr, ml }) => ({
@@ -16,7 +16,7 @@ const styleSheet = styled<Omit<IButtonBaseProps, "children"> & { active: boolean
     flexDirection: "row",
     backgroundColor: !active
       ? "transparent"
-      : ligten(theme.pallet.primary.primary, 95),
+      : lighten(theme.pallet.primary.primary, 95),
     borderStyle: "solid",
     borderWidth: 1,
     borderColor: theme.pallet.primary.primary,

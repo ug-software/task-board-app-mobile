@@ -15,6 +15,8 @@ export interface Theme {
     secundary: PalletColor;
     error: string;
     success: string;
+    warning: string;
+    info: string;
   };
   font: {
     fontSize: {
