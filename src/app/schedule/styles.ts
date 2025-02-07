@@ -1,26 +1,24 @@
 /** @format */
 
 import { styled } from "@/src/theme";
-import { lighten } from "@/src/theme/styled";
 
 export default styled()(({ theme }) => ({
   whapperScredule: {
     backgroundColor: theme.pallet.primary.background,
     height: "100%",
     paddingTop: 10,
-    //paddingHorizontal: 10
+    paddingHorizontal: 10
   },
   mouthAndYearInfo: {
     display: "flex",
     width: "100%",
     flexDirection: "row",
     justifyContent: "space-between",
-    //paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   mouthAndYear: {
     display: "flex",
     alignItems: "stretch",
-    //paddingLeft: 10,
   },
   actionsScredule: {
     display: "flex",
@@ -37,24 +35,21 @@ export default styled()(({ theme }) => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-end",
-    //padding: 10,
   },
   containerTasks: {
     position: "relative",
     display: "flex",
     flexDirection: "column",
     height: "100%",
-    //paddingVertical: 10,
+    paddingTop: 10,
   },
   whapperTask: {
-    //paddingHorizontal: 10,
-    //paddingVertical: 10,
+    padding: 10
   },
   whapperTaskInfoGroup: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    //paddingHorizontal: 5,
     flexDirection: "row",
   },
   whapperIconTaskGroup: {
@@ -65,7 +60,6 @@ export default styled()(({ theme }) => ({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    //paddingHorizontal: 5,
     flexDirection: "row",
   },
   whapperTaskIconClock: {
@@ -76,7 +70,6 @@ export default styled()(({ theme }) => ({
   },
   taskIconClock: {
     fontSize: 14,
-    //paddingRight: 5,
     color: theme.pallet.primary.primary,
   },
 }));

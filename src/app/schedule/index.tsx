@@ -11,83 +11,25 @@ import {
   Icon,
   IconButton,
   Typograph,
+  Calendary
 } from "@/src/components";
 import DateButtom from "./components/date-button";
-import Calendary from "./components/calendary";
 import styleSheet from "./styles";
 import tasksList from "@/src/mock/task-list";
 import { DateTime, formatInHours, getDaysTheMouth } from "@/src/utils/date";
 import { lighten } from "@/src/theme/styled";
 import { mouths } from "@/src/constants/calendary";
+import { useCalendary, useRouter } from "@/src/hooks";
 
-interface Calendary {
-  day: Date;
-  dates: DateTime[];
-  month: number;
-  year: number;
-}
+
 
 const filters = ["Todos", "A fazer", "Em progresso", "Inativos", "Concluidos"];
 
 export default () => {
+  const { redirect } = useRouter();
   const styles = styleSheet({});
   const flatListRef = useRef<FlatList>(null);
-  var currentDay = new Date();
-
-  const [calendary, setCalendary] = useState<Calendary>({
-    day: currentDay,
-    dates: getDaysTheMouth(currentDay.getMonth(), currentDay.getFullYear()),
-    month: currentDay.getMonth(),
-    year: currentDay.getFullYear(),
-  });
-
-  const handleChangeCalendary = (
-    horizontal: "left" | "right" | null | string
-  ) => {
-    var mouth = calendary.day.getMonth();
-    var year = calendary.day.getFullYear();
-
-    if (horizontal === "right") {
-      if (calendary.day.getMonth() + 1 > 11) {
-        mouth = 0;
-        year = year + 1;
-      } else {
-        mouth = mouth + 1;
-      }
-
-      setCalendary((state) => ({
-        day: new Date(state.day.getFullYear(), state.day.getMonth() + 1, 1),
-        dates: getDaysTheMouth(mouth, year),
-        month: mouth,
-        year: year,
-      }));
-    }
-
-    if (horizontal === "left") {
-      if (calendary.day.getMonth() - 1 < 0) {
-        mouth = 11;
-        year = year - 1;
-      } else {
-        mouth = mouth - 1;
-      }
-
-      setCalendary((state) => ({
-        day: new Date(state.day.getFullYear(), state.day.getMonth() - 1, 1),
-        dates: getDaysTheMouth(mouth, year),
-        month: mouth,
-        year: year,
-      }));
-    }
-  };
-
-  const handleSetDateCurrent = () => {
-    setCalendary((state) => ({
-      day: currentDay,
-      dates: getDaysTheMouth(currentDay.getMonth(), currentDay.getFullYear()),
-      month: currentDay.getMonth(),
-      year: currentDay.getFullYear(),
-    }));
-  };
+  const { calendary, currentDay, handleChangeCalendary, handleSetDateCurrent } = useCalendary();
 
   useEffect(() => {
     // Rolando para o dia 10 após a montagem do componente
@@ -104,7 +46,10 @@ export default () => {
       <View style={styles.mouthAndYearInfo}>
         <View style={styles.mouthAndYear}>
           <Typograph variant='h3' fontWeight='500'>
-            {mouths[calendary.month].full}
+            {
+              //@ts-ignore
+              mouths[calendary.month].full
+            }
           </Typograph>
           <Typograph variant='subtitle' fontWeight='500'>
             {calendary.year}
@@ -121,7 +66,11 @@ export default () => {
               name='calendar-outline'
             />
           </IconButton>
-          <IconButton variant='contained'>
+          <IconButton
+            //@ts-ignore
+            onPress={redirect({ pathname: "/schedule/add" })} 
+            variant='contained'
+          >
             <Icon type='MaterialCommunityIcons' name='plus' />
           </IconButton>
         </View>
@@ -211,7 +160,7 @@ export default () => {
                     name='clockcircle'
                     style={styles.taskIconClock}
                   />
-                  <Typograph color='primary' variant='h6'>
+                  <Typograph pl={5} color='primary' variant='h6'>
                     {formatInHours(item.date)}
                   </Typograph>
                 </View>

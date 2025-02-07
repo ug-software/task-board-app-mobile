@@ -5,8 +5,9 @@ import { Text, View } from "react-native";
 import styleSheet from "./styles";
 import { calendary } from "@/src/constants";
 import { getNumberOfDaysInTheMonth } from "@/src/utils/date";
-import { IconButton, Typograph } from "@/src/components";
 import { splitArray } from "@/src/utils/array";
+import IconButton from "../icon-button";
+import Typograph from "../typograph";
 
 interface Day {
   value: number;
@@ -14,15 +15,17 @@ interface Day {
   year?: number;
   type: "past" | "current" | "next";
   isActive?: boolean;
+  onSelectDate?: (date: Date) => void;
 }
 
 interface CalendaryProps {
-  onSelectDate?: () => Date;
+  onSelectDate?: (date: Date) => void;
   month: number;
   year: number;
+  day?: number;
 }
 
-const Day = ({ type, value, month, year, isActive }: Day) => {
+const Day = ({ type, value, month, year, isActive, onSelectDate }: Day) => {
   var currentDay = new Date();
   const isCurrent =
     currentDay.getDate() === value &&
@@ -30,10 +33,15 @@ const Day = ({ type, value, month, year, isActive }: Day) => {
     currentDay.getFullYear() === year;
   const styles = styleSheet({});
 
+  const handleSelect = onSelectDate && year && month ? () => {
+    onSelectDate(new Date(year, month, value))
+  } : null
+
   if (type === "current") {
     return (
       <View key={value} style={styles.day}>
         <IconButton
+          onPress={handleSelect}
           borderVisible={isCurrent}
           variant={isActive ? "contained" : "outlined"}>
           <Typograph variant='h6' fontWeight={"500"}>
@@ -53,9 +61,12 @@ const Day = ({ type, value, month, year, isActive }: Day) => {
   );
 };
 
-export default ({ month, year }: CalendaryProps) => {
+export default ({ month, year, onSelectDate, ...props }: CalendaryProps) => {
   const styles = styleSheet({});
   const [arrayDays, setArrayDays] = useState<Day[][]>([]);
+
+  console.log("day =>", props.day);
+  
 
   useEffect(() => {
     var firstDay = new Date(year, month, 1);
@@ -77,7 +88,7 @@ export default ({ month, year }: CalendaryProps) => {
     );
     daysInArray = [...daysPast, ...daysInArray, ...daysFirstWeekProxMouth];
     setArrayDays(splitArray(daysInArray, 7));
-  }, []);
+  }, [month, year]);
 
   return (
     <View style={styles.whapperCalendary}>
@@ -85,16 +96,20 @@ export default ({ month, year }: CalendaryProps) => {
         {Object.keys(calendary.week).map((day, index) => (
           <View key={index} style={styles.day}>
             <Typograph color='primary' variant='h6' fontWeight={"600"}>
-              {calendary.week[day].abbreviated}
+              {
+                //@ts-ignore
+                calendary.week[day].abbreviated
+              }
             </Typograph>
           </View>
         ))}
       </View>
       {arrayDays.map((week, index) => (
         <View key={index} style={styles.week}>
-          {week.map((day, index) => (
-            <Day key={index} {...day} month={month} year={year} />
-          ))}
+          {week.map((day, index) => {
+            var isActive = day.value === props.day && month === day.month && year === day.year;
+            return <Day  key={index} {...day} isActive={isActive} month={month} year={year} onSelectDate={onSelectDate} />
+          })}
         </View>
       ))}
     </View>

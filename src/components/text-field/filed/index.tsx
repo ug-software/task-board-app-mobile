@@ -19,7 +19,13 @@ export default ({ label, name, ...props }: TextFieldBase) => {
     if (input.current !== null) {
       input.current.focus();
     }
+
+    if(props.onFocus){
+      //@ts-ignore
+      props.onFocus()
+    }
   };
+  
   const handleBlur = () => {
     setActive(false);
     if (input.current !== null) {
@@ -31,6 +37,7 @@ export default ({ label, name, ...props }: TextFieldBase) => {
     <>
       <Pressable
         onPressIn={handleFocus}
+        onPressOut={handleBlur}
         style={[whapperTextFieldFiled, props.style]}>
         <Text style={labelTextFieldFiled}>{label}</Text>
         <TextInput
@@ -41,7 +48,7 @@ export default ({ label, name, ...props }: TextFieldBase) => {
           ref={input}
           //@ts-ignore
           selectionColor={lighten(labelTextFieldFiled?.color, 60)}
-          style={inputTextFieldFiled}
+          style={ [inputTextFieldFiled, props.style]}
         />
       </Pressable>
       {props.error && (<Text style={helperText}>{props.helperText}</Text>)}

@@ -32,7 +32,7 @@ export const appBar: AppBarButtomProps[] = [
     },
   },
   {
-    href: "/scredule",
+    href: "/schedule",
     label: "Agenda",
     Icon: (props: { style: ViewStyle | TextStyle | ImageStyle }) => {
       return <Icon {...props} name='calendar' type='Feather' />;

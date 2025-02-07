@@ -9,6 +9,7 @@ export default sqliteTable("tasks", {
   description: text("description"),
   status: text("status").notNull(),
   project_id: integer("project_id").notNull(),
+  date: text("updated_at").default(sql`(CURRENT_TIMESTAMP)`),
   updated_at: text("updated_at").default(sql`(CURRENT_TIMESTAMP)`),
   created_at: text("created_at").default(sql`(CURRENT_TIMESTAMP)`),
 });

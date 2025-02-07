@@ -8,8 +8,7 @@ export default styled()(({ theme }) => ({
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "space-around",
-    flexDirection: "row",
-    height: "100%",
+    flexDirection: "row"
   },
   headerWeek: {
     width: "100%",
