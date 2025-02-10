@@ -63,10 +63,7 @@ const Day = ({ type, value, month, year, isActive, onSelectDate }: Day) => {
 
 export default ({ month, year, onSelectDate, ...props }: CalendaryProps) => {
   const styles = styleSheet({});
-  const [arrayDays, setArrayDays] = useState<Day[][]>([]);
-
-  console.log("day =>", props.day);
-  
+  const [arrayDays, setArrayDays] = useState<Day[][]>([]); 
 
   useEffect(() => {
     var firstDay = new Date(year, month, 1);
@@ -74,17 +71,19 @@ export default ({ month, year, onSelectDate, ...props }: CalendaryProps) => {
     var daysInArray = Array.from({ length: days }).map((_, index) => ({
       type: "current",
       value: index + 1,
+      month,
+      year
     }));
 
     var firstDayOfTheWeek = firstDay.getDay();
     var lastDayMouthPast = new Date(year, month, 0).getDate();
     var daysPast = Array.from({ length: firstDayOfTheWeek })
-      .map((_, index) => ({ type: "past", value: lastDayMouthPast - index }))
+      .map((_, index) => ({ type: "past", value: lastDayMouthPast - index, month, year }))
       .reverse();
 
     var lastDayMouth = new Date(year, month + 1, 0).getDay();
     var daysFirstWeekProxMouth = Array.from({ length: 6 - lastDayMouth }).map(
-      (_, index) => ({ type: "next", value: index + 1 })
+      (_, index) => ({ type: "next", value: index + 1, month, year })
     );
     daysInArray = [...daysPast, ...daysInArray, ...daysFirstWeekProxMouth];
     setArrayDays(splitArray(daysInArray, 7));
@@ -106,7 +105,7 @@ export default ({ month, year, onSelectDate, ...props }: CalendaryProps) => {
       </View>
       {arrayDays.map((week, index) => (
         <View key={index} style={styles.week}>
-          {week.map((day, index) => {
+          {week.map((day, index) => {            
             var isActive = day.value === props.day && month === day.month && year === day.year;
             return <Day  key={index} {...day} isActive={isActive} month={month} year={year} onSelectDate={onSelectDate} />
           })}

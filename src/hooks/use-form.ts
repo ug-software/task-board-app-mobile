@@ -12,7 +12,7 @@ type ErrorValidate<I> = {
 interface useFormProps<I> {
     initialValues: object & I
     onSubmit: (values: I) => void
-    onValidation: (values: I) => ErrorValidate<I>
+    onValidation?: (values: I) => ErrorValidate<I>
 }
 
 export default <I>({ initialValues, onSubmit, onValidation }: useFormProps<I>) => {
@@ -27,7 +27,7 @@ export default <I>({ initialValues, onSubmit, onValidation }: useFormProps<I>) =
     }
 
     const handleSubmit = () => {
-        const err = onValidation(values);
+        const err = onValidation ? onValidation(values) : undefined;
         let isValidValues = true;
         
         if(err === undefined) return;

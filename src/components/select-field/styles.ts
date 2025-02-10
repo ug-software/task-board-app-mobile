@@ -1,13 +1,13 @@
 import { styled } from "@/src/theme";
 import { alpha, darken, lighten } from "@/src/theme/styled";
-import { TextFieldBase } from "../text-field";
+import { SelectFieldBase } from "./index";
 
-export const styleSheetSelectField = styled<Omit<TextFieldBase, "label"> & { active: boolean, error: boolean, }>()(({ theme, active, fullWidth, width, error }) => ({
+export const styleSheetSelectField = styled<Omit<SelectFieldBase, "label" | "children"> & { active: boolean, error: boolean, }>()(({ theme, active, fullWidth, width, error }) => ({
     whapperModal: {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: alpha(theme.pallet.primary.background, 0.6),
+        backgroundColor: alpha(darken(theme.pallet.primary.background, 10), 0.6),
         height: "100%",
         width: "100%"
     },
@@ -30,8 +30,14 @@ export const styleSheetSelectField = styled<Omit<TextFieldBase, "label"> & { act
         borderBottomColor: darken(theme.pallet.primary.background, 10)
     },
     whapperTextFieldFiled: {
+        position: "relative",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
         minWidth: "30%",
         width: fullWidth ? "100%" : width,
+        maxHeight: 60,
         paddingHorizontal: 10,
         paddingTop: 1,
         paddingBottom: 10,
@@ -52,6 +58,13 @@ export const styleSheetSelectField = styled<Omit<TextFieldBase, "label"> & { act
     inputTextFieldFiled: {
         textAlignVertical: "top",
         fontSize: 15,
+    },
+    rightIcon: {
+        position: "absolute",
+        right: 5,
+        color: active
+        ? theme.pallet.primary.main
+        : error ? "red" : darken(theme.pallet.primary.background, 50)
     },
     helperText: {
         color: "red",

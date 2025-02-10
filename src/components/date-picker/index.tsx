@@ -7,23 +7,31 @@ import styleSheetDatePicker from "./styles";
 import IconButton from "../icon-button";
 import Icon from "../icon";
 import { mouths } from "@/src/constants/calendary";
+import Button from "../button";
 
-export interface DatePickerProps extends TextFieldBase {}
+export interface DatePickerProps extends Omit<TextFieldBase, "value"> {
+    value: Date | undefined
+}
 
-export default ({ error = false, name ,...rest} : DatePickerProps) => {
+export default ({ error = false, name, value, ...rest} : DatePickerProps) => {
     const { calendary, handleChangeCalendary } = useCalendary();
     const [isActive, setActive] = useState(false);
     const styles = styleSheetDatePicker({ ...rest, active: isActive, name, error });
     const [modalVisible, setModalVisible] = useState<boolean>(false);
+    const [date, setDate] = useState<Date>(new Date());
 
+    const handleSelectDate = (value: Date) => {
+        setDate(value);
+    };
+    
     const handleSelect = (value: Date) => {
         setActive(state => !state);
         setModalVisible(state => !state);
-
+    
         if(rest.onChangeText){
             rest.onChangeText(value.toString());
         }
-    };
+    }
 
     const handleFocus = () => {
         setActive(state => !state);
@@ -48,7 +56,7 @@ export default ({ error = false, name ,...rest} : DatePickerProps) => {
         <View>
             <Pressable onPress={handleFocus} style={[styles.whapperTextFieldFiled, rest.style]}>
                 <Text style={styles.labelTextFieldFiled}>{rest.label}</Text>
-                <Text>{rest.value && new Date(rest.value).toLocaleDateString('pt-BR', {
+                <Text>{value && new Date(value).toLocaleDateString('pt-BR', {
                     day: '2-digit',
                     month: '2-digit',
                     year: 'numeric'
@@ -87,7 +95,10 @@ export default ({ error = false, name ,...rest} : DatePickerProps) => {
                                 </IconButton>
                             </View>
                         </View>
-                        <Calendary day={rest.value ? new Date(rest.value).getDate() : 0} month={calendary.month} year={calendary.year} onSelectDate={handleSelect} />
+                        <Calendary day={date.getDate()} month={calendary.month} year={calendary.year} onSelectDate={handleSelectDate} />
+                        <View style={styles.action}>
+                            <Button size="small" variant="contained" onPress={() => handleSelect(date)}>Selecionar</Button>
+                        </View>
                     </View>
                 </Pressable>
             </Modal>

@@ -1,8 +1,8 @@
 import { styled } from "@/src/theme"
 import { alpha, darken, lighten } from "@/src/theme/styled";
-import { DatePickerProps } from "./index";
+import { TimePickerProps } from "./index";
 
-const styleSheetDatePicker = styled<Omit<DatePickerProps, "label" | "value"> & { active: boolean, error: boolean, }>()(({ theme, active, fullWidth, width, error }) => ({
+const styleSheetTimePicker = styled<Omit<TimePickerProps, "label" | "value" | "onChange"> & { active: boolean, error: boolean, }>()(({ theme, active, fullWidth, width, error }) => ({
     whapperModal: {
         display: "flex",
         flexDirection:"row",
@@ -21,33 +21,9 @@ const styleSheetDatePicker = styled<Omit<DatePickerProps, "label" | "value"> & {
         backgroundColor: theme.pallet.primary.background,
         borderColor: darken(theme.pallet.primary.background, 10),
         padding: 10,
-    },
-    headerModal: {
         display: "flex",
-        flexDirection: "row",
-        justifyContent:"space-between",
-    },
-    textMonth: {
-        fontSize: 16,
-        fontWeight: 500
-    },
-    textYear: {
-        fontSize: 14,
-        color: darken(theme.pallet.primary.background, 50)
-    },
-    containerInfoCalendary: {
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
+        justifyContent:"center",
         alignItems: "center"
-    },
-    textInput: {
-        color: "black"
-    },
-    option: {
-        padding: 5,
-        borderBottomStyle: "solid",
-        borderBottomColor: darken(theme.pallet.primary.background, 10)
     },
     whapperTextFieldFiled: {
         minWidth: "30%",
@@ -69,21 +45,46 @@ const styleSheetDatePicker = styled<Omit<DatePickerProps, "label" | "value"> & {
         : error ? "red" : lighten(theme.pallet.primary.text, 25),
         fontWeight: active ? "500" : "400",
     },
-    inputTextFieldFiled: {
-        textAlignVertical: "top",
-        fontSize: 15,
-    },
     helperText: {
         color: "red",
         fontSize: 11
+    },
+    footerTimePicker: {
+        display:"flex",
+        flexDirection: "row",
+        justifyContent: "space-around",
+        alignItems: "center"
+    },
+    typeTimePicker: {
+        display: "flex",
+        flexDirection: "row"
+    },
+    typeButtonTimePicker: {
+        borderRadius: 4,
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        //borderColor: theme.pallet.primary.main,
+        margin: 3,
+        //borderStyle: "solid",
+        //borderWidth: 2
+    },
+    typeButtonTimePickerSelected: {
+        backgroundColor: theme.pallet.primary.main,
+        color: theme.pallet.primary.background
+    },
+    textLabelTime: {
+        fontSize: 24,
+        fontWeight: 500,
+        marginRight: 20
     },
     action: {
         display: "flex",
         flexDirection: "row",
         justifyContent: "flex-end",
-        marginTop: 15,
+        paddingHorizontal: 10,
+        paddingTop: 10,
         width: "100%"
     }
 }))
 
-export default styleSheetDatePicker;
+export default styleSheetTimePicker;

@@ -2,15 +2,15 @@
 
 const status = {
     created: {
-        label: "criado",
+        label: "Criado",
         color: "#fcff00"
     },
     inprogress: {
-        label: "em progresso",
+        label: "Em progresso",
         color: "#fca622"
     },
     completed: {
-        label: "completo",
+        label: "Completo",
         color: "#227e18"
     }
 };

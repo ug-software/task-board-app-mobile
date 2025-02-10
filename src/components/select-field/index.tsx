@@ -2,9 +2,10 @@ import React, { ReactElement, ReactNode, useState } from "react";
 import { Modal, Pressable, View, Text } from "react-native";
 import { TextFieldBase } from "../text-field";
 import { styleSheetSelectField } from "./styles";
+import Icon from "../icon";
 
 interface OptionProps {
-    value: string
+    value: string | number
     children: ReactNode
 }
 
@@ -12,14 +13,15 @@ export const Option = ({ children }: OptionProps) => {
     return children;
 };
 
-export interface SelectFieldBase extends TextFieldBase {
-    children: ReactElement<{ value: string }>[] | ReactElement<{ value: string }>
+export interface SelectFieldBase extends Omit<TextFieldBase, "value"> {
+    children: ReactElement<{ value: string }>[] | ReactElement<{ value: string }>,
+    value: number | string | Date | undefined
 }
 
 export default ({ children, name, error = false, ...rest }: SelectFieldBase) => {
     const [isActive, setActive] = useState(false);
-    const styles = styleSheetSelectField({ ...rest, active: isActive, name, error });
     const [modalVisible, setModalVisible] = useState<boolean>(false);
+    const styles = styleSheetSelectField({ ...rest, active: isActive, name, error });
 
     const handleSelect = (value: string) => {
         setActive(state => !state);
@@ -51,8 +53,16 @@ export default ({ children, name, error = false, ...rest }: SelectFieldBase) => 
     return(
         <View>
             <Pressable onPress={handleFocus} style={[styles.whapperTextFieldFiled, rest.style]}>
-                <Text style={styles.labelTextFieldFiled}>{rest.label}</Text>
-                <Text>{rest.value}</Text>
+                <View>
+                    <Text style={styles.labelTextFieldFiled}>{rest.label}</Text>
+                    <Text>{rest.value?.toString()}</Text>
+                </View>
+                <Icon 
+                    style={styles.rightIcon} 
+                    //@ts-ignore
+                    name="keyboard-arrow-down" 
+                    type="MaterialIcons" 
+                />
             </Pressable>
             {error && (<Text style={styles.helperText}>{rest.helperText}</Text>)}
             <Modal visible={modalVisible} transparent animationType="fade">
