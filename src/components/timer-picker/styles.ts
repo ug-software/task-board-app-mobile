@@ -57,25 +57,30 @@ const styleSheetTimePicker = styled<Omit<TimePickerProps, "label" | "value" | "o
     },
     typeTimePicker: {
         display: "flex",
-        flexDirection: "row"
+        flexDirection: "row",
+        alignItems: "center"
     },
     typeButtonTimePicker: {
         borderRadius: 4,
-        paddingVertical: 5,
+        paddingVertical: 2,
         paddingHorizontal: 10,
-        //borderColor: theme.pallet.primary.main,
+        color: theme.pallet.primary.main,
+        borderColor: "transparent",
+        borderWidth: 2,
+        borderStyle: "solid",
         margin: 3,
-        //borderStyle: "solid",
-        //borderWidth: 2
+        backgroundColor: lighten(theme.pallet.primary.primary, 90),
+        minWidth: 50,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
     },
     typeButtonTimePickerSelected: {
-        backgroundColor: theme.pallet.primary.main,
-        color: theme.pallet.primary.background
+        borderColor: theme.pallet.primary.main,
     },
     textLabelTime: {
         fontSize: 24,
-        fontWeight: 500,
-        marginRight: 20
+        fontWeight: 500
     },
     action: {
         display: "flex",

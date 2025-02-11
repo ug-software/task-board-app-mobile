@@ -26,7 +26,7 @@ export default <I>({ initialValues, onSubmit, onValidation }: useFormProps<I>) =
         }));
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = () => {        
         const err = onValidation ? onValidation(values) : undefined;
         let isValidValues = true;
         

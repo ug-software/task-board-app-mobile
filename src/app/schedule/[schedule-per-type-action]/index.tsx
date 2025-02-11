@@ -3,7 +3,7 @@ import { Typograph, TextField, SelectField, Option, DatePicker, Icon, Button, Ti
 import { View, Text } from "react-native";
 import { styleSheetPageSchedule, styleStatusOption, styleProjectOption } from "./styles";
 import { icons, status } from "@/src/constants";
-import { useForm, useProject } from "@/src/hooks";
+import { useForm, useProject, useTasks } from "@/src/hooks";
 import Project from "@/src/interfaces/project";
 import Tasks from "@/src/interfaces/task";
 
@@ -43,6 +43,8 @@ export default () => {
     const styles = styleSheetPageSchedule();
     const { getAllProjects } = useProject();
     const [projectOptions, setProjectOptions] = useState<Project[]>([]);
+    const { handleValidationTask, handleSaveNewTask } = useTasks();
+
     const {
       values,
       errors,
@@ -57,12 +59,12 @@ export default () => {
         status: "",
         project_id: undefined,
         time: {
-            hour: "1",
+            hour: new Date().getHours().toString(),
             minutes: "00",
-            type: "PM"
         }
       },
-      onSubmit: () => {},
+      onSubmit: handleSaveNewTask,
+      onValidation: handleValidationTask
     });
 
     useEffect(() => {
@@ -97,8 +99,8 @@ export default () => {
                         label="Data:*"
                         value={values.date}
                         onChangeText={(text) => handleChange({ name: "date", value: text })}
-                        error={Boolean(errors?.name)}
-                        helperText={errors?.name}
+                        error={Boolean(errors?.date)}
+                        helperText={errors?.date}
                     />
                 </View>
                 <View style={styles.containerTextField}>
@@ -121,8 +123,8 @@ export default () => {
                         //@ts-ignore
                         value={values.status ? status[values.status].label : values.status}
                         onChangeText={(text) => handleChange({ name: "status", value: text })}
-                        error={Boolean(errors?.name)}
-                        helperText={errors?.name}
+                        error={Boolean(errors?.status)}
+                        helperText={errors?.status}
                     >
                         {
                             Object.keys(status).map((sts, index) => (
@@ -146,8 +148,8 @@ export default () => {
                         label="Projeto:*"
                         value={projectOptions.find(p => p.id === values.project_id)?.name}
                         onChangeText={(text) => handleChange({ name: "project_id", value: text })}
-                        error={Boolean(errors?.name)}
-                        helperText={errors?.name}
+                        error={Boolean(errors?.project_id)}
+                        helperText={errors?.project_id}
                     >
                         {
                             projectOptions.map((project, index) => (
@@ -168,8 +170,8 @@ export default () => {
                         numberOfLines={8}
                         value={values.description}
                         onChangeText={(text) => handleChange({ name: "description", value: text })}
-                        error={Boolean(errors?.name)}
-                        helperText={errors?.name}
+                        error={Boolean(errors?.description)}
+                        helperText={errors?.description}
                     />
                 </View>
             </View>

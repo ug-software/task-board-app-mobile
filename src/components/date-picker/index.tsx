@@ -31,6 +31,11 @@ export default ({ error = false, name, value, ...rest} : DatePickerProps) => {
         if(rest.onChangeText){
             rest.onChangeText(value.toString());
         }
+
+        if(rest.onBlur){
+            //@ts-ignore
+            props.onBlur()
+        }
     }
 
     const handleFocus = () => {
@@ -39,16 +44,6 @@ export default ({ error = false, name, value, ...rest} : DatePickerProps) => {
         if(rest.onFocus){
             //@ts-ignore
             props.onFocus()
-        }
-    };
-    
-    const handleBlur = (event: GestureResponderEvent) => {
-        event.isPropagationStopped();
-        setActive(state => !state);
-        setModalVisible(state => !state);
-        if(rest.onBlur){
-            //@ts-ignore
-            props.onBlur()
         }
     };
 
@@ -64,7 +59,7 @@ export default ({ error = false, name, value, ...rest} : DatePickerProps) => {
             </Pressable>
             {error && (<Text style={styles.helperText}>{rest.helperText}</Text>)}
             <Modal visible={modalVisible} transparent animationType="fade">
-                <Pressable style={styles.whapperModal} onPress={handleBlur}>
+                <View style={styles.whapperModal}>
                     <View style={styles.containerModal}>
                         <View style={styles.headerModal}>
                             <View>
@@ -100,7 +95,7 @@ export default ({ error = false, name, value, ...rest} : DatePickerProps) => {
                             <Button size="small" variant="contained" onPress={() => handleSelect(date)}>Selecionar</Button>
                         </View>
                     </View>
-                </Pressable>
+                </View>
             </Modal>
         </View>
     );

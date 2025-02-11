@@ -8,5 +8,16 @@ import useProject from "./use-project";
 import useLoading from "./use-loading";
 import useTheme from "./use-theme";
 import useCalendary from "./use-calendary";
+import useTasks from "./use-tasks";
 
-export { useRouter, useLayout, useSqlite, useForm, useProject, useLoading, useTheme, useCalendary };
+export {
+    useRouter,
+    useLayout,
+    useSqlite,
+    useForm,
+    useProject,
+    useLoading,
+    useTheme,
+    useCalendary,
+    useTasks
+};
