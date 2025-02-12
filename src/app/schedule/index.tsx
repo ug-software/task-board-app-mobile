@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useEffect, useRef, useState } from "react";
-import { SafeAreaView, View, FlatList } from "react-native";
+import { SafeAreaView, View, FlatList, Task } from "react-native";
 import {
   Button,
   Card,
@@ -11,7 +11,8 @@ import {
   Icon,
   IconButton,
   Typograph,
-  Calendary
+  Calendary,
+  Alert
 } from "@/src/components";
 import DateButtom from "./components/date-button";
 import styleSheet from "./styles";
@@ -19,7 +20,8 @@ import tasksList from "@/src/mock/task-list";
 import { DateTime, formatInHours, getDaysTheMouth } from "@/src/utils/date";
 import { lighten } from "@/src/theme/styled";
 import { mouths } from "@/src/constants/calendary";
-import { useCalendary, useRouter } from "@/src/hooks";
+import { useCalendary, useProject, useRouter, useTasks } from "@/src/hooks";
+import { TasksWithProjects } from "@/src/interfaces/task";
 
 
 
@@ -29,10 +31,12 @@ export default () => {
   const { redirect } = useRouter();
   const styles = styleSheet({});
   const flatListRef = useRef<FlatList>(null);
-  const { calendary, currentDay, handleChangeCalendary, handleSetDateCurrent } = useCalendary();
+  const [tasks, setTasks] = useState<TasksWithProjects[]>([]);
+  const { calendary, currentDay, handleChangeCalendary, handleSetDateCurrent, handleChangeDate } = useCalendary();
+  const { getAllTasksPerDate } = useTasks();
 
+  // Rolando para o dia 10 após a montagem do componente
   useEffect(() => {
-    // Rolando para o dia 10 após a montagem do componente
     if (flatListRef.current !== null) {
       flatListRef.current.scrollToIndex({
         index: calendary.day.getDate() - 1,
@@ -40,6 +44,16 @@ export default () => {
       });
     }
   }, []);
+
+  //obtendo tasks
+  useEffect(() => {
+    (async () => {
+      var tasks = await getAllTasksPerDate(calendary.day);
+      if(Array.isArray(tasks)){
+        setTasks(tasks);
+      }
+    })();
+  }, [calendary.day])
 
   return (
     <View style={styles.whapperScredule}>
@@ -110,65 +124,73 @@ export default () => {
                 height='100%'
                 width='100%'
                 onDragPress={handleChangeCalendary}>
-                <Calendary month={calendary.month} year={calendary.year} />
+                <Calendary month={calendary.month} year={calendary.year} onSelectDate={handleChangeDate} />
               </Drag>
             </Open>
           </>
         )}
       </GrowingViewer>
-      <SafeAreaView id='dates' style={styles.whapperFilters}>
-        <FlatList
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          data={filters}
-          renderItem={({ index, item }) => (
-            <Button size='small' ml={5} variant='text'>
-              {item}
-            </Button>
-          )}
-        />
-      </SafeAreaView>
+      {
+        tasks.length > 0 && (
+          <SafeAreaView id='dates' style={styles.whapperFilters}>
+            <FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              data={filters}
+              renderItem={({ index, item }) => (
+                <Button size='small' ml={5} variant='text'>
+                  {item}
+                </Button>
+              )}
+            />
+          </SafeAreaView>
+        )
+      }
       <SafeAreaView id='tasks' style={styles.containerTasks}>
-        <FlatList
-          showsHorizontalScrollIndicator={false}
-          data={tasksList}
-          renderItem={({ index, item }) => (
-            <Card style={styles.whapperTask} key={index}>
-              <View style={styles.whapperTaskInfoGroup}>
-                <Typograph variant='h6'>{item.group}</Typograph>
-                <View
-                  style={[
-                    { backgroundColor: lighten(item.icon.color, 85) },
-                    styles.whapperIconTaskGroup,
-                  ]}>
-                  <Icon
-                    //@ts-ignore
-                    name={item.icon.name}
-                    //@ts-ignore
-                    type={item.icon.package}
-                    color={item.icon.color}
-                  />
+        {tasks.length === 0 ? (
+          <Alert label="Não há tarefas a serem exibidas" severity="info" variant="container"/>
+        ) : (
+          <FlatList
+            showsHorizontalScrollIndicator={false}
+            data={tasksList}
+            renderItem={({ index, item }) => (
+              <Card style={styles.whapperTask} key={index}>
+                <View style={styles.whapperTaskInfoGroup}>
+                  <Typograph variant='h6'>{item.group}</Typograph>
+                  <View
+                    style={[
+                      { backgroundColor: lighten(item.icon.color, 85) },
+                      styles.whapperIconTaskGroup,
+                    ]}>
+                    <Icon
+                      //@ts-ignore
+                      name={item.icon.name}
+                      //@ts-ignore
+                      type={item.icon.package}
+                      color={item.icon.color}
+                    />
+                  </View>
                 </View>
-              </View>
-              <Typograph pl={5} pr={5} pb={8} variant='h4' fontWeight={500}>
-                {item.name}
-              </Typograph>
-              <View style={styles.whapperTaskInfoStatus}>
-                <View style={styles.whapperTaskIconClock}>
-                  <Icon
-                    type='AntDesign'
-                    name='clockcircle'
-                    style={styles.taskIconClock}
-                  />
-                  <Typograph pl={5} color='primary' variant='h6'>
-                    {formatInHours(item.date)}
-                  </Typograph>
+                <Typograph pl={5} pr={5} pb={8} variant='h4' fontWeight={500}>
+                  {item.name}
+                </Typograph>
+                <View style={styles.whapperTaskInfoStatus}>
+                  <View style={styles.whapperTaskIconClock}>
+                    <Icon
+                      type='AntDesign'
+                      name='clockcircle'
+                      style={styles.taskIconClock}
+                    />
+                    <Typograph pl={5} color='primary' variant='h6'>
+                      {formatInHours(item.date)}
+                    </Typograph>
+                  </View>
+                  <Chip color={item.status.color}>{item.status.value}</Chip>
                 </View>
-                <Chip color={item.status.color}>{item.status.value}</Chip>
-              </View>
-            </Card>
-          )}
-        />
+              </Card>
+            )}
+          />
+        )}
         <View style={styles.whapperAction}></View>
       </SafeAreaView>
     </View>

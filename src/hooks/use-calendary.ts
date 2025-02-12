@@ -18,6 +18,15 @@ export default () => {
     year: currentDay.getFullYear(),
   });
 
+  const handleChangeDate = (date: Date) => {
+    setCalendary((state) => ({
+      day: date,
+      dates: getDaysTheMouth(date.getMonth(), date.getFullYear()),
+      month: date.getMonth(),
+      year: date.getFullYear(),
+    }));
+  }
+
   const handleChangeCalendary = (
     horizontal: "left" | "right" | null | string
   ) => {    
@@ -66,5 +75,5 @@ export default () => {
     }));
   };
 
-  return { currentDay, calendary, handleChangeCalendary, handleSetDateCurrent }
+  return { currentDay, calendary, handleChangeCalendary, handleSetDateCurrent, handleChangeDate }
 }

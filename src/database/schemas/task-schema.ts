@@ -6,7 +6,7 @@ import { text, integer, sqliteTable } from "drizzle-orm/sqlite-core";
 export default sqliteTable("tasks", {
   id: integer("id").primaryKey(),
   name: text("name").notNull(),
-  description: text("description"),
+  description: text("description").notNull(),
   status: text("status").notNull(),
   project_id: integer("project_id").notNull(),
   date: text("updated_at").default(sql`(CURRENT_TIMESTAMP)`),

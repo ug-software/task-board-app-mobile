@@ -1,16 +1,21 @@
 import { router } from "expo-router";
 import { TimePicker } from "../components";
 import { taskSchema } from "../database";
-import Tasks from "../interfaces/task";
+import Tasks, { TasksWithProjects } from "../interfaces/task";
 import useLoading from "./use-loading";
 import useSnack from "./use-snack";
 import useSqlite from "./use-sqlite";
+import Project from "../interfaces/project";
+import useProject from "./use-project";
+import { eq } from "drizzle-orm";
 
 export default () => {
     const db = useSqlite();
     const loader = useLoading();
     const message = useSnack();
-    
+    const cacheProjects : { [key: number]: Project | undefined } = {};
+    const { findProjectPerId } = useProject();
+
     const handleSaveNewTask = loader.action(async (values: Partial<Tasks> & { time: TimePicker }) => {
         try {
             var date = values.date ? values.date : new Date();
@@ -82,5 +87,59 @@ export default () => {
         return errors;
     }
 
-    return { handleValidationTask, handleSaveNewTask };
+    const getAllTasks = loader.action(async (): Promise<TasksWithProjects[] | null> => {
+        var tasks = await db.select().from(taskSchema);
+        
+        if(Array.isArray(tasks)){
+            return await Promise.all(tasks.map(async x => {
+                var project = null;
+
+                if(cacheProjects[x.project_id] !== undefined){
+                    project = cacheProjects[x.project_id];
+                }else {
+                    project = await findProjectPerId(x.project_id);
+                    cacheProjects[x.project_id] = project ? project : undefined;
+                }
+
+                return {
+                    ...x,
+                    project,
+                    date: x.date !== null ? new Date(x.date) : new Date(),
+                    created_at: x.created_at !== null ? new Date(x.created_at) : new Date(),
+                    updated_at: x.updated_at !== null ? new Date(x.updated_at) : new Date(),
+                }
+            }));
+        }
+
+        return null;
+    });
+
+    const getAllTasksPerDate = loader.action(async (date: Date): Promise<TasksWithProjects[] | null> => {
+        var tasks = await db.select().from(taskSchema).where(eq(taskSchema.date, date.toString()));;
+        
+        if(Array.isArray(tasks)){
+            return await Promise.all(tasks.map(async x => {
+                var project = null;
+
+                if(cacheProjects[x.project_id] !== undefined){
+                    project = cacheProjects[x.project_id];
+                }else {
+                    project = await findProjectPerId(x.project_id);
+                    cacheProjects[x.project_id] = project ? project : undefined;
+                }
+
+                return {
+                    ...x,
+                    project,
+                    date: x.date !== null ? new Date(x.date) : new Date(),
+                    created_at: x.created_at !== null ? new Date(x.created_at) : new Date(),
+                    updated_at: x.updated_at !== null ? new Date(x.updated_at) : new Date(),
+                }
+            }));
+        }
+
+        return null;
+    });
+
+    return { handleValidationTask, handleSaveNewTask, getAllTasks, getAllTasksPerDate };
 }

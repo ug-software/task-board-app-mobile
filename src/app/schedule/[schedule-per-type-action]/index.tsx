@@ -128,7 +128,7 @@ export default () => {
                     >
                         {
                             Object.keys(status).map((sts, index) => (
-                                <Option value={sts}>
+                                <Option key={index} value={sts}>
                                     <StatusOption
                                         //@ts-ignore
                                         label={status[sts].label}
