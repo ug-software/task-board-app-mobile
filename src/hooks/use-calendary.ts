@@ -9,7 +9,7 @@ export interface Calendary {
 }
 
 export default () => {
-    var currentDay = new Date();
+  var currentDay = new Date();
 
   const [calendary, setCalendary] = useState<Calendary>({
     day: currentDay,
@@ -30,40 +30,44 @@ export default () => {
   const handleChangeCalendary = (
     horizontal: "left" | "right" | null | string
   ) => {    
-    var mouth = calendary.day.getMonth();
-    var year = calendary.day.getFullYear();
-
-    if (horizontal === "right") {
-      if (calendary.day.getMonth() + 1 > 11) {
-        mouth = 0;
-        year = year + 1;
-      } else {
-        mouth = mouth + 1;
+    setCalendary((state) => {
+      var mouth = state.day.getMonth();
+      var year = state.day.getFullYear();
+  
+      if (horizontal === "left") {
+        if (state.day.getMonth() + 1 > 11) {
+          mouth = 0;
+          year = year + 1;
+        } else {
+          mouth = mouth + 1;
+        }
+  
+        return {
+          day: new Date(state.day.getFullYear(), state.day.getMonth() + 1, 1),
+          dates: getDaysTheMouth(mouth, year),
+          month: mouth,
+          year: year,
+        };
+      }
+  
+      if (horizontal === "right") {
+        if (state.day.getMonth() - 1 < 0) {
+          mouth = 11;
+          year = year - 1;
+        } else {
+          mouth = mouth - 1;
+        }
+  
+        return {
+          day: new Date(state.day.getFullYear(), state.day.getMonth() - 1, 1),
+          dates: getDaysTheMouth(mouth, year),
+          month: mouth,
+          year: year,
+        };
       }
 
-      setCalendary((state) => ({
-        day: new Date(state.day.getFullYear(), state.day.getMonth() + 1, 1),
-        dates: getDaysTheMouth(mouth, year),
-        month: mouth,
-        year: year,
-      }));
-    }
-
-    if (horizontal === "left") {
-      if (calendary.day.getMonth() - 1 < 0) {
-        mouth = 11;
-        year = year - 1;
-      } else {
-        mouth = mouth - 1;
-      }
-
-      setCalendary((state) => ({
-        day: new Date(state.day.getFullYear(), state.day.getMonth() - 1, 1),
-        dates: getDaysTheMouth(mouth, year),
-        month: mouth,
-        year: year,
-      }));
-    }
+      return { ...state }
+    });
   };
 
   const handleSetDateCurrent = () => {

@@ -42,6 +42,7 @@ export default styled()(({ theme }) => ({
     flexDirection: "column",
     height: "100%",
     paddingTop: 10,
+    paddingBottom: 225
   },
   whapperTask: {
     padding: 10

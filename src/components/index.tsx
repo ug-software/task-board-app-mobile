@@ -18,6 +18,7 @@ import Dialog from "./dialog";
 import { ListItem } from "./list";
 import Alert from "./alert";
 import Calendary from "./calendary";
+import DragDivider from "./drag-divider";
 
 export {
   Button,
@@ -38,6 +39,7 @@ export {
   Chip,
   GrowingViewer,
   Drag,
+  DragDivider,
   Dialog,
   ListItem,
   Alert,

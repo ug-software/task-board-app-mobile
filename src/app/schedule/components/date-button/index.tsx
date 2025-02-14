@@ -2,18 +2,19 @@
 
 import { Typograph } from "@/src/components";
 import React from "react";
-import { Pressable } from "react-native";
+import { Pressable, PressableProps } from "react-native";
 import styleSheet from "./styles";
 
-interface DateButtomProps {
-  date: number;
+interface DateButtomProps extends PressableProps {
+  date: string;
   day: number;
   month: number;
   year: number;
   isActive?: boolean;
+
 }
 
-export default ({ date, day, month, year, isActive }: DateButtomProps) => {
+export default ({ date, day, month, year, isActive, ...rest }: DateButtomProps) => {
   const today = new Date();
   const isCurrentDate =
     today.getDate() === day &&
@@ -25,7 +26,7 @@ export default ({ date, day, month, year, isActive }: DateButtomProps) => {
   });
 
   return (
-    <Pressable style={styles.whapperDateButtom}>
+    <Pressable {...rest} style={styles.whapperDateButtom}>
       <Typograph
         style={styles.textColor}
         fontSize={25}

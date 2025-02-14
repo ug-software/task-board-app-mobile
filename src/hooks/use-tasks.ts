@@ -7,7 +7,7 @@ import useSnack from "./use-snack";
 import useSqlite from "./use-sqlite";
 import Project from "../interfaces/project";
 import useProject from "./use-project";
-import { eq } from "drizzle-orm";
+import { between, asc } from "drizzle-orm";
 
 export default () => {
     const db = useSqlite();
@@ -19,13 +19,14 @@ export default () => {
     const handleSaveNewTask = loader.action(async (values: Partial<Tasks> & { time: TimePicker }) => {
         try {
             var date = values.date ? values.date : new Date();
+
             var task = {
                 ...values,
-                date: new Date(date.getFullYear(), date.getMonth(), date.getDate(), parseInt(values.time.hour), parseInt(values.time.minutes)),
+                date: new Date(date.getFullYear(), date.getMonth(), date.getDate(), parseInt(values.time.hour), parseInt(values.time.minutes), 0),
                 created_at: new Date(),
                 updated_at: new Date()
             } as Tasks;
-    
+            
             await db.insert(taskSchema).values({
                 ...task,
                 date: task.date.toString(),
@@ -115,7 +116,9 @@ export default () => {
     });
 
     const getAllTasksPerDate = loader.action(async (date: Date): Promise<TasksWithProjects[] | null> => {
-        var tasks = await db.select().from(taskSchema).where(eq(taskSchema.date, date.toString()));;
+        var intialDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+        var finalDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
+        var tasks = await db.select().from(taskSchema).where(between(taskSchema.date, intialDate.toString(), finalDate.toString())).orderBy(asc(taskSchema.date));
         
         if(Array.isArray(tasks)){
             return await Promise.all(tasks.map(async x => {

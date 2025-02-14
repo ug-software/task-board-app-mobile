@@ -1,8 +1,12 @@
 
 
 const status = {
+    inactive: {
+        label: "Inativo",
+        color: "#fd0d03"
+    },
     created: {
-        label: "Criado",
+        label: "A fazer",
         color: "#fcff00"
     },
     inprogress: {
@@ -10,7 +14,7 @@ const status = {
         color: "#fca622"
     },
     completed: {
-        label: "Completo",
+        label: "Concluido",
         color: "#227e18"
     }
 };

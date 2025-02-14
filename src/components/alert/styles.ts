@@ -13,7 +13,7 @@ export default styled<Omit<AlertProps, "label">>()(({ severity, variant, theme }
     paddingHorizontal: 10,
     paddingVertical: 7,
     minWidth: "100%",
-    marginTop: 10,
+    //marginTop: 10,
     ...(variant === "container" && severity === "error" && {
       backgroundColor: lighten(theme.pallet.error, 80),
     }),

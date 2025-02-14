@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useEffect, useRef, useState } from "react";
-import { SafeAreaView, View, FlatList, Task } from "react-native";
+import { SafeAreaView, View, FlatList, Task, Text } from "react-native";
 import {
   Button,
   Card,
@@ -12,7 +12,8 @@ import {
   IconButton,
   Typograph,
   Calendary,
-  Alert
+  Alert,
+  DragDivider
 } from "@/src/components";
 import DateButtom from "./components/date-button";
 import styleSheet from "./styles";
@@ -20,20 +21,47 @@ import tasksList from "@/src/mock/task-list";
 import { DateTime, formatInHours, getDaysTheMouth } from "@/src/utils/date";
 import { lighten } from "@/src/theme/styled";
 import { mouths } from "@/src/constants/calendary";
-import { useCalendary, useProject, useRouter, useTasks } from "@/src/hooks";
+import { useCalendary, useLoading, useProject, useRouter, useTasks } from "@/src/hooks";
 import { TasksWithProjects } from "@/src/interfaces/task";
+import { icons, status as Status } from "@/src/constants";
 
 
 
-const filters = ["Todos", "A fazer", "Em progresso", "Inativos", "Concluidos"];
+const filters = ["Todos", "A fazer", "Em progresso", "Inativo", "Concluido"];
 
 export default () => {
   const { redirect } = useRouter();
   const styles = styleSheet({});
   const flatListRef = useRef<FlatList>(null);
+  const [isFullCalendary, setIsFullCalendary] = useState<boolean>(false);
+
   const [tasks, setTasks] = useState<TasksWithProjects[]>([]);
-  const { calendary, currentDay, handleChangeCalendary, handleSetDateCurrent, handleChangeDate } = useCalendary();
+  const [filterTasks, setFilterTasks] = useState<TasksWithProjects[]>([]);
+  const { calendary, handleChangeCalendary, handleSetDateCurrent, handleChangeDate } = useCalendary();
   const { getAllTasksPerDate } = useTasks();
+  const loader = useLoading();
+
+  const handleChangeFullCalendary = (direction: "up" | "down") => {    
+    if(direction === "up"){
+      setIsFullCalendary(false);
+    }else {
+      setIsFullCalendary(true);
+    }
+  }
+
+  const handleFilterPerStatus = loader.action(async (filter: string) => {
+    if(filter === "Todos"){
+      setFilterTasks(tasks);
+      return Promise.resolve();  
+    }
+
+    //@ts-ignore
+    var status = Object.keys(Status).find(x => Status[x].label === filter);
+    var fill = tasks.filter(task => task.status === status);
+
+    setFilterTasks(fill);
+    return Promise.resolve();
+  })
 
   // Rolando para o dia 10 após a montagem do componente
   useEffect(() => {
@@ -44,16 +72,17 @@ export default () => {
       });
     }
   }, []);
-
+  
   //obtendo tasks
   useEffect(() => {
     (async () => {
-      var tasks = await getAllTasksPerDate(calendary.day);
+      var tasks = await getAllTasksPerDate(calendary.day);      
       if(Array.isArray(tasks)){
         setTasks(tasks);
+        setFilterTasks(tasks);
       }
     })();
-  }, [calendary.day])
+  }, [calendary.day]);  
 
   return (
     <View style={styles.whapperScredule}>
@@ -70,6 +99,16 @@ export default () => {
           </Typograph>
         </View>
         <View style={styles.actionsScredule}>
+          <IconButton
+              onPress={() => setIsFullCalendary(state => !state)}
+              id='button-return-page'
+              variant='outlined'>
+              <Icon
+                size={28}
+                type='MaterialCommunityIcons'
+                name='calendar-month-outline'
+              />  
+          </IconButton>
           <IconButton
             onPress={handleSetDateCurrent}
             id='button-return-page'
@@ -89,47 +128,42 @@ export default () => {
           </IconButton>
         </View>
       </View>
-      <GrowingViewer
-        durationAnimation={0}
-        maxHeight={425}
-        minHeight={125}
-        id='dates'>
-        {(Open, Close) => (
-          <>
-            <Close durationAnimation={100}>
-              <FlatList
-                ref={flatListRef}
-                getItemLayout={(item, index) => ({
-                  length: 75,
-                  offset: 50,
-                  index,
-                })}
-                contentContainerStyle={{ alignItems: "center" }}
-                data={calendary.dates}
-                renderItem={({ index, item }) => (
-                  <DateButtom
-                    key={index}
-                    day={item.day}
-                    year={item.year}
-                    month={item.month}
-                    date={item.dayOfTheWeek.abbreviated}
-                  />
-                )}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-              />
-            </Close>
-            <Open durationAnimation={100}>
-              <Drag
-                height='100%'
-                width='100%'
-                onDragPress={handleChangeCalendary}>
-                <Calendary month={calendary.month} year={calendary.year} onSelectDate={handleChangeDate} />
-              </Drag>
-            </Open>
-          </>
+      <View>
+        {!isFullCalendary ? (
+            <FlatList
+              horizontal
+              ref={flatListRef}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ alignItems: "center" }}
+              data={calendary.dates}
+              keyExtractor={(item, index) => index.toString()}
+              getItemLayout={(data, index) => ({
+                length: 40,
+                offset: 63 * index,
+                index,
+              })}
+              renderItem={({ index, item }) => (
+                <DateButtom
+                  isActive={item.year === calendary.day.getFullYear() && item.month === calendary.day.getMonth() && item.day === calendary.day.getDate()}
+                  onPress={() => handleChangeDate(new Date(item.year, item.month, item.day))}
+                  key={index}
+                  day={item.day}
+                  year={item.year}
+                  month={item.month}
+                  date={item.dayOfTheWeek.abbreviated}
+                />
+              )}
+            />
+          ) : (
+            <Drag
+              width='100%'
+              onDragPress={handleChangeCalendary}
+            >
+            <Calendary currentDate={calendary.day} month={calendary.month} year={calendary.year} onSelectDate={handleChangeDate} />
+          </Drag>
         )}
-      </GrowingViewer>
+      </View>
+      <DragDivider onDragRelease={handleChangeFullCalendary}/>
       {
         tasks.length > 0 && (
           <SafeAreaView id='dates' style={styles.whapperFilters}>
@@ -138,7 +172,7 @@ export default () => {
               showsHorizontalScrollIndicator={false}
               data={filters}
               renderItem={({ index, item }) => (
-                <Button size='small' ml={5} variant='text'>
+                <Button onPress={() => handleFilterPerStatus(item)} size='small' ml={5} variant='text'>
                   {item}
                 </Button>
               )}
@@ -146,28 +180,28 @@ export default () => {
           </SafeAreaView>
         )
       }
-      <SafeAreaView id='tasks' style={styles.containerTasks}>
-        {tasks.length === 0 ? (
+      <View id='tasks' style={styles.containerTasks}>
+        {filterTasks.length === 0 ? (
           <Alert label="Não há tarefas a serem exibidas" severity="info" variant="container"/>
         ) : (
           <FlatList
-            showsHorizontalScrollIndicator={false}
-            data={tasksList}
+            showsVerticalScrollIndicator={false}
+            data={filterTasks}
             renderItem={({ index, item }) => (
               <Card style={styles.whapperTask} key={index}>
                 <View style={styles.whapperTaskInfoGroup}>
-                  <Typograph variant='h6'>{item.group}</Typograph>
+                  <Typograph variant='h6'>{item.project!.name}</Typograph>
                   <View
                     style={[
-                      { backgroundColor: lighten(item.icon.color, 85) },
+                      { backgroundColor: lighten(item.project!.color, 85) },
                       styles.whapperIconTaskGroup,
                     ]}>
                     <Icon
                       //@ts-ignore
-                      name={item.icon.name}
+                      name={icons[item.project!.icon].name}
                       //@ts-ignore
-                      type={item.icon.package}
-                      color={item.icon.color}
+                      type={icons[item.project!.icon].package}
+                      color={item.project!.color}
                     />
                   </View>
                 </View>
@@ -185,14 +219,15 @@ export default () => {
                       {formatInHours(item.date)}
                     </Typograph>
                   </View>
-                  <Chip color={item.status.color}>{item.status.value}</Chip>
+                  {/* @ts-ignore */}
+                  <Chip color={Status[item.status].color}>{Status[item.status].label}</Chip>
                 </View>
               </Card>
             )}
           />
         )}
         <View style={styles.whapperAction}></View>
-      </SafeAreaView>
+      </View>
     </View>
   );
 };

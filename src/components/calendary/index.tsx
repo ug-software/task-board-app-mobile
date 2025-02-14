@@ -23,6 +23,7 @@ interface CalendaryProps {
   month: number;
   year: number;
   day?: number;
+  currentDate: Date
 }
 
 const Day = ({ type, value, month, year, isActive, onSelectDate }: Day) => {
@@ -61,10 +62,10 @@ const Day = ({ type, value, month, year, isActive, onSelectDate }: Day) => {
   );
 };
 
-export default ({ month, year, onSelectDate, ...props }: CalendaryProps) => {
+export default ({ month, year, currentDate = new Date(), onSelectDate, ...props }: CalendaryProps) => {
   const styles = styleSheet({});
-  const [arrayDays, setArrayDays] = useState<Day[][]>([]); 
-
+  const [arrayDays, setArrayDays] = useState<Day[][]>([]);
+  
   useEffect(() => {
     var firstDay = new Date(year, month, 1);
     var days = getNumberOfDaysInTheMonth(month, year);
@@ -106,7 +107,7 @@ export default ({ month, year, onSelectDate, ...props }: CalendaryProps) => {
       {arrayDays.map((week, index) => (
         <View key={index} style={styles.week}>
           {week.map((day, index) => {            
-            var isActive = day.value === props.day && month === day.month && year === day.year;
+            var isActive = day.value === currentDate.getDate() && day.month === currentDate.getMonth() && day.year === currentDate.getFullYear();
             return <Day  key={index} {...day} isActive={isActive} month={month} year={year} onSelectDate={onSelectDate} />
           })}
         </View>

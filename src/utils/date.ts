@@ -19,6 +19,8 @@ const getNumberOfDaysInTheMonth = (mouth: number, year: number) => {
 
 export interface DateTime {
   day: number;
+  month: number;
+  year: number;
   dayOfTheWeek: {
     abbreviated: string;
     full: string;
@@ -33,6 +35,7 @@ const getDaysTheMouth = (mouth: number, year: number): DateTime[] => {
       day: day.getDate(),
       month: day.getMonth(),
       year: day.getFullYear(),
+      //@ts-ignore
       dayOfTheWeek: calendary.week[day.getDay()],
     } as DateTime;
   });

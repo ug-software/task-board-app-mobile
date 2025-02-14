@@ -28,7 +28,7 @@ export const appBar: AppBarButtomProps[] = [
     href: "/dashboard",
     label: "Inicio",
     Icon: (props: { style: ViewStyle | TextStyle | ImageStyle }) => {
-      return <Icon {...props} name='home' type='AntDesign' />;
+      return <Icon {...props} name='home' type='Feather' />;
     },
   },
   {
@@ -42,7 +42,7 @@ export const appBar: AppBarButtomProps[] = [
     href: "/projects",
     label: "Projetos",
     Icon: (props: { style: ViewStyle | TextStyle | ImageStyle }) => {
-      return <Icon {...props} name='folder-open-o' type='FontAwesome' />;
+      return <Icon {...props} name='folder' type='Feather' />;
     },
   },
   {

@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { ReactNode, useEffect, useRef, useState } from "react";
+import React, { memo, ReactNode, useEffect, useRef, useState } from "react";
 import { Animated, PanResponder, View, ViewProps } from "react-native";
 import styleSheet from "./styles";
 
@@ -18,7 +18,7 @@ interface ChangedGrowingViewer {
 
 type IsOpen = (props: ChangedGrowingViewer) => ReactNode;
 const IsOpen = (open: boolean) => {
-  return ({ children, durationAnimation }: ChangedGrowingViewer) => {
+  return memo(({ children, durationAnimation }: ChangedGrowingViewer) => {
     const opacity = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
@@ -35,7 +35,7 @@ const IsOpen = (open: boolean) => {
           useNativeDriver: true,
         }).start();
       }
-    }, []);
+    }, [open]);
 
     return (
       <Animated.View
@@ -44,12 +44,12 @@ const IsOpen = (open: boolean) => {
         {children}
       </Animated.View>
     );
-  };
+  });
 };
 
 type IsClose = (props: ChangedGrowingViewer) => ReactNode;
 const IsClose = (open: boolean) => {
-  return ({ children, durationAnimation }: ChangedGrowingViewer) => {
+  return memo(({ children, durationAnimation }: ChangedGrowingViewer) => {
     const opacity = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
@@ -66,7 +66,7 @@ const IsClose = (open: boolean) => {
           useNativeDriver: true,
         }).start();
       }
-    }, []);
+    }, [open]);
 
     return (
       <Animated.View
@@ -75,7 +75,7 @@ const IsClose = (open: boolean) => {
         {children}
       </Animated.View>
     );
-  };
+  });
 };
 
 export default ({
