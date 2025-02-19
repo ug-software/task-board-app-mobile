@@ -1,17 +1,33 @@
 import { styled } from "@/src/theme";
+import { darken, lighten } from "@/src/theme/styled";
 
-export const styleSheetIcon = styled()({
-    whapperIcon: {
+export const styleSheetIcon = styled<{color: string | undefined}>()(({ theme, color }) => ({
+    containerIcon: {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        height: 5 * 16,
-        width: 5 * 16
+        minHeight: 5 * 16,
+        minWidth: 5 * 16,
+    },
+     wrapperIcon: { 
+        position: "absolute", 
+        left: 10, 
+        bottom: 10,
+        minHeight: 5 * 16,
+        minWidth: 5 * 16,
+        borderWidth: 2,
+        borderStyle: "solid",
+        borderRadius: 10,
+        borderColor: color && darken(color, 30),
+        backgroundColor: theme.pallet.primary.background
     }
-});
+}));
 
 export const styleSheetColor = styled<{color: string}>()(({color}) => ({
     whapperColor: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         height: 5 * 16,
         width: 5 * 16
     }
@@ -33,13 +49,13 @@ export const styleSheetPageProject = styled<{color: string}>()(({ color, theme }
         marginBottom: 15,
         width: "100%"
     },
-    whapperColorAndIcon: {
-        display: "flex",
+    wrapperColorContainer: {
+        position: "relative",
+        height: 125, 
+        width: "100%",
+        borderRadius: 10,
+        marginBottom: 15,
         alignItems: "center",
-        width: "50%"
-    },
-    containerColorAndIcon: {
-        display: "flex",
-        flexDirection: 'row'
+        justifyContent: "center"
     }
 }))

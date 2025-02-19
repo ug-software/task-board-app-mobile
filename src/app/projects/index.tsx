@@ -8,7 +8,7 @@ import {
   Pressable,
 } from "react-native";
 import styleSheet from "./styles";
-import { Card, Icon, Typograph } from "@/src/components";
+import { Alert, Card, Icon, Typograph } from "@/src/components";
 import { icons } from "@/src/constants";
 import { lighten } from "@/src/theme/styled";
 import IconButton from "@/src/components/icon-button";
@@ -52,77 +52,91 @@ export default () => {
         </IconButton>
       </View>
       <SafeAreaView style={styles.containerProjects}>
-        <FlatList
-          data={projects}
-          renderItem={({ index, item }) => (
-            <Card key={index} style={styles.containerProject}>
-              <View style={styles.infoProject}>
-                <View style={styles.infoNameProject}>
-                  <View
-                    style={[
-                      { backgroundColor: lighten(item.color, 85) },
-                      styles.iconProject,
-                    ]}>
-                    <Icon
-                      //@ts-ignore
-                      type={icons[item.icon].package}
-                      //@ts-ignore
-                      name={icons[item.icon].name}
-                      color={item.color}
-                      size={35}
-                    />
-                  </View>
-                  <Typograph fontWeight='500' variant='h4'>
-                    {item.name}
-                  </Typograph>
-                </View>
-                <IconButton
-                  variant='outlined'
-                  onPress={() => setAction((state) => ({ ...state, open: true, item }))}
-                >
-                  <Icon type='MaterialCommunityIcons' name='dots-vertical' />
-                </IconButton>
-              </View>
-              {item.description !== null && (
-                <View>
-                  <Typograph style={{ padding: 5 }} variant='paragraph'>
-                    {item.description}
-                  </Typograph>
-                </View>
+        {
+          projects.length > 0 ? (
+            <FlatList
+              data={projects}
+              renderItem={({ index, item }) => (
+                <Pressable onPress={() => setAction((state) => ({ ...state, open: true, item }))}>
+                  <Card key={index} style={styles.containerProject}>
+                    <View style={styles.infoProject}>
+                      <View style={styles.infoNameProject}>
+                        <View
+                          style={[
+                            { backgroundColor: lighten(item.color, 85) },
+                            styles.iconProject,
+                          ]}>
+                          <Icon
+                            //@ts-ignore
+                            type={icons[item.icon].package}
+                            //@ts-ignore
+                            name={icons[item.icon].name}
+                            color={item.color}
+                            size={35}
+                          />
+                        </View>
+                        <Typograph style={{flex: 1, width: "50%"}} fontWeight='500' variant='h4'>
+                          {item.name}
+                        </Typograph>
+                      </View>
+                      {/*<IconButton
+                        variant='outlined'
+                        
+                      >
+                        <Icon type='MaterialCommunityIcons' name='dots-vertical' />
+                      </IconButton>*/}
+                    </View>
+                    {item.description !== null && (
+                      <View>
+                        <Typograph style={{ padding: 5 }} variant='paragraph'>
+                          {item.description}
+                        </Typograph>
+                      </View>
+                    )}
+                  </Card>
+                </Pressable>
               )}
-            </Card>
-          )}
-        />
+            />
+          ) : (
+            <Alert label="Não há projetos cadastrados, clique em adicionar para começar" severity="info" variant="container" />
+          )
+        }
       </SafeAreaView>
       <ButtonSheet
         onRequestClose={() => setAction((state) => ({ ...state, open: false }))}
         open={action.open}
         height={200}>
-          {/*@ts-ignore*/}
-          <Pressable onPress={redirect({ pathname: `/projects/edit?id=${action.item?.id}` })} style={styles.menuDialogItem}>
-            <Icon
-                style={styles.menuDialogIcon}
-                type='MaterialIcons'
-                //@ts-ignore
-                name='mode-edit'
-                size={25}
-              />
-            <Typograph variant='h5' fontWeight={500}>
-              Editar
-            </Typograph>
-          </Pressable>
-          <Pressable  style={styles.menuDialogItem}>
-            <Icon
-                style={styles.menuDialogIcon}
-                type='MaterialIcons'
-                //@ts-ignore
-                name='delete'
-                size={25}
-              />
-            <Typograph variant='h5' fontWeight={500}>
-              Deletar
-            </Typograph>
-          </Pressable>
+          <View style={styles.menuDialogWrapper}>
+            {/*@ts-ignore*/}
+            <Pressable onPress={redirect({ pathname: `/projects/edit?id=${action.item?.id}` })} style={styles.menuDialogItem}>
+              <View style={styles.menuDialogContainer}>
+                <Icon
+                    style={styles.menuDialogIcon}
+                    type='MaterialIcons'
+                    //@ts-ignore
+                    name='mode-edit'
+                    size={25}
+                  />
+              </View>
+              <Typograph variant='h6' fontWeight={500}>
+                Editar
+              </Typograph>
+            </Pressable>
+            <Pressable  style={styles.menuDialogItem}>
+              <View style={styles.menuDialogContainer}>
+                <Icon
+                    style={styles.menuDialogIcon}
+                    type='MaterialIcons'
+                    //@ts-ignore
+                    name='delete'
+                    size={25}
+                  />
+              </View>
+              <Typograph variant='h6' fontWeight={500}>
+                Deletar
+              </Typograph>
+            </Pressable>
+          </View>
       </ButtonSheet>
     </View>
   );

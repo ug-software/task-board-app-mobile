@@ -1,13 +1,12 @@
 /** @format */
 
 import React, { useEffect, useRef, useState } from "react";
-import { SafeAreaView, View, FlatList, Task, Text } from "react-native";
+import { SafeAreaView, View, FlatList } from "react-native";
 import {
   Button,
   Card,
   Chip,
   Drag,
-  GrowingViewer,
   Icon,
   IconButton,
   Typograph,
@@ -63,7 +62,7 @@ export default () => {
     return Promise.resolve();
   })
 
-  // Rolando para o dia 10 após a montagem do componente
+  //scroll to current day
   useEffect(() => {
     if (flatListRef.current !== null) {
       flatListRef.current.scrollToIndex({
@@ -73,7 +72,7 @@ export default () => {
     }
   }, []);
   
-  //obtendo tasks
+  //get tasks
   useEffect(() => {
     (async () => {
       var tasks = await getAllTasksPerDate(calendary.day);      

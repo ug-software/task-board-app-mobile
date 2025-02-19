@@ -58,7 +58,9 @@ export default styled<Omit<AlertProps, "label">>()(({ severity, variant, theme }
   whapperIconAlert: {
     paddingRight: 10
   },
-  whapperLabelAlert: {},
+  whapperLabelAlert: {
+    flex: 1
+  },
   labelAlert: {
     fontSize: 16,
     ...(variant === "container" && severity === "error" && {

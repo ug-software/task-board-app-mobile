@@ -12,16 +12,17 @@ import Tollbar from "../tollbar";
 import { useLayout, useRouter } from "@/src/hooks";
 import SnackProvider from "../snack";
 import Loading from "../loading";
+import { router } from "expo-router";
 
 export interface LayoutProps {
   children: ReactNode;
 }
 
 export default (props: LayoutProps) => {
-  const { barAppShow, headerShow } = useLayout();
+  const { barAppShow, headerShow, handleBack } = useLayout();
   const style = styleSheet({...props, layoutOn: false});
-  const { redirect } = useRouter();
-  
+  const { redirect } = useRouter();  
+
   return (
     <View style={style.whapperLayout}>
       <Loading/>
@@ -29,12 +30,12 @@ export default (props: LayoutProps) => {
       <Tollbar />
       {headerShow && (
         <TollbarApp
-          pl={20}
+          pl={10}
           pr={20}
           flexDirection='row'
           justifyContent='space-between'
           alignItems='center'>
-          <IconButton id='button-return-page' variant='outlined'>
+          <IconButton onPress={handleBack} id='button-return-page' variant='outlined'>
             <Icon size={28} type='MaterialCommunityIcons' name='arrow-left' />
           </IconButton>
           <Avatar

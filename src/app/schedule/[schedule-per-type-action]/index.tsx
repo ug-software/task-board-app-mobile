@@ -20,7 +20,7 @@ const ProjectOption = ({ name, icon, color }: Project) => {
                     color={color}
                 />
             </View>
-            <Text style={styles.labelProjectOption}>{name}</Text>
+            <Typograph variant="paragraph" style={styles.labelProjectOption}>{name}</Typograph>
         </View>
     );
 }
@@ -34,7 +34,7 @@ const StatusOption = ({ color, label }: StatusOptionProps) => {
     const styles = styleStatusOption({ color });
     return(
         <View style={styles.whapperOptionStatus}>
-            <Text style={styles.labelOptionStatus}>{label}</Text>
+            <Typograph variant="paragraph" style={styles.labelOptionStatus}>{label}</Typograph>
         </View>
     );
 }

@@ -1,6 +1,7 @@
 /** @format */
 
 import { styled } from "@/src/theme";
+import { darken } from "@/src/theme/styled";
 
 export default styled()(({ theme }) => ({
   whapperProjects: {
@@ -50,16 +51,25 @@ export default styled()(({ theme }) => ({
     width: 50,
     marginRight: 10,
   },
+  menuDialogWrapper: {
+    flexDirection: "row",
+    paddingHorizontal: 10
+  },
   menuDialogItem: {
     display: "flex",
-    flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 10,
-    height: 50,
-    width: "100%",
+    //width: 50,
+  },
+  menuDialogContainer: {
+    borderColor: darken(theme.pallet.primary.background, 10),
+    borderRadius: 50,
+    borderStyle: "solid",
+    borderWidth: 1,
+    padding: 15,
+    marginBottom: 5
   },
   menuDialogIcon: {
-    color: theme.pallet.primary.primary,
-    marginRight: 10,
+    color: darken(theme.pallet.primary.background, 80),
   },
 }));

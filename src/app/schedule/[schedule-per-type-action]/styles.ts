@@ -45,7 +45,8 @@ export const styleProjectOption = styled<{color: string}>()(({ color, theme }) =
         alignItems: "center"
     },
     labelProjectOption: {
-        fontSize: 16
+        fontSize: 16,
+        flex: 1
     },
     IconProjectOption: {
         marginRight: 10,

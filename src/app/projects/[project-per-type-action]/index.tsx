@@ -1,9 +1,9 @@
 /** @format */
 
-import { Button, Card, Icon, TextField, Typograph , } from "@/src/components";
+import { Button, Card, Icon, IconButton, TextField, Typograph } from "@/src/components";
 import BottomSheet from "@/src/components/button/sheet";
 import { IconProps } from "@/src/components/icon";
-import { FlatList, Pressable, SafeAreaView, ScrollView, View } from "react-native";
+import { FlatList, Pressable, Text, ScrollView, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { styleSheetColor, styleSheetIcon, styleSheetPageProject } from "./styles"
 import { colors, icons } from "@/src/constants";
@@ -13,17 +13,31 @@ import { useLocalSearchParams } from "expo-router";
 
 interface CardIconProjectProps extends IconProps<any> {
   open: boolean,
+  color: string | undefined,
+  helperText: string | undefined,
   handleChangeIcon: (icon: string) => void,
   handleChangeModal: () => void
 }
-const CardIcon = ({ name, type, open, handleChangeIcon, handleChangeModal, ...props } : CardIconProjectProps) => {
-  const styles = styleSheetIcon();
+const CardIcon = ({ name, type, open, color, helperText, handleChangeIcon, handleChangeModal, ...props } : CardIconProjectProps) => {
+  const styles = styleSheetIcon({ color });  
+
+  if(helperText !== "" && helperText !== undefined){
+    styles.wrapperIcon.borderColor = "red";
+  }
+
   return(
     <>
-      <Pressable onPress={handleChangeModal}>
-        <Card style={styles.whapperIcon}>
-          <Icon size={3 * 16} name={name} type={type} {...props}/>
-        </Card>
+      <Pressable style={styles.wrapperIcon} onPress={handleChangeModal}>
+        <View style={styles.containerIcon}>
+          {
+            type ? (
+              <Icon color={color} size={3 * 16} name={name} type={type} {...props}/>
+            ) : (
+              //@ts-ignore
+              <Icon color={helperText && "red"} name="edit" type="MaterialIcons" />
+            )
+          }
+        </View>
       </Pressable>
       <BottomSheet onRequestClose={handleChangeModal} height={500}  open={open}>
         <FlatList 
@@ -48,16 +62,18 @@ interface CardColorProjectProps {
   color: string,
   open: boolean,
   handleChangeColor: (color: string) => void,
-  handleChangeModal: () => void
+  handleChangeModal: () => void,
+  helperText: string | undefined,
 }
-const CardColor = ({color, open, handleChangeColor, handleChangeModal} : CardColorProjectProps) => {
+const CardColor = ({color, open, helperText, handleChangeColor, handleChangeModal} : CardColorProjectProps) => {
   const styles = styleSheetColor();
   return(
     <>
     <Pressable onPress={handleChangeModal}>
-      <Card style={[styles.whapperColor, { backgroundColor: color }]}>
-        <View/>
-      </Card>
+      <View style={[styles.whapperColor, { backgroundColor: color }]}>
+        {/* @ts-ignore */}
+        <Icon color={helperText && "red"} name="edit" type="MaterialIcons" />
+      </View>
     </Pressable>
       <BottomSheet onRequestClose={handleChangeModal} height={500}  open={open}>
         <FlatList 
@@ -94,7 +110,7 @@ export default () => {
     initialValues: {
       name: "",
       description: "",
-      icon: "#ICO0001",
+      icon: undefined,
       color: "#FFFF"
     },
     onSubmit: handleSubmitProject,
@@ -139,6 +155,25 @@ export default () => {
     <ScrollView contentContainerStyle={styles.whapperPageProject}>
       <View>
         <Typograph pb={20} pt={10} fontWeight={"500"} variant="h3">Adicionar Projeto:</Typograph>
+        <View style={[{backgroundColor: values.color}, styles.wrapperColorContainer]}>
+          <CardColor 
+            helperText={errors?.color}
+            open={modalOpen.color} 
+            color={values.color ? values.color : "#FFFF"}
+            handleChangeColor={handleChangeColor} 
+            handleChangeModal={handleChangeModal("color")} 
+          />
+          <CardIcon
+            helperText={errors?.icon}
+            color={values.color}
+            open={modalOpen.icon}
+            //@ts-ignore
+            name={values.icon ? icons[values.icon].name : null} 
+            type={values.icon ? icons[values.icon].package : null}
+            handleChangeIcon={handleChangeIcon} 
+            handleChangeModal={handleChangeModal("icon")} 
+          />
+        </View>
         <View style={styles.containerTextField}>
           <TextField 
             fullWidth 
@@ -164,31 +199,6 @@ export default () => {
             error={Boolean(errors?.description)}
             helperText={errors?.description}
           />
-        </View>
-        <View style={styles.containerColorAndIcon}>
-          <View style={styles.whapperColorAndIcon}>
-            <Typograph variant="h6">Selecione o Icone:</Typograph>
-            
-              <CardIcon 
-                open={modalOpen.icon}
-                //@ts-ignore
-                name={values.icon ? icons[values.icon].name : "customerservice"} 
-                type={values.icon ? icons[values.icon].package : "AntDesign"}
-                handleChangeIcon={handleChangeIcon} 
-                handleChangeModal={handleChangeModal("icon")} 
-              />
-              <Typograph variant="paragraph">Icone Selecionado</Typograph>
-          </View>
-          <View style={styles.whapperColorAndIcon}>
-            <Typograph variant="h6">Selecione a Cor:</Typograph>
-              <CardColor 
-                open={modalOpen.color} 
-                color={values.color ? values.color : "#FFFF"}
-                handleChangeColor={handleChangeColor} 
-                handleChangeModal={handleChangeModal("color")} 
-              />
-              <Typograph variant="paragraph">Cor Selecionada</Typograph>
-          </View>
         </View>
       </View>
       <Button variant="contained" onPress={handleSubmit}>Salvar</Button>

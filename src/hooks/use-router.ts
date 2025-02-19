@@ -16,5 +16,5 @@ export default () => {
     return pathname === path;
   };
 
-  return { redirect, isMatch };
+  return { redirect, isMatch, router };
 };

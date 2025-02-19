@@ -9,8 +9,8 @@ interface OptionProps {
     children: ReactNode
 }
 
-export const Option = ({ children }: OptionProps) => {
-    return children;
+export const Option = ({ children, ...rest }: OptionProps) => {
+    return React.isValidElement(children) && React.cloneElement(children, rest);
 };
 
 export interface SelectFieldBase extends Omit<TextFieldBase, "value"> {
