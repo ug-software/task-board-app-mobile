@@ -36,20 +36,20 @@ interface StateSchedulePage {
 }
 
 export default () => {
-  const { redirect } = useRouter();
+  const loader = useLoading();
   const styles = styleSheet({});
+  const { redirect } = useRouter();
   const flatListRef = useRef<FlatList>(null);
-  const [isFullCalendary, setIsFullCalendary] = useState<boolean>(false);
   const [tasks, setTasks] = useState<TasksWithProjects[]>([]);
+  const { getAllTasksPerDate, handleChangeStatusPerId, handleDeleteTasksPerId } = useTasks();
+  const [isFullCalendary, setIsFullCalendary] = useState<boolean>(false);
   const [filterTasks, setFilterTasks] = useState<TasksWithProjects[]>([]);
   const { calendary, handleChangeCalendary, handleSetDateCurrent, handleChangeDate } = useCalendary();
-  const { getAllTasksPerDate, handleChangeStatusPerId, handleUpdateTask } = useTasks();
   const [action, setAction] = useState<StateSchedulePage>({
     open: false,
     type: null,
     item: undefined,
   });
-  const loader = useLoading();
 
   const handleChangeFullCalendary = (direction: "up" | "down") => {    
     if(direction === "up"){
@@ -93,6 +93,21 @@ export default () => {
       }
     }
   };
+
+  const handleConfirmDelection = (id: number) => {
+    handleDeleteTasksPerId(id, async () => {
+      setAction(state => ({
+        ...state,
+        open: false
+      }));
+
+      var tasks = await getAllTasksPerDate(calendary.day);
+      if(Array.isArray(tasks)){
+        setTasks(tasks);
+        setFilterTasks(tasks);
+      }
+    });
+  }
 
   //scroll to current day
   useEffect(() => {
@@ -307,7 +322,11 @@ export default () => {
                 Editar
               </Typograph>
             </Pressable>
-            <Pressable  style={styles.menuDialogItem}>
+            <Pressable
+              //@ts-ignore
+              onPress={() => handleConfirmDelection(action.item?.id)} 
+              style={styles.menuDialogItem}
+            >
               <View style={styles.menuDialogContainer}>
                 <Icon
                     style={styles.menuDialogIcon}

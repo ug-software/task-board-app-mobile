@@ -46,7 +46,7 @@ const CardIcon = ({ name, type, open, color, helperText, handleChangeIcon, handl
           numColumns={4}
           renderItem={({index, item}) => (
             <Pressable onPress={() => handleChangeIcon(item)}>
-              <Card key={index} style={styles.whapperIcon}>
+              <Card key={index} style={styles.wrapperButtonIcon}>
                 {/*@ts-ignore*/}
                 <Icon size={3 * 16} name={icons[item].name} type={icons[item].package} />
               </Card>

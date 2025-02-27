@@ -9,7 +9,7 @@ export const styleSheetIcon = styled<{color: string | undefined}>()(({ theme, co
         minHeight: 5 * 16,
         minWidth: 5 * 16,
     },
-     wrapperIcon: { 
+    wrapperIcon: { 
         position: "absolute", 
         left: 10, 
         bottom: 10,
@@ -19,6 +19,18 @@ export const styleSheetIcon = styled<{color: string | undefined}>()(({ theme, co
         borderStyle: "solid",
         borderRadius: 10,
         borderColor: color && darken(color, 30),
+        backgroundColor: theme.pallet.primary.background
+    },
+    wrapperButtonIcon: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: 5 * 16,
+        minWidth: 5 * 16,
+        borderWidth: 2,
+        borderStyle: "solid",
+        borderRadius: 10,
+        borderColor: darken(theme.pallet.primary.background, 30),
         backgroundColor: theme.pallet.primary.background
     }
 }));

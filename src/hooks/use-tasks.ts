@@ -8,13 +8,15 @@ import useSqlite from "./use-sqlite";
 import Project from "../interfaces/project";
 import useProject from "./use-project";
 import { between, asc, eq } from "drizzle-orm";
+import useDialog from "./use-dialog";
 
 export default () => {
     const db = useSqlite();
+    const dialog = useDialog();
     const loader = useLoading();
     const message = useSnack();
-    const cacheProjects : { [key: number]: Project | undefined } = {};
     const { findProjectPerId } = useProject();
+    const cacheProjects : { [key: number]: Project | undefined } = {};
 
     const handleUpdateTask = loader.action(async (values: Partial<Tasks> & { time: TimePicker }) => {
         try{
@@ -137,6 +139,36 @@ export default () => {
         };
     });
 
+    const handleDeleteTasksPerId = loader.action(async (id: number, confirm: () => void) => {
+        dialog.on({
+            description: "Deseja realmente deletar esta tarefa, ao confirmar a exclusão não podera ser recuperada posteriormente",
+            title: "Deletar Tarefa",
+            onConfirm: async (isTrue) => {                
+                if(isTrue){
+                    const [ tasks ] = await Promise.all([
+                        db.delete(taskSchema).where(eq(taskSchema.id, id)),
+                    ]);
+                    if(tasks){
+                        message.schedule({
+                            phase: "Tarefa deletada com sucesso",
+                            severity: "success",
+                            variant: "container"
+                        });
+
+                    }else {
+                        message.schedule({
+                            phase: "Não foi possivel deletar, tente novamente mais tarde",
+                            severity: "error",
+                            variant: "container"
+                        });
+                    }
+                }
+
+                confirm();
+            }
+        })
+    });
+
     const handleValidationTask = (values: Partial<Tasks> & { time: TimePicker }) => {
         var errors = {
             name: "",
@@ -230,5 +262,5 @@ export default () => {
         return null;
     });
 
-    return { handleValidationTask, handleSaveNewTask, getAllTasks, getAllTasksPerDate, handleChangeStatusPerId, findTaskPerId, handleUpdateTask };
+    return { handleValidationTask, handleSaveNewTask, getAllTasks, getAllTasksPerDate, handleChangeStatusPerId, findTaskPerId, handleUpdateTask, handleDeleteTasksPerId };
 }
