@@ -11,6 +11,7 @@ export default styled()(({ theme }) => ({
     paddingHorizontal: 20,
     display: "flex",
     flexDirection: "column",
+    paddingBottom: 90
   },
   headerProjects: {
     display: "flex",

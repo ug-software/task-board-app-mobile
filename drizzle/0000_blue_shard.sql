@@ -15,12 +15,13 @@ CREATE TABLE `projects` (
 	`created_at` text DEFAULT (CURRENT_TIMESTAMP)
 );
 --> statement-breakpoint
-CREATE TABLE `tasks` (
+CREATE TABLE IF NOT EXISTS `tasks` (
 	`id` integer PRIMARY KEY NOT NULL,
 	`name` text NOT NULL,
 	`description` text,
 	`status` text NOT NULL,
 	`project_id` integer NOT NULL,
+	`date_marked` text DEFAULT (CURRENT_TIMESTAMP),
 	`updated_at` text DEFAULT (CURRENT_TIMESTAMP),
 	`created_at` text DEFAULT (CURRENT_TIMESTAMP)
 );

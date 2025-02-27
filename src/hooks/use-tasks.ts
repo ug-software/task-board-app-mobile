@@ -7,7 +7,7 @@ import useSnack from "./use-snack";
 import useSqlite from "./use-sqlite";
 import Project from "../interfaces/project";
 import useProject from "./use-project";
-import { between, asc } from "drizzle-orm";
+import { between, asc, eq } from "drizzle-orm";
 
 export default () => {
     const db = useSqlite();
@@ -16,9 +16,58 @@ export default () => {
     const cacheProjects : { [key: number]: Project | undefined } = {};
     const { findProjectPerId } = useProject();
 
+    const handleUpdateTask = loader.action(async (values: Partial<Tasks> & { time: TimePicker }) => {
+        try{
+            var task = values;         
+
+            if(task.created_at === null || task.created_at === undefined){
+                task.created_at = new Date();
+            }
+
+            if(task.updated_at === null || task.updated_at === undefined){
+                task.updated_at = new Date();
+            }
+
+            if(task.id === undefined){
+                message.schedule({
+                    phase: "Não foi possivel identificar registro, tente novamente mais tarde",
+                    severity: "warning",
+                    variant: "container"
+                });
+
+                return;
+            }
+
+            //@ts-ignore
+            var date_marked = new Date(task.date_marked.getFullYear(), task.date_marked.getMonth(), task.date_marked.getDate(), parseInt(task.time.hour), parseInt(task.time.minutes));            
+
+            await db.update(taskSchema).set({
+                ...task,
+                created_at: task.created_at.toString(),
+                updated_at: new Date().toString(),
+                date_marked: date_marked.toString(),
+            }).where(eq(taskSchema.id, task.id));
+
+            message.schedule({
+                phase: "Sucesso ao editar tarefa",
+                severity: "success",
+                variant: "container"
+            });
+
+            router.navigate("/schedule");
+        }catch(err){
+            var error = err as Error;
+            message.schedule({
+                phase: error.message,
+                severity: "error",
+                variant: "container"
+            });
+        }
+    });
+
     const handleSaveNewTask = loader.action(async (values: Partial<Tasks> & { time: TimePicker }) => {
         try {
-            var date = values.date ? values.date : new Date();
+            var date = values.date_marked ? values.date_marked : new Date();
 
             var task = {
                 ...values,
@@ -29,7 +78,7 @@ export default () => {
             
             await db.insert(taskSchema).values({
                 ...task,
-                date: task.date.toString(),
+                date_marked: task.date_marked.toString(),
                 created_at: task.created_at.toString(),
                 updated_at: task.updated_at.toString(),
             });
@@ -41,7 +90,7 @@ export default () => {
             });
     
             router.navigate("/schedule");
-        }catch(err){
+        }catch(err){            
             var error = err as Error;
             message.schedule({
                 phase: error.message,
@@ -49,7 +98,44 @@ export default () => {
                 variant: "container"
             });
         }
-    })
+    });
+
+    const handleChangeStatusPerId = loader.action(async (id: number, status: string) => {
+        try{
+            await db.update(taskSchema).set({ status }).where(eq(taskSchema.id, id));
+            message.schedule({
+                phase: "Sucesso ao atualizar status",
+                severity: "success",
+                variant: "container"
+            });
+
+            return true;
+        }catch(err){
+            var error = err as Error;
+            message.schedule({
+                phase: error.message,
+                severity: "error",
+                variant: "container"
+            });
+
+            return false;
+        }
+    });
+
+    const findTaskPerId = loader.action(async (id: number) :Promise<Tasks | null> => {
+        var task = (await db.select().from(taskSchema).where(eq(taskSchema.id, id))).find(x => x.id === id);
+        
+        if(task === undefined){
+            return null;
+        }
+
+        return {
+            ...task,
+            date_marked: task.date_marked ? new Date(task.date_marked) : new Date(),
+            updated_at: task.updated_at ? new Date(task.updated_at) : new Date(),
+            created_at: task.created_at ? new Date(task.created_at) : new Date(),
+        };
+    });
 
     const handleValidationTask = (values: Partial<Tasks> & { time: TimePicker }) => {
         var errors = {
@@ -73,7 +159,7 @@ export default () => {
             errors["status"] = "Campo 'Status' é de preechimento obrigatório.";
         }
 
-        if(values.date === undefined || values.date === null){
+        if(values.date_marked === undefined || values.date_marked === null){
             errors["date"] = "Campo 'Data' é de preechimento obrigatório.";
         }
 
@@ -86,7 +172,7 @@ export default () => {
         }
 
         return errors;
-    }
+    };
 
     const getAllTasks = loader.action(async (): Promise<TasksWithProjects[] | null> => {
         var tasks = await db.select().from(taskSchema);
@@ -105,7 +191,7 @@ export default () => {
                 return {
                     ...x,
                     project,
-                    date: x.date !== null ? new Date(x.date) : new Date(),
+                    date_marked: x.date_marked !== null ? new Date(x.date_marked) : new Date(),
                     created_at: x.created_at !== null ? new Date(x.created_at) : new Date(),
                     updated_at: x.updated_at !== null ? new Date(x.updated_at) : new Date(),
                 }
@@ -118,7 +204,7 @@ export default () => {
     const getAllTasksPerDate = loader.action(async (date: Date): Promise<TasksWithProjects[] | null> => {
         var intialDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
         var finalDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
-        var tasks = await db.select().from(taskSchema).where(between(taskSchema.date, intialDate.toString(), finalDate.toString())).orderBy(asc(taskSchema.date));
+        var tasks = await db.select().from(taskSchema).where(between(taskSchema.date_marked, intialDate.toString(), finalDate.toString())).orderBy(asc(taskSchema.date_marked));
         
         if(Array.isArray(tasks)){
             return await Promise.all(tasks.map(async x => {
@@ -134,7 +220,7 @@ export default () => {
                 return {
                     ...x,
                     project,
-                    date: x.date !== null ? new Date(x.date) : new Date(),
+                    date_marked: x.date_marked !== null ? new Date(x.date_marked) : new Date(),
                     created_at: x.created_at !== null ? new Date(x.created_at) : new Date(),
                     updated_at: x.updated_at !== null ? new Date(x.updated_at) : new Date(),
                 }
@@ -144,5 +230,5 @@ export default () => {
         return null;
     });
 
-    return { handleValidationTask, handleSaveNewTask, getAllTasks, getAllTasksPerDate };
+    return { handleValidationTask, handleSaveNewTask, getAllTasks, getAllTasksPerDate, handleChangeStatusPerId, findTaskPerId, handleUpdateTask };
 }

@@ -16,10 +16,24 @@ export default styled()(({ theme }) => ({
     backgroundColor: theme.pallet.primary.background,
     minHeight: 10,
     minWidth: 10,
+    width: "80%",
+    maxWidth: 450,
     padding: 10,
     borderRadius: 12,
     borderWidth: 1,
     borderStyle: "solid",
     borderColor: darken(theme.pallet.primary.background, 10),
   },
+  headerDialog: {
+    width: "100%",
+    borderStyle: "solid",
+    borderBottomWidth: 1,
+    borderColor: darken(theme.pallet.primary.background, 10),
+    paddingBottom: 8
+  },
+  footerDialog: {
+    paddingTop: 15,
+    flexDirection: "row",
+    justifyContent: "flex-end"
+  }
 }));

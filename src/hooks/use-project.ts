@@ -1,12 +1,14 @@
-import { projectSchema } from "../database";
+import { projectSchema, taskSchema } from "../database";
 import Project from "../interfaces/project";
 import { useRouter } from "expo-router";
 import useLoading from "./use-loading";
 import useSqlite from "./use-sqlite";
 import useSnack from "./use-snack";
 import { eq } from "drizzle-orm";
+import useDialog from "./use-dialog";
 
 export default () => {
+    const dialog = useDialog();
     const loader = useLoading();
     const message = useSnack();
     const router = useRouter();
@@ -55,7 +57,7 @@ export default () => {
                 variant: "container"
             });
         }
-    })
+    });
     
     const handleSaveNewProject = loader.action(async (values: Partial<Project>) => {
         try{
@@ -120,6 +122,37 @@ export default () => {
         };
     });
 
+    const handleDeleteProjectPerId = (id: number, confirm: () => void) => {
+        dialog.on({
+            description: "Deseja realmente deletar este projeto, ao confirmar a exclusão estará deletando também suas terefas, elas não poderão ser recuperadas posteriormente",
+            title: "Deletar Projeto",
+            onConfirm: async (isTrue) => {                
+                if(isTrue){
+                    const [project, tasks] = await Promise.all([
+                        db.delete(projectSchema).where(eq(projectSchema.id, id)),
+                        db.delete(taskSchema).where(eq(taskSchema.project_id, id))
+                    ]);
+                    if(project && tasks){
+                        message.schedule({
+                            phase: "Projeto e tarefas deletadas com sucesso",
+                            severity: "success",
+                            variant: "container"
+                        });
+
+                    }else {
+                        message.schedule({
+                            phase: "Não foi possivel deletar, tente novamente mais tarde",
+                            severity: "error",
+                            variant: "container"
+                        });
+                    }
+                }
+
+                confirm();
+            }
+        })
+    }
+
     const handleValidationProject = (values: Partial<Project>) => {
         var errors = {
             name: "",
@@ -147,5 +180,5 @@ export default () => {
         return errors;
     }
 
-    return { handleSaveNewProject, handleUpdateProject, handleValidationProject, getAllProjects, findProjectPerId };
+    return { handleSaveNewProject, handleUpdateProject, handleValidationProject, handleDeleteProjectPerId, getAllProjects, findProjectPerId };
 }

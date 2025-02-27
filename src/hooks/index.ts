@@ -9,6 +9,7 @@ import useLoading from "./use-loading";
 import useTheme from "./use-theme";
 import useCalendary from "./use-calendary";
 import useTasks from "./use-tasks";
+import useDialog from "./use-dialog";
 
 export {
     useRouter,
@@ -19,5 +20,6 @@ export {
     useLoading,
     useTheme,
     useCalendary,
-    useTasks
+    useTasks,
+    useDialog
 };

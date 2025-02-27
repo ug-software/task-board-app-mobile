@@ -1,6 +1,7 @@
 /** @format */
 
 import { styled } from "@/src/theme";
+import { darken } from "@/src/theme/styled";
 
 export default styled()(({ theme }) => ({
   whapperScredule: {
@@ -72,5 +73,32 @@ export default styled()(({ theme }) => ({
   taskIconClock: {
     fontSize: 14,
     color: theme.pallet.primary.primary,
+  },
+  menuDialogWrapper: {
+    flexDirection: "row",
+    paddingHorizontal: 10,
+    width: "100%",
+  },
+  menuDialogItem: {
+    display: "flex",
+    alignItems: "center",
+    paddingHorizontal: 10,
+    //width: 50,
+  },
+  menuDialogContainer: {
+    borderColor: darken(theme.pallet.primary.background, 10),
+    borderRadius: 50,
+    borderStyle: "solid",
+    borderWidth: 1,
+    padding: 15,
+    marginBottom: 5
+  },
+  menuDialogIcon: {
+    color: darken(theme.pallet.primary.background, 80),
+  },
+  containerTextField: {
+    marginBottom: 15,
+    paddingHorizontal: 15,
+    width: "100%"
   },
 }));

@@ -6,8 +6,9 @@ import { icons, status } from "@/src/constants";
 import { useForm, useProject, useTasks } from "@/src/hooks";
 import Project from "@/src/interfaces/project";
 import Tasks from "@/src/interfaces/task";
+import { useLocalSearchParams } from "expo-router";
 
-const ProjectOption = ({ name, icon, color }: Project) => {
+export const ProjectOption = ({ name, icon, color }: Project) => {
     const styles = styleProjectOption({ color });
     return(
         <View style={styles.whapperProjectOption}>
@@ -30,7 +31,7 @@ interface StatusOptionProps {
     color: string
 }
 
-const StatusOption = ({ color, label }: StatusOptionProps) => {
+export const StatusOption = ({ color, label }: StatusOptionProps) => {
     const styles = styleStatusOption({ color });
     return(
         <View style={styles.whapperOptionStatus}>
@@ -41,10 +42,13 @@ const StatusOption = ({ color, label }: StatusOptionProps) => {
 
 export default () => {
     const styles = styleSheetPageSchedule();
+    const params = useLocalSearchParams();
     const { getAllProjects } = useProject();
     const [projectOptions, setProjectOptions] = useState<Project[]>([]);
-    const { handleValidationTask, handleSaveNewTask } = useTasks();
-
+    const { handleValidationTask, handleSaveNewTask, findTaskPerId, handleUpdateTask } = useTasks();
+    const handleSubmitTasks = params['schedule-per-type-action'] === 'edit' ? handleUpdateTask : handleSaveNewTask;
+    const title = params['schedule-per-type-action'] === 'edit' ? "Editar Tarefa" : "Adicionar Tarefa";
+    
     const {
       values,
       errors,
@@ -54,7 +58,7 @@ export default () => {
     } = useForm<Partial<Tasks> & { time: ITimerPicker }>({
       initialValues: {
         name: "",
-        date: new Date(),
+        date_marked: new Date(),
         description: "",
         status: "",
         project_id: undefined,
@@ -63,7 +67,7 @@ export default () => {
             minutes: "00",
         }
       },
-      onSubmit: handleSaveNewTask,
+      onSubmit: handleSubmitTasks,
       onValidation: handleValidationTask
     });
 
@@ -74,12 +78,34 @@ export default () => {
                 setProjectOptions(projects);
             }
         })()
+
+        if(params['schedule-per-type-action'] === 'edit'){
+            var id = params['id'];
+            
+            (async () => {
+              if(typeof id !== "string") return;
+      
+              const taskPerId = await findTaskPerId(Number.parseInt(id));
+              
+              if(taskPerId !== null){
+                var task = {
+                    ...taskPerId,
+                    time: {
+                        hour: taskPerId.date_marked.getHours().toString(),
+                        minutes: taskPerId.date_marked.getMinutes().toString(),
+                    }
+                }
+                                
+                setValues(task);
+              }
+            })();
+          } 
     }, []);
 
     return(
         <View style={styles.whapperPageTaskPerAction}>
             <View>
-                <Typograph pb={20} pt={10} fontWeight={"500"} variant="h3">Adicionar Tarefa:</Typograph>
+                <Typograph pb={20} pt={10} fontWeight={"500"} variant="h3">{title}</Typograph>
                 <View style={styles.containerTextField}>
                     <TextField 
                         fullWidth 
@@ -97,10 +123,10 @@ export default () => {
                         fullWidth 
                         name="date" 
                         label="Data:*"
-                        value={values.date}
+                        value={values.date_marked}
                         onChangeText={(text) => handleChange({ name: "date", value: text })}
-                        error={Boolean(errors?.date)}
-                        helperText={errors?.date}
+                        error={Boolean(errors?.date_marked)}
+                        helperText={errors?.date_marked}
                     />
                 </View>
                 <View style={styles.containerTextField}>

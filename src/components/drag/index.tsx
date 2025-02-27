@@ -15,7 +15,7 @@ export interface DragProps extends ViewProps {
   width?: ViewStyle["width"];
 }
 
-const Drag: React.FC<DragProps> = ({ children, onDragPress, style, ...props }) => {
+export default  ({ children, onDragPress, style, ...props }: DragProps) => {
   const styles = styleSheet({ ...props, style, onDragPress });
   const [dragState, setDragState] = useState<{ horizontal: string | null; vertical: string | null }>({
     horizontal: null,
@@ -46,5 +46,3 @@ const Drag: React.FC<DragProps> = ({ children, onDragPress, style, ...props }) =
     </View>
   );
 };
-
-export default Drag;

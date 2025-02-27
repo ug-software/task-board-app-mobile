@@ -25,13 +25,27 @@ interface StateProjectPage {
 export default () => {
   const styles = styleSheet();
   const { redirect } = useRouter();
-  const { getAllProjects } = useProject();
+  const { getAllProjects, handleDeleteProjectPerId } = useProject();
   const [projects, setProjects] = useState<Project[]>([]);
   const [action, setAction] = useState<StateProjectPage>({
     open: false,
     type: null,
     item: undefined,
   });
+
+  const handleConfirmDelection = (id: number) => {
+    handleDeleteProjectPerId(id, async () => {
+      setAction(state => ({
+        ...state,
+        open: false
+      }));
+
+      var data = await getAllProjects();      
+      if(data !== null){
+        setProjects(data);
+      }
+    });
+  }
 
   useEffect(() => {
     (async () => {
@@ -41,7 +55,7 @@ export default () => {
       }
     })()
     return;
-  }, [])
+  }, []);
 
   return (
     <View style={styles.whapperProjects}>
@@ -56,6 +70,7 @@ export default () => {
           projects.length > 0 ? (
             <FlatList
               data={projects}
+              showsVerticalScrollIndicator={false}
               renderItem={({ index, item }) => (
                 <Pressable onPress={() => setAction((state) => ({ ...state, open: true, item }))}>
                   <Card key={index} style={styles.containerProject}>
@@ -122,7 +137,7 @@ export default () => {
                 Editar
               </Typograph>
             </Pressable>
-            <Pressable  style={styles.menuDialogItem}>
+            <Pressable  style={styles.menuDialogItem} onPress={() => handleConfirmDelection(action.item!.id)}>
               <View style={styles.menuDialogContainer}>
                 <Icon
                     style={styles.menuDialogIcon}

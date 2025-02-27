@@ -8,7 +8,7 @@ export default interface Tasks {
   description: string,
   status: string,
   project_id: number,
-  date: Date,
+  date_marked: Date,
   updated_at: Date,
   created_at: Date,
 }
