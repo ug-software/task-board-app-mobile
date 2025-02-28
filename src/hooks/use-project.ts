@@ -4,8 +4,13 @@ import { useRouter } from "expo-router";
 import useLoading from "./use-loading";
 import useSqlite from "./use-sqlite";
 import useSnack from "./use-snack";
-import { eq } from "drizzle-orm";
 import useDialog from "./use-dialog";
+import { between, asc, eq } from "drizzle-orm";
+import { status } from "../constants";
+
+export interface ProjectsAndPercentTaskCompleted extends Project {
+    percent_task_completed: number
+}
 
 export default () => {
     const dialog = useDialog();
@@ -151,7 +156,46 @@ export default () => {
                 confirm();
             }
         })
-    }
+    };
+
+    const getProjectsAndTasksPercentFinishPerDay = loader.action(async (date: Date) => {
+        var initialDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+        var finalDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
+        var tasks = await db.select().from(taskSchema).where(between(taskSchema.date_marked, initialDate.toString(), finalDate.toString())).orderBy(asc(taskSchema.date_marked));
+        
+        var projects = [] as ProjectsAndPercentTaskCompleted[];
+
+        if(Array.isArray(tasks)){
+            const projectsId = [...new Set(tasks.map(x => x.project_id))];            
+
+            await Promise.all(projectsId.map(async projectId => {
+                //caso exista na lista pula...                
+                if(projects.filter(x => x.id === projectId).length > 0){
+                    return;
+                }
+
+                var project = (await db.select().from(projectSchema).where(eq(projectSchema.id, projectId))).find(x => x.id === projectId);
+                var tasksPerProject = tasks.filter(x => x.project_id === projectId);
+                var tasksCompleted = tasksPerProject.filter(x => x.status === status.completed.name || x.status === status.inactive.name);                
+
+                if(!project){
+                    return;
+                }               
+
+                projects.push({
+                    ...project,
+                    percent_task_completed: tasksCompleted.length === 0 ? 0 : Number.parseInt(((tasksCompleted.length / tasksPerProject.length) * 100).toFixed(2)),
+                    updated_at: project.updated_at ? new Date(project.updated_at) : new Date(),
+                    created_at: project.created_at ? new Date(project.created_at) : new Date(),
+                });
+
+                //devolve uma promisse para que espere a interação acabar...
+                return project;
+            }));
+        }
+
+        return projects;
+    });
 
     const handleValidationProject = (values: Partial<Project>) => {
         var errors = {
@@ -178,7 +222,7 @@ export default () => {
         }
 
         return errors;
-    }
+    };
 
-    return { handleSaveNewProject, handleUpdateProject, handleValidationProject, handleDeleteProjectPerId, getAllProjects, findProjectPerId };
+    return { handleSaveNewProject, handleUpdateProject, handleValidationProject, handleDeleteProjectPerId, getAllProjects, findProjectPerId, getProjectsAndTasksPercentFinishPerDay };
 }

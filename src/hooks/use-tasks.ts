@@ -9,6 +9,7 @@ import Project from "../interfaces/project";
 import useProject from "./use-project";
 import { between, asc, eq } from "drizzle-orm";
 import useDialog from "./use-dialog";
+import { status } from "../constants";
 
 export default () => {
     const db = useSqlite();
@@ -262,5 +263,29 @@ export default () => {
         return null;
     });
 
-    return { handleValidationTask, handleSaveNewTask, getAllTasks, getAllTasksPerDate, handleChangeStatusPerId, findTaskPerId, handleUpdateTask, handleDeleteTasksPerId };
+    const getPercentTasksCompletedPerDate = loader.action(async (date: Date) => {
+        var intialDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+        var finalDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
+        var tasks = await db.select().from(taskSchema).where(between(taskSchema.date_marked, intialDate.toString(), finalDate.toString())).orderBy(asc(taskSchema.date_marked));
+        
+        if(Array.isArray(tasks)){
+            var tasksCompleted = tasks.filter(x => x.status === status.completed.name || x.status === status.inactive.name);
+            return Number.parseInt(((tasksCompleted.length / tasks.length) * 100).toFixed(2));
+        }
+
+        return 0;
+    });
+
+    return {
+        handleValidationTask,
+        handleSaveNewTask,
+        getAllTasks,
+        getAllTasksPerDate,
+        handleChangeStatusPerId,
+        findTaskPerId,
+        handleUpdateTask,
+        handleDeleteTasksPerId,
+        getPercentTasksCompletedPerDate
+        
+    };
 }

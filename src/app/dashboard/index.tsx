@@ -11,26 +11,35 @@ import {
   Typograph,
 } from "@/src/components";
 import { FlatList, SafeAreaView, Text, View } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styleSheet from "./styles";
 import { lighten } from "@/src/theme/styled";
 import tasksGroup from "@/src/mock/tasks-group";
-
-const colors = [
-  "#1E90FF",
-  "#FF6F61",
-  "#28A745",
-  "#FFD700",
-  "#800080",
-  "#FF7F50",
-  "#008080",
-  "#800080",
-  "#FF4500",
-  "#A9A9A9",
-];
+import { useProject, useRouter, useTasks } from "@/src/hooks";
+import { ProjectsAndPercentTaskCompleted } from "@/src/hooks/use-project";
+import { icons } from "@/src/constants";
 
 export default () => {
   const styles = styleSheet({});
+  const { redirect } = useRouter();
+  const { getProjectsAndTasksPercentFinishPerDay } = useProject();
+  const { getPercentTasksCompletedPerDate } = useTasks();
+  const [tasksPercent, setTasksPercent] = useState<number>(0);
+  const [projects, setProjects] = useState<ProjectsAndPercentTaskCompleted[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      var projects = await getProjectsAndTasksPercentFinishPerDay(new Date());
+
+      if(Array.isArray(projects)){
+        setProjects(projects);
+      }
+
+      var percentTasks = await getPercentTasksCompletedPerDate(new Date());
+      setTasksPercent(percentTasks);
+    })();
+  }, [])
+
   return (
     <View style={styles.whapperDashboard}>
       <View style={styles.whapperHeaderDashboard}>
@@ -56,9 +65,14 @@ export default () => {
         <View style={styles.containerTodayTaskPercent}>
           <View style={styles.actionsTodayTaskPercent}>
             <Typograph fontWeight='500' variant='h5' color='light'>
-              Seu percentual de tarefas concluidas!
+              Seu percentual de tarefas concluidas hoje !
             </Typograph>
-            <Button fullWidth mt={10} variant='contained'>
+            <Button 
+              mt={10} 
+              fullWidth 
+              variant='contained'
+              onPress={redirect("/schedule")} 
+            >
               Tarefas
             </Button>
           </View>
@@ -68,32 +82,32 @@ export default () => {
               suffix='%'
               strokeColor='default'
               strokeSize={12}
-              value={60}
+              value={tasksPercent}
             />
           </View>
         </View>
       </View>
       <SafeAreaView style={styles.whapperTasksGroups}>
         <Typograph pl={20} pb={15} fontWeight={"600"} variant='h3'>
-          Ultimos Projetos
+          Projetos com tarefas hoje
         </Typograph>
         <FlatList
           style={styles.flatListTaksGroups}
-          data={tasksGroup}
+          data={projects}
           renderItem={({ index, item }) => (
             <Card key={index} style={styles.containerTaskGroup}>
               <View style={styles.infoTaskGroup}>
                 <View
                   style={[
-                    { backgroundColor: lighten(item.icon.color, 85) },
+                    { backgroundColor: lighten(item.color, 85) },
                     styles.iconTaskGroup,
                   ]}>
                   <Icon
                     //@ts-ignore
-                    type={item.icon.package}
+                    type={icons[item.icon].package}
                     //@ts-ignore
-                    name={item.icon.name}
-                    color={item.icon.color}
+                    name={icons[item.icon].name}
+                    color={item.color}
                     size={25}
                   />
                 </View>
@@ -107,9 +121,9 @@ export default () => {
               <CircularProgress
                 suffix='%'
                 size={30}
-                strokeColor={item.icon.color}
+                strokeColor={item.color}
                 strokeSize={6}
-                value={60}
+                value={item.percent_task_completed}
               />
             </Card>
           )}
