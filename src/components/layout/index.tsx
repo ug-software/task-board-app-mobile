@@ -1,35 +1,44 @@
 /** @format */
 
-import React from "react";
-import { ReactNode } from "react";
-import { View } from "react-native";
 import { AppBar, TollbarApp, Layout } from "./components";
+import { useLayout, useRouter, useUser } from "@/src/hooks";
+import IconButton from "../icon-button";
+import SnackProvider from "../snack";
+import { View } from "react-native";
+import { ReactNode, useEffect, useState } from "react";
 import styleSheet from "./styles";
+import Tollbar from "../tollbar";
+import Loading from "../loading";
+import Dialog from "../dialog";
 import Avatar from "../avatar";
 import Icon from "../icon";
-import IconButton from "../icon-button";
-import Tollbar from "../tollbar";
-import { useLayout, useRouter } from "@/src/hooks";
-import SnackProvider from "../snack";
-import Loading from "../loading";
-import { router } from "expo-router";
-import Dialog from "../dialog";
+import React from "react";
+import { User } from "@/src/interfaces/user";
 
 export interface LayoutProps {
   children: ReactNode;
 }
 
 export default (props: LayoutProps) => {
-  const { barAppShow, headerShow, handleBack } = useLayout();
+  const [user, setUser] = useState<User | undefined>(undefined);
+  const { handleGetCurrentUser } = useUser();
+  const { barAppShow, headerShow, handleBack, tollbar } = useLayout();
   const style = styleSheet({...props, layoutOn: false});
   const { redirect } = useRouter();  
+
+  useEffect(() => {
+    (async () => {
+      var user = await handleGetCurrentUser();
+      setUser(user);
+    })()
+  }, [])
 
   return (
     <View style={style.whapperLayout}>
       <Dialog>
         <Loading/>
         <SnackProvider/>
-        <Tollbar />
+        {tollbar && <Tollbar />}
         {headerShow && (
           <TollbarApp
             pl={10}
@@ -40,14 +49,23 @@ export default (props: LayoutProps) => {
             <IconButton onPress={handleBack} id='button-return-page' variant='outlined'>
               <Icon size={28} type='MaterialCommunityIcons' name='arrow-left' />
             </IconButton>
-            <Avatar
-              //@ts-ignore
-              onPress={redirect("profile")}
-              size='small'
-              img={{
-                uri: "https://media.istockphoto.com/id/950688808/pt/foto/enjoying-cocktail-at-the-pool.jpg?s=1024x1024&w=is&k=20&c=tF1c_z6KUZwkSgvvRA2r0vxDbc0ac27sFeu0XdMkvq4=",
-              }}
-            />
+            {user ? 
+              user.img !== "" ? (
+                <Avatar
+                  onPress={redirect("/profile")}
+                  size='small'
+                  img={{
+                    uri: user.img,
+                  }}
+                /> 
+              ) : (
+                <Avatar
+                  onPress={redirect("/profile")}
+                  size='small'
+                >{user.name[0]}</Avatar>
+              ) : 
+              null 
+            }
           </TollbarApp>
         )}
         {props.children}
@@ -56,4 +74,5 @@ export default (props: LayoutProps) => {
     </View>
   );
 };
+
 export { TollbarApp, Layout };

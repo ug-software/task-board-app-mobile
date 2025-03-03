@@ -5,6 +5,6 @@ import { View } from "react-native";
 import styleSheet from "./styles";
 
 export default () => {
-  const { whapperTollbar } = styleSheet({});
+  const { whapperTollbar } = styleSheet();
   return <View style={whapperTollbar} />;
 };

@@ -70,11 +70,11 @@ export default () => {
 
     const handleSaveNewTask = loader.action(async (values: Partial<Tasks> & { time: TimePicker }) => {
         try {
-            var date = values.date_marked ? values.date_marked : new Date();
+            var date = values.date_marked ? new Date(values.date_marked) : new Date();
 
             var task = {
                 ...values,
-                date: new Date(date.getFullYear(), date.getMonth(), date.getDate(), parseInt(values.time.hour), parseInt(values.time.minutes), 0),
+                date_marked: new Date(date.getFullYear(), date.getMonth(), date.getDate(), parseInt(values.time.hour), parseInt(values.time.minutes), 0),
                 created_at: new Date(),
                 updated_at: new Date()
             } as Tasks;
@@ -263,6 +263,35 @@ export default () => {
         return null;
     });
 
+    const getAllTasksBetweenDates = loader.action(async (initialDate: Date, finalDate: Date) => {
+        initialDate = new Date(initialDate.getFullYear(), initialDate.getMonth(), initialDate.getDate(), 0, 0, 0);
+        finalDate = new Date(finalDate.getFullYear(), finalDate.getMonth(), finalDate.getDate(), 23, 59, 59);
+        var tasks = await db.select().from(taskSchema).where(between(taskSchema.date_marked, initialDate.toString(), finalDate.toString())).orderBy(asc(taskSchema.date_marked));
+        
+        if(Array.isArray(tasks)){
+            return await Promise.all(tasks.map(async x => {
+                var project = null;
+
+                if(cacheProjects[x.project_id] !== undefined){
+                    project = cacheProjects[x.project_id];
+                }else {
+                    project = await findProjectPerId(x.project_id);
+                    cacheProjects[x.project_id] = project ? project : undefined;
+                }
+
+                return {
+                    ...x,
+                    project,
+                    date_marked: x.date_marked !== null ? new Date(x.date_marked) : new Date(),
+                    created_at: x.created_at !== null ? new Date(x.created_at) : new Date(),
+                    updated_at: x.updated_at !== null ? new Date(x.updated_at) : new Date(),
+                }
+            }));
+        }
+
+        return null;
+    });
+
     const getPercentTasksCompletedPerDate = loader.action(async (date: Date) => {
         var intialDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
         var finalDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
@@ -270,7 +299,10 @@ export default () => {
         
         if(Array.isArray(tasks)){
             var tasksCompleted = tasks.filter(x => x.status === status.completed.name || x.status === status.inactive.name);
-            return Number.parseInt(((tasksCompleted.length / tasks.length) * 100).toFixed(2));
+            
+            if(tasksCompleted.length > 0){
+                return Number.parseInt(((tasksCompleted.length / tasks.length) * 100).toFixed(2));
+            }
         }
 
         return 0;
@@ -285,7 +317,7 @@ export default () => {
         findTaskPerId,
         handleUpdateTask,
         handleDeleteTasksPerId,
-        getPercentTasksCompletedPerDate
-        
+        getPercentTasksCompletedPerDate,
+        getAllTasksBetweenDates
     };
 }

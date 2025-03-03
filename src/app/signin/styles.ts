@@ -1,8 +1,8 @@
 /** @format */
 
-import styled from "@/src/theme/styled";
+import styled, { darken, lighten } from "@/src/theme/styled";
 
-const styleSheet = styled()(() => ({
+const styleSheet = styled()(({ theme }) => ({
   whapperSiginView: {
     display: "flex",
     alignItems: "center",
@@ -15,7 +15,6 @@ const styleSheet = styled()(() => ({
     flexDirection: "row",
     alignItems: "center",
     width: "100%",
-    marginTop: 45,
     padding: 20,
   },
   textSiginHeader: {
@@ -35,6 +34,12 @@ const styleSheet = styled()(() => ({
     width: "100%",
     height: "100%",
   },
+  avatar: { 
+    borderStyle: "solid", 
+    borderWidth: 1, 
+    borderRadius: 100,
+    borderColor: lighten(theme.pallet.primary.main, 60)
+  }
 }));
 
 export default styleSheet;

@@ -15,6 +15,7 @@ import { openDatabaseSync, SQLiteProvider } from "expo-sqlite/next";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 import migrations from "../../drizzle/migrations";
 import DialogContext from "../context/dialog";
+import NotificationContext from "../context/notification";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -57,19 +58,21 @@ export default function RootLayout() {
           <DialogContext>
             <SnackContext>
               <LayoutContext>
-                <Layout>
-                  <Stack>
-                    <Stack.Screen name='index' options={{ headerShown: false }} />
-                    <Stack.Screen name='login' options={{ headerShown: false }} />
-                    <Stack.Screen name='signin' options={{ headerShown: false }} />
-                    <Stack.Screen name='dashboard' options={{ headerShown: false }} />
-                    <Stack.Screen name='schedule' options={{ headerShown: false }} />
-                    <Stack.Screen name='projects' options={{ headerShown: false }} />
-                    <Stack.Screen name='setting' options={{ headerShown: false }} />
-                    <Stack.Screen name='profile' options={{ headerShown: false }} />
-                    <Stack.Screen name='+not-found' />
-                  </Stack>
-                </Layout>
+                <NotificationContext>
+                  <Layout>
+                    <Stack>
+                      <Stack.Screen name='index' options={{ headerShown: false }} />
+                      <Stack.Screen name='login' options={{ headerShown: false }} />
+                      <Stack.Screen name='signin' options={{ headerShown: false }} />
+                      <Stack.Screen name='dashboard' options={{ headerShown: false }} />
+                      <Stack.Screen name='schedule' options={{ headerShown: false }} />
+                      <Stack.Screen name='projects' options={{ headerShown: false }} />
+                      <Stack.Screen name='setting' options={{ headerShown: false }} />
+                      <Stack.Screen name='profile' options={{ headerShown: false }} />
+                      <Stack.Screen name='+not-found' />
+                    </Stack>
+                  </Layout>
+                </NotificationContext>
               </LayoutContext>
             </SnackContext>
           </DialogContext>

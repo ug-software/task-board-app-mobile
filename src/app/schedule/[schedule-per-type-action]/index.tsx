@@ -124,7 +124,7 @@ export default () => {
                         name="date" 
                         label="Data:*"
                         value={values.date_marked}
-                        onChangeText={(text) => handleChange({ name: "date", value: text })}
+                        onChangeText={(text) => handleChange({ name: "date_marked", value: text })}
                         error={Boolean(errors?.date_marked)}
                         helperText={errors?.date_marked}
                     />

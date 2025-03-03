@@ -10,10 +10,13 @@ export default styled()(({ theme }) => ({
         display: "flex",
         width: "100%",
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        paddingVertical: 25,
+        paddingHorizontal: 50
     },
     whapperConfigOptions: {
-        width: "100%"
+        width: "100%",
+        marginTop: 25
     },
     whapperListOptions: {
         paddingHorizontal: 10

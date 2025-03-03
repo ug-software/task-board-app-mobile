@@ -11,7 +11,8 @@ export interface AvatarProps extends PressableProps {
 }
 
 export default ({ children, size, img, ...props }: AvatarProps) => {
-  const { whapperAvatar, imageAvatar } = styleSheet({ size });
+  const { whapperAvatar, imageAvatar, textAvatar } = styleSheet({ size });
+
   if (img !== undefined) {
     return (
       <Pressable style={whapperAvatar} {...props}>
@@ -25,8 +26,8 @@ export default ({ children, size, img, ...props }: AvatarProps) => {
   }
 
   return (
-    <Pressable {...props}>
-      <Text>{children}</Text>
+    <Pressable style={whapperAvatar} {...props}>
+      <Text style={textAvatar}>{children}</Text>
     </Pressable>
   );
 };

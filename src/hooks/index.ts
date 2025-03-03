@@ -10,8 +10,12 @@ import useTheme from "./use-theme";
 import useCalendary from "./use-calendary";
 import useTasks from "./use-tasks";
 import useDialog from "./use-dialog";
+import useUser from "./use-user";
+import useNotification from "./use-notification";
 
 export {
+    useNotification,
+    useUser,
     useRouter,
     useLayout,
     useSqlite,

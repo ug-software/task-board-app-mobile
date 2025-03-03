@@ -18,13 +18,13 @@ export default ({ error = false, name, value, ...rest} : DatePickerProps) => {
     const [isActive, setActive] = useState(false);
     const styles = styleSheetDatePicker({ ...rest, active: isActive, name, error });
     const [modalVisible, setModalVisible] = useState<boolean>(false);
-    const [date, setDate] = useState<Date>(new Date());
+    const [date, setDate] = useState<Date>(value ? value : new Date());
 
-    const handleSelectDate = (value: Date) => {
+    const handleSelectDate = (value: Date) => {        
         setDate(value);
     };
     
-    const handleSelect = (value: Date) => {
+    const handleSelect = (value: Date) => {  
         setActive(state => !state);
         setModalVisible(state => !state);
     
@@ -90,7 +90,7 @@ export default ({ error = false, name, value, ...rest} : DatePickerProps) => {
                                 </IconButton>
                             </View>
                         </View>
-                        <Calendary day={date.getDate()} month={calendary.month} year={calendary.year} onSelectDate={handleSelectDate} />
+                        <Calendary currentDate={date} day={date.getDate()} month={calendary.month} year={calendary.year} onSelectDate={handleSelectDate} />
                         <View style={styles.action}>
                             <Button size="small" variant="contained" onPress={() => handleSelect(date)}>Selecionar</Button>
                         </View>

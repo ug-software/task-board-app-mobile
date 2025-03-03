@@ -5,6 +5,7 @@ import { router } from "expo-router";
 
 export default () => {
   const [layout, setLayout] = useState({
+    tollbar: false,
     headerShow: false,
     barAppShow: false,
     history: [],
@@ -43,5 +44,12 @@ export default () => {
     });
   }
 
-  return { ...layout, handleChangeLayout, handleBack, handleChangeBack };
+  const handleChangeToolbar = (isView: boolean) => {
+    setLayout(state => ({
+      ...state,
+      tollbar: isView
+    }));
+  }
+
+  return { ...layout, handleChangeLayout, handleBack, handleChangeBack, handleChangeToolbar };
 };

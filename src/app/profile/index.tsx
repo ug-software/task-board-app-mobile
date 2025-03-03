@@ -1,7 +1,9 @@
 import { Avatar, Icon, ListItem, Typograph } from "@/src/components";
-import React from "react"
-import { FlatList, Text, View } from "react-native"
+import React, { useEffect, useState } from "react"
+import { FlatList, View } from "react-native"
 import styleSheet from "./styles"
+import { User } from "@/src/interfaces/user";
+import { useUser } from "@/src/hooks";
 
 const options = [
     {
@@ -24,16 +26,28 @@ const options = [
 
 export default () => {
     const style = styleSheet();
+    const [user, setUser] = useState<User | undefined>(undefined);
+    const { handleGetCurrentUser } = useUser();
+
+    useEffect(() => {
+        (async () => {
+            var user = await handleGetCurrentUser();
+            setUser(user);
+        })()
+    }, [])
+
     return(
         <View style={style.whapperPageProfile}>
             <View style={style.whapperUserInfo}>
-                <Avatar
-                    size="extra-large"
-                    img={{
-                        uri: "https://media.istockphoto.com/id/950688808/pt/foto/enjoying-cocktail-at-the-pool.jpg?s=1024x1024&w=is&k=20&c=tF1c_z6KUZwkSgvvRA2r0vxDbc0ac27sFeu0XdMkvq4=",
-                      }}
-                />
-                <Typograph pt={20} variant="h3" fontWeight={500}>Juliana Campos</Typograph>
+                {user ? 
+                    user.img !== "" ? (
+                        <Avatar size='extra-large' img={{ uri: user.img }} /> 
+                    ) : (
+                        <Avatar size='extra-large'>{user.name[0]}</Avatar>
+                    ) : 
+                    null 
+                }
+                {user && <Typograph style={{textAlign: "center"}} pt={20} variant="h3" fontWeight={500}>{user.name}</Typograph>}
             </View>
             <View style={style.whapperConfigOptions}>
                 <FlatList

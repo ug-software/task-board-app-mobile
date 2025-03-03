@@ -19,6 +19,7 @@ import { ListItem } from "./list";
 import Alert from "./alert";
 import Calendary from "./calendary";
 import DragDivider from "./drag-divider";
+import Badge from "./badge";
 
 export {
   Icon,
@@ -46,5 +47,6 @@ export {
   DragDivider,
   Dialog,
   Alert,
-  Calendary
+  Calendary,
+  Badge
 };

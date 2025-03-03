@@ -34,7 +34,7 @@ const Day = ({ type, value, month, year, isActive, onSelectDate }: Day) => {
     currentDay.getFullYear() === year;
   const styles = styleSheet({});
 
-  const handleSelect = onSelectDate && year && month ? () => {
+  const handleSelect = onSelectDate && year && month ? () => {    
     onSelectDate(new Date(year, month, value))
   } : null
 

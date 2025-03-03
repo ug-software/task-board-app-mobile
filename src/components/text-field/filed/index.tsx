@@ -37,7 +37,6 @@ export default ({ label, name, ...props }: TextFieldBase) => {
     <>
       <Pressable
         onPressIn={handleFocus}
-        onPressOut={handleBlur}
         style={[whapperTextFieldFiled, props.style]}>
         <Text style={labelTextFieldFiled}>{label}</Text>
         <TextInput

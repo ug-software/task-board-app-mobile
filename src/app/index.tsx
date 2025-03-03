@@ -1,10 +1,10 @@
 /** @format */
 
-import { Button } from "@/src/components";
-import React from "react";
+import { useLayout, useNotification, useRouter } from "@/src/hooks";
 import { Image, Text, View } from "react-native";
+import { Button } from "@/src/components";
+import React, { useEffect } from "react";
 import styleSheet from "./styles";
-import { useRouter } from "@/src/hooks";
 
 export default () => {
   const {
@@ -14,8 +14,15 @@ export default () => {
     imageInitial,
     containerLoginPage,
     whapperLoginPage,
-  } = styleSheet({});
+  } = styleSheet();
+  const { handleChangeToolbar } = useLayout();
   const { redirect } = useRouter();
+  const { handleGetAutorizationForNotification } = useNotification();
+
+  useEffect(() => {
+    handleGetAutorizationForNotification();
+    handleChangeToolbar(false);
+  }, []);
 
   return (
     <View style={whapperLoginPage}>
