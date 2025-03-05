@@ -4,7 +4,8 @@ import { styled } from "@/src/theme";
 
 export default styled()(({ theme }) => ({
     wrapperBadge: {
-        position: "relative"
+        position: "relative",
+        zIndex: 99,
     },
     contentBadge: {
         zIndex: 99,

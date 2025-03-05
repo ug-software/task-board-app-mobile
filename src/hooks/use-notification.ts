@@ -40,7 +40,7 @@ export default () => {
     var notifications = await db.select().from(notificationSchema).where(between(notificationSchema.created_at, intialDate.toString(), finalDate.toString()));
     if(notifications.length > 0){
       // a complete task, as you have already gone through this flow on the current day 
-      return (await db.select().from(notificationSchema)).length;
+      return (await db.select().from(notificationSchema).where(eq(notificationSchema.status, "created"))).length;
     }
     
     var initialDate = new Date(today.getFullYear(), today.getMonth(), 0);
@@ -59,7 +59,13 @@ export default () => {
       }));
     }
 
-    return (await db.select().from(notificationSchema)).length;
+    return (await db.select().from(notificationSchema).where(eq(notificationSchema.status, "created"))).length;
+  }
+
+  const handleChangeStatusNotification = async (id: number) => {
+    return await db.update(notificationSchema).set({
+      status: "checked"
+    }).where(eq(notificationSchema.id, id));
   }
 
   const handleGetAutorizationForNotification = async () => {
@@ -88,6 +94,10 @@ export default () => {
       await Notifications.scheduleNotificationAsync(notification);
   };
 
+  const changePermissionNotification = async () => {
+    //const value = await AsyncStorage.getItem('TASKS');
+  }
+
   useEffect(() => {
       Notifications.setNotificationHandler({
         handleNotification: async () => {
@@ -101,13 +111,14 @@ export default () => {
     }, []);
 
   return {
-    schedule,
-    handleGetAutorizationForNotification,
-    updateNotifications,
-    decrease,
-    notifications,
-    set,
     sum,
-    getAllNotifications
+    set,
+    decrease,
+    schedule,
+    notifications,
+    updateNotifications,
+    getAllNotifications,
+    handleChangeStatusNotification,
+    handleGetAutorizationForNotification
   }
 }

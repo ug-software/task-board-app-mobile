@@ -6,7 +6,7 @@ import { Layout } from "@/src/components/layout";
 
 export default function RootLayout() {
   return (
-    <Layout showHeaderApp={false} showAppBar={true}>
+    <Layout showHeaderApp={true} showAppBar={true}>
       <Slot />
     </Layout>
   );
