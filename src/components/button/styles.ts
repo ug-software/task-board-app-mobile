@@ -2,9 +2,9 @@
 
 import { styled } from "@/src/theme";
 import { IButtonBaseProps } from "./interface";
-import { lighten, textColorBasedOnBackground } from "@/src/theme/styled";
+import { darken, lighten, textColorBasedOnBackground } from "@/src/theme/styled";
 
-export default styled<Omit<IButtonBaseProps, "children"> & { active: boolean }>()(({ variant, theme, fullWidth, active, mt, mb, ml, mr, size }) => ({
+export default styled<Omit<IButtonBaseProps, "children"> & { active: boolean }>()(({ variant, theme, fullWidth, active, mt, mb, ml, mr, size, disabled }) => ({
   whapperButtonBase: {
     marginTop: mt ? mt : 0,
     marginBottom: mb ? mb : 0,
@@ -18,9 +18,10 @@ export default styled<Omit<IButtonBaseProps, "children"> & { active: boolean }>(
     alignItems: "center",
     flexDirection: "row",
     ...(variant === "contained" && {
-      backgroundColor: !active
+      backgroundColor: !disabled ? !active
         ? theme.pallet.primary.primary
-        : lighten(theme.pallet.primary.primary, 20),
+        : lighten(theme.pallet.primary.primary, 20) :
+        darken(theme.pallet.primary.background, 15),
     }),
     ...(variant === "outlined" && {
       backgroundColor: !active
@@ -48,10 +49,11 @@ export default styled<Omit<IButtonBaseProps, "children"> & { active: boolean }>(
   textButtonBase: {
     fontSize: 15,
     ...(variant === "contained" && {
-      color:
+      color: !disabled ?
         textColorBasedOnBackground(theme.pallet.primary.primary) === "dark"
           ? theme.pallet.primary.text
-          : theme.pallet.primary.background,
+          : theme.pallet.primary.background :
+          darken(theme.pallet.primary.background, 60),
     }),
     ...(variant === "outlined" && {
       color: theme.pallet.primary.primary,

@@ -69,6 +69,7 @@ export default function RootLayout() {
                       <Stack.Screen name='projects' options={{ headerShown: false }} />
                       <Stack.Screen name='setting' options={{ headerShown: false }} />
                       <Stack.Screen name='profile' options={{ headerShown: false }} />
+                      <Stack.Screen name='notifications' options={{ headerShown: false }} />
                       <Stack.Screen name='+not-found' />
                     </Stack>
                   </Layout>

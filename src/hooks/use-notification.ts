@@ -4,16 +4,33 @@ import { Platform } from 'react-native';
 import useTasks from './use-tasks';
 import useSqlite from './use-sqlite';
 import { notificationSchema } from '../database';
-import { between } from 'drizzle-orm';
+import { between, eq } from 'drizzle-orm';
 import { NotificationContext } from '../context/notification';
 import { status } from '../constants';
+import useLoading from './use-loading';
+import useProject from './use-project';
 
 /* this hook have two functions, notifications for sistem and notification the past tasks days past go */
 
 export default () => {
   const db = useSqlite();
-  const { getAllTasksBetweenDates } = useTasks();
+  const { getAllTasksBetweenDates, findTaskPerId } = useTasks();
+  const { findProjectPerId } = useProject();
   const { decrease, notifications, set, sum } = useContext(NotificationContext);
+  const loader = useLoading();
+
+  const getAllNotifications = loader.action(async () => {
+    var notifications = await db.select().from(notificationSchema).where(eq(notificationSchema.status, "created"));
+
+    return await Promise.all(notifications.map(async (notification) => {
+      return {
+        ...notification,
+        task: await findTaskPerId(notification.task_id),
+        project: await findProjectPerId(notification.project_id),
+        created_at: notification.created_at ? new Date(notification.created_at) : new Date()
+      };
+    }));;
+  });
 
   const updateNotifications = async () => {
     var today = new Date();
@@ -25,7 +42,6 @@ export default () => {
       // a complete task, as you have already gone through this flow on the current day 
       return (await db.select().from(notificationSchema)).length;
     }
-
     
     var initialDate = new Date(today.getFullYear(), today.getMonth(), 0);
     finalDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1);
@@ -84,5 +100,14 @@ export default () => {
       });
     }, []);
 
-  return { schedule, handleGetAutorizationForNotification, updateNotifications, decrease, notifications, set, sum }
+  return {
+    schedule,
+    handleGetAutorizationForNotification,
+    updateNotifications,
+    decrease,
+    notifications,
+    set,
+    sum,
+    getAllNotifications
+  }
 }

@@ -12,8 +12,7 @@ export default () => {
     const router = useRouter();
 
     const handleGetCurrentUser = async () => {
-        var user = await db.select().from(userSchema);
-                
+        var user = await db.select().from(userSchema);        
         return user[0];
     }
 

@@ -80,7 +80,7 @@ export default () => {
         </View>
         <View>
           <Badge badgeContent={notification.notifications}>
-            <IconButton variant='outlined'>
+            <IconButton onPress={redirect("/notifications")} variant='outlined'>
               <Icon type='Feather' name='bell' />
             </IconButton>
           </Badge>

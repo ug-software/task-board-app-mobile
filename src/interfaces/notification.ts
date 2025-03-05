@@ -6,7 +6,7 @@ export default interface Notification {
     status: string,
     project_id: number,
     task_id: number,
-    project?: Project,
-    task?: Tasks,
+    project: Project | null,
+    task: Tasks | null,
     created_at: Date,
 }

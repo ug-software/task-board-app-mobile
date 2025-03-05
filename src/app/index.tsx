@@ -1,9 +1,9 @@
 /** @format */
 
-import { useLayout, useNotification, useRouter } from "@/src/hooks";
+import { useLayout, useNotification, useRouter, useUser } from "@/src/hooks";
 import { Image, Text, View } from "react-native";
 import { Button } from "@/src/components";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styleSheet from "./styles";
 
 export default () => {
@@ -15,13 +15,22 @@ export default () => {
     containerLoginPage,
     whapperLoginPage,
   } = styleSheet();
-  const { handleChangeToolbar } = useLayout();
+  const { handleGetCurrentUser } = useUser();
   const { redirect } = useRouter();
+  const { handleChangeToolbar } = useLayout();
+  const [ existNotUser, setExistNotUser ] = useState<boolean>(true);
   const { handleGetAutorizationForNotification } = useNotification();
 
   useEffect(() => {
     handleGetAutorizationForNotification();
     handleChangeToolbar(false);
+
+    (async () => {
+      var user = await handleGetCurrentUser();
+      if(user){
+        setExistNotUser(false);
+      }
+    })();
   }, []);
 
   return (
@@ -42,16 +51,26 @@ export default () => {
           Organize e gerencie sua vida de maneira eficiente. Liste seus
           compromissos, crie lembretes e acompanhe seu progresso com facilidade.
         </Text>
-        <Button
-          mb={10}
-          fullWidth
-          variant='contained'
-          onPress={redirect("/dashboard")}>
-          Acessar
-        </Button>
-        <Button fullWidth variant='contained' onPress={redirect("/signin")}>
-          Cadastrar
-        </Button>
+        {!existNotUser ? (
+          <Button
+            mb={10}
+            fullWidth
+            variant='contained'
+            onPress={redirect("/dashboard")}
+            disabled={existNotUser}
+          >
+            Acessar
+          </Button>
+        ) : (
+          <Button 
+            fullWidth 
+            variant='contained' 
+            onPress={redirect("/signin")}
+            disabled={!existNotUser}
+          >
+            Cadastrar
+          </Button>
+        )}
       </View>
     </View>
   );
