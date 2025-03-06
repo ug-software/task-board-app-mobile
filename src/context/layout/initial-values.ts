@@ -11,9 +11,10 @@ export default () => {
     history: [],
   });
 
-  const handleChangeLayout = (headerShow: boolean, barAppShow: boolean) => {
+  const handleChangeLayout = (headerShow: boolean, barAppShow: boolean, tollbar = true) => {
     setLayout(state => ({
       ...state,
+      tollbar,
       headerShow,
       barAppShow
     }));

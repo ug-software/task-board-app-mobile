@@ -1,37 +1,36 @@
-import { router } from "expo-router";
-import { TimePicker } from "../components";
-import { taskSchema } from "../database";
 import Tasks, { TasksWithProjects } from "../interfaces/task";
-import useLoading from "./use-loading";
-import useSnack from "./use-snack";
-import useSqlite from "./use-sqlite";
+import useNotification from "./use-notification";
 import Project from "../interfaces/project";
+import { TimePicker } from "../components";
+import Task from "../models/task-model";
 import useProject from "./use-project";
-import { between, asc, eq } from "drizzle-orm";
-import useDialog from "./use-dialog";
+import useLoading from "./use-loading";
 import { status } from "../constants";
+import { router } from "expo-router";
+import useDialog from "./use-dialog";
+import useSnack from "./use-snack";
+import { getNumberOfMinutesBetweenTwoDates, getNumberOfSecondsBetweenTwoDates } from "../utils/date";
 
 export default () => {
-    const db = useSqlite();
     const dialog = useDialog();
     const loader = useLoading();
     const message = useSnack();
     const { findProjectPerId } = useProject();
+    const notification = useNotification();
     const cacheProjects : { [key: number]: Project | undefined } = {};
 
     const handleUpdateTask = loader.action(async (values: Partial<Tasks> & { time: TimePicker }) => {
-        try{
-            var task = values;         
+        try{        
 
-            if(task.created_at === null || task.created_at === undefined){
-                task.created_at = new Date();
+            if(values.created_at === null || values.created_at === undefined){
+                values.created_at = new Date();
             }
 
-            if(task.updated_at === null || task.updated_at === undefined){
-                task.updated_at = new Date();
+            if(values.updated_at === null || values.updated_at === undefined){
+                values.updated_at = new Date();
             }
 
-            if(task.id === undefined){
+            if(values.id === undefined){
                 message.schedule({
                     phase: "Não foi possivel identificar registro, tente novamente mais tarde",
                     severity: "warning",
@@ -42,14 +41,8 @@ export default () => {
             }
 
             //@ts-ignore
-            var date_marked = new Date(task.date_marked.getFullYear(), task.date_marked.getMonth(), task.date_marked.getDate(), parseInt(task.time.hour), parseInt(task.time.minutes));            
-
-            await db.update(taskSchema).set({
-                ...task,
-                created_at: task.created_at.toString(),
-                updated_at: new Date().toString(),
-                date_marked: date_marked.toString(),
-            }).where(eq(taskSchema.id, task.id));
+            var date_marked = new Date(values.date_marked.getFullYear(), values.date_marked.getMonth(), values.date_marked.getDate(), parseInt(values.time.hour), parseInt(values.time.minutes));
+            await Task.updatePerId(values.id, {...values, date_marked });
 
             message.schedule({
                 phase: "Sucesso ao editar tarefa",
@@ -79,19 +72,25 @@ export default () => {
                 updated_at: new Date()
             } as Tasks;
             
-            await db.insert(taskSchema).values({
-                ...task,
-                date_marked: task.date_marked.toString(),
-                created_at: task.created_at.toString(),
-                updated_at: task.updated_at.toString(),
-            });
+            await Task.insert(task);
     
             message.schedule({
                 phase: "Sucesso ao adicionar Tarefa",
                 severity: "success",
                 variant: "container"
             });
-    
+            
+            var trigger = task.date_marked;
+            trigger.setMinutes(-15);
+            
+            notification.schedule({
+                content: {
+                    title: "Task And Manager",
+                    body: `A tarefa ${task.name} esta para começar!`
+                },
+                trigger: trigger
+            });
+
             router.navigate("/schedule");
         }catch(err){            
             var error = err as Error;
@@ -105,7 +104,7 @@ export default () => {
 
     const handleChangeStatusPerId = loader.action(async (id: number, status: string) => {
         try{
-            await db.update(taskSchema).set({ status }).where(eq(taskSchema.id, id));
+            await Task.changeStatusPerId(id, status);
             message.schedule({
                 phase: "Sucesso ao atualizar status",
                 severity: "success",
@@ -126,7 +125,7 @@ export default () => {
     });
 
     const findTaskPerId = loader.action(async (id: number) :Promise<Tasks | null> => {
-        var task = (await db.select().from(taskSchema).where(eq(taskSchema.id, id))).find(x => x.id === id);
+        var task = await Task.findPerId(id);
         
         if(task === undefined){
             return null;
@@ -147,7 +146,7 @@ export default () => {
             onConfirm: async (isTrue) => {                
                 if(isTrue){
                     const [ tasks ] = await Promise.all([
-                        db.delete(taskSchema).where(eq(taskSchema.id, id)),
+                        Task.deletePerId(id),
                     ]);
                     if(tasks){
                         message.schedule({
@@ -208,7 +207,7 @@ export default () => {
     };
 
     const getAllTasks = loader.action(async (): Promise<TasksWithProjects[] | null> => {
-        var tasks = await db.select().from(taskSchema);
+        var tasks = await Task.findAll();
         
         if(Array.isArray(tasks)){
             return await Promise.all(tasks.map(async x => {
@@ -235,9 +234,7 @@ export default () => {
     });
 
     const getAllTasksPerDate = loader.action(async (date: Date): Promise<TasksWithProjects[] | null> => {
-        var intialDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
-        var finalDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
-        var tasks = await db.select().from(taskSchema).where(between(taskSchema.date_marked, intialDate.toString(), finalDate.toString())).orderBy(asc(taskSchema.date_marked));
+        var tasks = await Task.findAllPerDate(date);
         
         if(Array.isArray(tasks)){
             return await Promise.all(tasks.map(async x => {
@@ -264,9 +261,7 @@ export default () => {
     });
 
     const getAllTasksBetweenDates = loader.action(async (initialDate: Date, finalDate: Date) => {
-        initialDate = new Date(initialDate.getFullYear(), initialDate.getMonth(), initialDate.getDate(), 0, 0, 0);
-        finalDate = new Date(finalDate.getFullYear(), finalDate.getMonth(), finalDate.getDate(), 23, 59, 59);
-        var tasks = await db.select().from(taskSchema).where(between(taskSchema.date_marked, initialDate.toString(), finalDate.toString())).orderBy(asc(taskSchema.date_marked));
+        var tasks = await Task.findAllBetweenDates(initialDate, finalDate);
         
         if(Array.isArray(tasks)){
             return await Promise.all(tasks.map(async x => {
@@ -293,9 +288,7 @@ export default () => {
     });
 
     const getPercentTasksCompletedPerDate = loader.action(async (date: Date) => {
-        var intialDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
-        var finalDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
-        var tasks = await db.select().from(taskSchema).where(between(taskSchema.date_marked, intialDate.toString(), finalDate.toString())).orderBy(asc(taskSchema.date_marked));
+        var tasks = Task.findAllPerDate(date);
         
         if(Array.isArray(tasks)){
             var tasksCompleted = tasks.filter(x => x.status === status.completed.name || x.status === status.inactive.name);

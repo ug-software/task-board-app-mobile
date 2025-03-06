@@ -43,4 +43,37 @@ const getDaysTheMouth = (mouth: number, year: number): DateTime[] => {
   return days;
 };
 
-export { formatInHours, getNumberOfDaysInTheMonth, getDaysTheMouth };
+function getNumberOfDaysBetweenTwoDates(initial: Date, final: Date) {
+  // Converte as datas para objetos Date, caso não sejam
+  const dateInitial = new Date(initial);
+  const dateFinal = new Date(final);
+
+  const diff = Math.abs(dateFinal .getTime()- dateInitial.getTime());
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+  return days;
+}
+
+function getNumberOfMinutesBetweenTwoDates(initial: Date, final: Date) {
+  // Converte as datas para objetos Date, caso não sejam
+  const dateInitial = new Date(initial);
+  const dateFinal = new Date(final);
+
+  const diff = Math.abs(dateFinal .getTime()- dateInitial.getTime());
+  const minutes = Math.floor(diff / (1000 * 60));
+
+  return minutes;
+}
+
+function getNumberOfSecondsBetweenTwoDates(initial: Date, final: Date) {
+  // Converte as datas para objetos Date, caso não sejam
+  const dateInitial = new Date(initial);
+  const dateFinal = new Date(final);
+
+  const diff = Math.abs(dateFinal .getTime()- dateInitial.getTime());
+  const seconds = Math.floor(diff / 1000);
+
+  return seconds;
+}
+
+export { formatInHours, getNumberOfDaysInTheMonth, getDaysTheMouth, getNumberOfDaysBetweenTwoDates, getNumberOfMinutesBetweenTwoDates, getNumberOfSecondsBetweenTwoDates };

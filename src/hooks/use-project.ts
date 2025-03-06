@@ -1,14 +1,14 @@
-import { projectSchema, taskSchema } from "../database";
-import Project from "../interfaces/project";
+import IProject from "../interfaces/project";
 import { useRouter } from "expo-router";
 import useLoading from "./use-loading";
 import useSqlite from "./use-sqlite";
 import useSnack from "./use-snack";
 import useDialog from "./use-dialog";
-import { between, asc, eq } from "drizzle-orm";
 import { status } from "../constants";
+import Project from "../models/project-model";
+import Task from "../models/task-model";
 
-export interface ProjectsAndPercentTaskCompleted extends Project {
+export interface ProjectsAndPercentTaskCompleted extends IProject {
     percent_task_completed: number
 }
 
@@ -19,7 +19,7 @@ export default () => {
     const router = useRouter();
     const db = useSqlite();
 
-    const handleUpdateProject = loader.action(async (values: Partial<Project>) => {
+    const handleUpdateProject = loader.action(async (values: Partial<IProject>) => {
         try{
             var project = values;
 
@@ -41,11 +41,7 @@ export default () => {
                 return;
             }
 
-            await db.update(projectSchema).set({
-                ...project,
-                created_at: project.created_at.toString(),
-                updated_at: project.updated_at.toString()
-            }).where(eq(projectSchema.id, project.id));
+            await Project.updatePerId(project.id, project);
 
             message.schedule({
                 phase: "Sucesso ao editar Projeto",
@@ -64,9 +60,9 @@ export default () => {
         }
     });
     
-    const handleSaveNewProject = loader.action(async (values: Partial<Project>) => {
+    const handleSaveNewProject = loader.action(async (values: Partial<IProject>) => {
         try{
-            var project = values as Project;
+            var project = values as IProject;
 
             if(project.created_at === null || project.created_at === undefined){
                 project.created_at = new Date();
@@ -76,11 +72,7 @@ export default () => {
                 project.updated_at = new Date();
             }
 
-            await db.insert(projectSchema).values({
-                ...project,
-                created_at: project.created_at.toString(),
-                updated_at: project.updated_at.toString()
-            });
+            await Project.insert(project);
 
             message.schedule({
                 phase: "Sucesso ao adicionar Projeto",
@@ -99,8 +91,8 @@ export default () => {
         }
     });
 
-    const getAllProjects = loader.action(async (): Promise<Project[] | null> => {
-        var projects = await db.select().from(projectSchema);
+    const getAllProjects = loader.action(async (): Promise<IProject[] | null> => {
+        var projects = await Project.findAll();
 
         if(Array.isArray(projects)){
             return projects.map(x => ({
@@ -113,8 +105,8 @@ export default () => {
         return null;
     });
 
-    const findProjectPerId = loader.action(async (id: number): Promise<Project | null> => {
-        let project = (await db.select().from(projectSchema).where(eq(projectSchema.id, id))).find(x => x.id === id);
+    const findProjectPerId = loader.action(async (id: number): Promise<IProject | null> => {
+        let project = await Project.findPerId(id);
         
         if(project === undefined){
             return null;
@@ -134,8 +126,8 @@ export default () => {
             onConfirm: async (isTrue) => {                
                 if(isTrue){
                     const [project, tasks] = await Promise.all([
-                        db.delete(projectSchema).where(eq(projectSchema.id, id)),
-                        db.delete(taskSchema).where(eq(taskSchema.project_id, id))
+                        Project.deletePerId(id),
+                        Task.deleteAllPerProjectId(id), 
                     ]);
                     if(project && tasks){
                         message.schedule({
@@ -161,7 +153,7 @@ export default () => {
     const getProjectsAndTasksPercentFinishPerDay = loader.action(async (date: Date) => {
         var initialDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
         var finalDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
-        var tasks = await db.select().from(taskSchema).where(between(taskSchema.date_marked, initialDate.toString(), finalDate.toString())).orderBy(asc(taskSchema.date_marked));
+        var tasks = await Task.findAllBetweenDates(initialDate, finalDate);
         
         var projects = [] as ProjectsAndPercentTaskCompleted[];
 
@@ -174,17 +166,22 @@ export default () => {
                     return;
                 }
 
-                var project = (await db.select().from(projectSchema).where(eq(projectSchema.id, projectId))).find(x => x.id === projectId);
+                var project = await Project.findPerId(projectId);
                 var tasksPerProject = tasks.filter(x => x.project_id === projectId);
                 var tasksCompleted = tasksPerProject.filter(x => x.status === status.completed.name || x.status === status.inactive.name);                
 
                 if(!project){
                     return;
-                }               
+                }
+
+                let percent_task_completed = 0;
+                if( tasksCompleted.length !== 0){
+                    percent_task_completed = Number.parseInt(((tasksCompleted.length / tasksPerProject.length) * 100).toFixed(2));
+                };
 
                 projects.push({
                     ...project,
-                    percent_task_completed: tasksCompleted.length === 0 ? 0 : Number.parseInt(((tasksCompleted.length / tasksPerProject.length) * 100).toFixed(2)),
+                    percent_task_completed,
                     updated_at: project.updated_at ? new Date(project.updated_at) : new Date(),
                     created_at: project.created_at ? new Date(project.created_at) : new Date(),
                 });
@@ -197,7 +194,7 @@ export default () => {
         return projects;
     });
 
-    const handleValidationProject = (values: Partial<Project>) => {
+    const handleValidationProject = (values: Partial<IProject>) => {
         var errors = {
             name: "",
             description: "",
@@ -224,5 +221,13 @@ export default () => {
         return errors;
     };
 
-    return { handleSaveNewProject, handleUpdateProject, handleValidationProject, handleDeleteProjectPerId, getAllProjects, findProjectPerId, getProjectsAndTasksPercentFinishPerDay };
+    return {
+        handleSaveNewProject,
+        handleUpdateProject,
+        handleValidationProject,
+        handleDeleteProjectPerId,
+        getAllProjects,
+        findProjectPerId,
+        getProjectsAndTasksPercentFinishPerDay
+    };
 }

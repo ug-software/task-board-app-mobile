@@ -16,13 +16,10 @@ import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 import migrations from "../../drizzle/migrations";
 import DialogContext from "../context/dialog";
 import NotificationContext from "../context/notification";
+import db, { DB_NAME } from "@/src/database";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
-const DB_NAME = "database.db";
-const expoDb = openDatabaseSync(DB_NAME);
-const db = drizzle(expoDb);
-
 export default function RootLayout() {
   const { success, error } = useMigrations(db, migrations);
   const [loaded] = useFonts({
@@ -67,7 +64,6 @@ export default function RootLayout() {
                       <Stack.Screen name='dashboard' options={{ headerShown: false }} />
                       <Stack.Screen name='schedule' options={{ headerShown: false }} />
                       <Stack.Screen name='projects' options={{ headerShown: false }} />
-                      <Stack.Screen name='setting' options={{ headerShown: false }} />
                       <Stack.Screen name='profile' options={{ headerShown: false }} />
                       <Stack.Screen name='notifications' options={{ headerShown: false }} />
                       <Stack.Screen name='+not-found' />

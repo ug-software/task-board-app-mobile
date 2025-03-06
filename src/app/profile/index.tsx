@@ -11,13 +11,12 @@ export default () => {
     const { handleGetCurrentUser } = useUser();
     const { changePermissionNotification } = useNotification();
     const [user, setUser] = useState<User | undefined>(undefined);
-
     const options = [
         {
             label: "Editar perfil",
             description: "Atualize suas informações pessoais, é possível alterar dados como nome, e-mail e foto de perfil.",
             icon: <Icon size={25} type="FontAwesome5" name="user-circle"/>,
-            onPress: () => router.navigate("/signin")
+            onPress: () => router.navigate("/signin?isEdit=true")
         },
         {
             label: "Notificação",

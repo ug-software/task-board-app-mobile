@@ -1,34 +1,30 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { NotificationContext } from '../context/notification';
 import * as Notifications from 'expo-notifications';
 import { useContext, useEffect } from 'react';
 import { Platform } from 'react-native';
-import useTasks from './use-tasks';
-import useSqlite from './use-sqlite';
-import { notificationSchema } from '../database';
-import { between, eq } from 'drizzle-orm';
-import { NotificationContext } from '../context/notification';
 import { status } from '../constants';
-import useLoading from './use-loading';
-import useProject from './use-project';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import useSnack from './use-snack';
+import Notification from '../models/notification-model';
+import Task from '../models/task-model';
+import useProject from './use-project';
+import useLoading from './use-loading';
 
 /* this hook have two functions, notifications for sistem and notification the past tasks days past go */
 
 export default () => {
-  const db = useSqlite();
-  const { getAllTasksBetweenDates, findTaskPerId } = useTasks();
   const { findProjectPerId } = useProject();
   const { decrease, notifications, set, sum } = useContext(NotificationContext);
   const loader = useLoading();
   const snack = useSnack();
 
   const getAllNotifications = loader.action(async () => {
-    var notifications = await db.select().from(notificationSchema).where(eq(notificationSchema.status, "created"));
+    var notifications = await Notification.findAllPerStatusCreated();
 
     return await Promise.all(notifications.map(async (notification) => {
       return {
         ...notification,
-        task: await findTaskPerId(notification.task_id),
+        task: await Task.findPerId(notification.task_id),
         project: await findProjectPerId(notification.project_id),
         created_at: notification.created_at ? new Date(notification.created_at) : new Date()
       };
@@ -37,38 +33,33 @@ export default () => {
 
   const updateNotifications = async () => {
     var today = new Date();
-    var intialDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
-    var finalDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
-
-    var notifications = await db.select().from(notificationSchema).where(between(notificationSchema.created_at, intialDate.toString(), finalDate.toString()));
+     var notifications = await Notification.findAllPerDate(today);
     if(notifications.length > 0){
       // a complete task, as you have already gone through this flow on the current day 
-      return (await db.select().from(notificationSchema).where(eq(notificationSchema.status, "created"))).length;
+      return (await Notification.findAllPerStatusCreated()).length;
     }
     
     var initialDate = new Date(today.getFullYear(), today.getMonth(), 0);
-    finalDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1);
+    var finalDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1);
 
-    var tasks = await getAllTasksBetweenDates(initialDate, finalDate);    
+    var tasks = await Task.findAllBetweenDates(initialDate, finalDate);    
     if(Array.isArray(tasks)){
       
       await Promise.all(tasks.filter(x => x.status === status.created.name || x.status === status.inprogress.name).map(async task => {
-        return await db.insert(notificationSchema).values({
+        return await Notification.insert({
           project_id: task.project_id,
           task_id: task.id ? task.id : 0,
           status: "created",
-          created_at: today.toString()
+          created_at: today
         });
       }));
     }
 
-    return (await db.select().from(notificationSchema).where(eq(notificationSchema.status, "created"))).length;
+    return (await Notification.findAllPerStatusCreated()).length;
   }
 
   const handleChangeStatusNotification = async (id: number) => {
-    return await db.update(notificationSchema).set({
-      status: "checked"
-    }).where(eq(notificationSchema.id, id));
+    return await Notification.changeStatusNotification(id, "created");
   }
 
   const handleGetAutorizationForNotification = async () => {

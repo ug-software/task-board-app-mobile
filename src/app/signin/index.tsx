@@ -7,6 +7,7 @@ import styleSheet from "./styles";
 import { useForm, useLayout, useRouter, useUser } from "@/src/hooks";
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
+import { useLocalSearchParams } from "expo-router";
 
 export default () => {
   const {
@@ -18,16 +19,19 @@ export default () => {
     avatar
   } = styleSheet();
   const { redirect } = useRouter();
-  const { handleValidationUser, handleSaveUser } = useUser();
+  const { handleValidationUser, handleSaveUser, handleUpdateUser, handleGetCurrentUser } = useUser();
   const { handleChangeToolbar } = useLayout();
-  const { errors, handleChange, handleSubmit, values } = useForm({
+  const { isEdit } = useLocalSearchParams();
+  const handleSubmitUser = isEdit === "true" ? handleUpdateUser : handleSaveUser;
+  
+  const { errors, handleChange, handleSubmit, values, setValues } = useForm({
     initialValues: {
       name: "",
       email: "",
       description: "",
       img: ""
     },
-    onSubmit: handleSaveUser,
+    onSubmit: handleSubmitUser,
     onValidation: handleValidationUser
   });
 
@@ -53,20 +57,29 @@ export default () => {
 
   useEffect(() => {
     handleChangeToolbar(false);
+
+    (async () => {
+      if(isEdit === "true"){
+        var currentUser = await handleGetCurrentUser();
+        setValues(currentUser);
+      }
+    })()
   }, []);
 
   return (
     <View style={whapperSiginView}>
-      <Image
-        //@ts-ignore
-        style={backgroundInitial}
-        source={require("@/assets/images/background-colors-circles.png")}
-      />
+      {isEdit !== "true" && (
+        <Image
+          //@ts-ignore
+          style={backgroundInitial}
+          source={require("@/assets/images/background-colors-circles.png")}
+        />
+      )}
       <View style={headerSiginView}>
         <IconButton variant='outlined' onPress={redirect("/")}>
           <Icon type='MaterialCommunityIcons' name='arrow-left' />
         </IconButton>
-        <Text style={textSiginHeader}>Criar usuario</Text>
+        <Text style={textSiginHeader}>{isEdit === "true" ? "Editar usuario" : "Criar usuario"}</Text>
       </View>
       <View>
         <View style={{position: "relative", alignItems: "center", justifyContent: "center"}}>
@@ -102,6 +115,7 @@ export default () => {
           style={{ marginTop: 15 }}
           label='Nome Completo *'
           name="name"
+          value={values.name}
           onChangeText={value => handleChange({name: "name", value})}
           error={Boolean(errors?.name)}
           helperText={errors?.name}
@@ -111,6 +125,7 @@ export default () => {
           fullWidth style={{ marginTop: 15 }} 
           label='E-mail *'
           name="email"
+          value={values.email}
           onChangeText={value => handleChange({name: "email", value})}
           error={Boolean(errors?.email)}
           helperText={errors?.email}
@@ -123,19 +138,20 @@ export default () => {
           numberOfLines={6}
           label='Descreva um pouco sobre você'
           name="description"
+          value={values.description}
           onChangeText={value => handleChange({name: "description", value})}
           error={Boolean(errors?.description)}
           helperText={errors?.description}
         />
         <TextInput aria-label='teste' />
-        <Button
-          mt={30}
-          fullWidth
-          variant='contained'
-          onPress={handleSubmit}>
-          Acessar
-        </Button>
       </View>
+      <Button
+        mt={30}
+        fullWidth
+        variant='contained'
+        onPress={handleSubmit}>
+        {isEdit === "true" ? "Salvar" : "Acessar"}
+      </Button>
     </View>
   );
 };

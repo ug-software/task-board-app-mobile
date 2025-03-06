@@ -47,7 +47,7 @@ export default () => {
       var percentTasks = await getPercentTasksCompletedPerDate(new Date());
       setTasksPercent(percentTasks);
 
-      var notificationsQnt = await updateNotifications();      
+      var notificationsQnt = await updateNotifications();
       if(notificationsQnt){
         notification.set(notificationsQnt);
       }

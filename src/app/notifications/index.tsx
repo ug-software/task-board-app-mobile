@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, SafeAreaView, FlatList, Pressable, Animated } from "react-native";
 import createStyleSheet from "./styles";
 import { lighten } from "@/src/theme/styled";
+import { getNumberOfDaysBetweenTwoDates } from "@/src/utils/date";
 
 const CardNotification = ({ handlePress, ...item }: Notification & { handlePress : (id: number) => void }) => {
     const styles = createStyleSheet();
@@ -30,7 +31,7 @@ const CardNotification = ({ handlePress, ...item }: Notification & { handlePress
                         {/*@ts-ignore*/}
                         <Icon size={30} name={icons[item.project?.icon].name} type={icons[item.project?.icon].package} color={item.project?.color} />
                     </View>
-                    <Text style={styles.cardTextNotification}>A tarefa {item.task?.name}, do projeto {item.project?.name} está atrasada.</Text>
+                    <Text style={styles.cardTextNotification}>A tarefa {item.task?.name}, do projeto {item.project?.name} está atrasada a {getNumberOfDaysBetweenTwoDates(item.task?.created_at, new Date())} dia(s).</Text>
                 </Card>
             </Pressable>
         </Animated.View>

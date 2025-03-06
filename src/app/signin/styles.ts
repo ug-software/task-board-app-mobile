@@ -9,13 +9,15 @@ const styleSheet = styled()(({ theme }) => ({
     justifyContent: "space-between",
     height: "100%",
     width: "100%",
+    backgroundColor: theme.pallet.primary.background,
+    padding: 20,
   },
   headerSiginView: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     width: "100%",
-    padding: 20,
+    //padding: 20,
   },
   textSiginHeader: {
     width: "75%",
@@ -26,7 +28,6 @@ const styleSheet = styled()(({ theme }) => ({
   containerSiginView: {
     width: "100%",
     marginBottom: 55,
-    padding: 20,
   },
   backgroundInitial: {
     position: "absolute",
