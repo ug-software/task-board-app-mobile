@@ -2,7 +2,7 @@ import { Alert, Card, Icon } from "@/src/components";
 import { icons } from "@/src/constants";
 import { useNotification } from "@/src/hooks";
 import Notification from "@/src/interfaces/notification";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, SafeAreaView, FlatList, Pressable, Animated } from "react-native";
 import createStyleSheet from "./styles";
 import { lighten } from "@/src/theme/styled";

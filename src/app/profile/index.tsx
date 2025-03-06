@@ -1,12 +1,17 @@
 import { Avatar, Icon, ListItem, Typograph } from "@/src/components";
 import React, { useEffect, useState } from "react"
-import { FlatList, View } from "react-native"
+import { BackHandler, FlatList, View } from "react-native"
 import styleSheet from "./styles"
 import { User } from "@/src/interfaces/user";
 import { useNotification, useUser } from "@/src/hooks";
 import { router } from "expo-router";
 
 export default () => {
+    const style = styleSheet();
+    const { handleGetCurrentUser } = useUser();
+    const { changePermissionNotification } = useNotification();
+    const [user, setUser] = useState<User | undefined>(undefined);
+
     const options = [
         {
             label: "Editar perfil",
@@ -18,25 +23,20 @@ export default () => {
             label: "Notificação",
             description: "Ao habilitar as notificações, o app enviará alertas sobre os horários das tarefas, garantindo que você não perca nenhum compromisso importante.",
             icon: <Icon size={25} type='Feather' name='bell'/>,
-            onPress: () => router.navigate({ href: "/signin" })
+            onPress: changePermissionNotification
         },
-        {
+        /*{
             label: "Relatar um problema",
             description: "Envie e-mail nos informando algum ocorrido, bug ou melhoria.",
             icon: <Icon size={25} type="MaterialCommunityIcons" name="comment-question-outline"/>,
             onPress: () => router.navigate({ href: "/signin" })
-        },
+        },*/
         {
             label: "Sair",
             icon: <Icon size={25} type="MaterialIcons" name="logout"/>,
-            onPress: () => router.navigate({ href: "/signin" })
+            onPress: () => BackHandler.exitApp()
         },
     ]
-
-    const style = styleSheet();
-    const { handleGetCurrentUser } = useUser();
-    const notification = useNotification();
-    const [user, setUser] = useState<User | undefined>(undefined);
 
     useEffect(() => {
         (async () => {

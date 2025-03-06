@@ -9,6 +9,8 @@ import { NotificationContext } from '../context/notification';
 import { status } from '../constants';
 import useLoading from './use-loading';
 import useProject from './use-project';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import useSnack from './use-snack';
 
 /* this hook have two functions, notifications for sistem and notification the past tasks days past go */
 
@@ -18,6 +20,7 @@ export default () => {
   const { findProjectPerId } = useProject();
   const { decrease, notifications, set, sum } = useContext(NotificationContext);
   const loader = useLoading();
+  const snack = useSnack();
 
   const getAllNotifications = loader.action(async () => {
     var notifications = await db.select().from(notificationSchema).where(eq(notificationSchema.status, "created"));
@@ -94,9 +97,30 @@ export default () => {
       await Notifications.scheduleNotificationAsync(notification);
   };
 
-  const changePermissionNotification = async () => {
-    //const value = await AsyncStorage.getItem('TASKS');
-  }
+  const changePermissionNotification = loader.action(async () => {
+    const value = await AsyncStorage.getItem('NOTIFICATION_PERMISSION');
+
+    if(value === null || value === 'false'){
+      await AsyncStorage.removeItem('NOTIFICATION_PERMISSION');
+      await AsyncStorage.setItem('NOTIFICATION_PERMISSION', 'true');
+      await handleGetAutorizationForNotification();
+
+      snack.schedule({
+        phase: "Permissão concedida com sucesso.",
+        severity: "info",
+        variant: "container"
+      });
+    }else{
+
+      await AsyncStorage.removeItem('NOTIFICATION_PERMISSION');
+      await AsyncStorage.setItem('NOTIFICATION_PERMISSION', 'false');
+      snack.schedule({
+        phase: "Permissão negada com sucesso.",
+        severity: "info",
+        variant: "container"
+      });
+    }
+  })
 
   useEffect(() => {
       Notifications.setNotificationHandler({
@@ -119,6 +143,7 @@ export default () => {
     updateNotifications,
     getAllNotifications,
     handleChangeStatusNotification,
-    handleGetAutorizationForNotification
+    handleGetAutorizationForNotification,
+    changePermissionNotification
   }
 }
