@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { Avatar, Button, Icon, IconButton, TextField } from "@/src/components";
 import { Text, View, Image, TextInput } from "react-native";
 import styleSheet from "./styles";
-import { useForm, useLayout, useRouter, useUser } from "@/src/hooks";
+import { useForm, useLayout, useUser } from "@/src/hooks";
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { useLocalSearchParams } from "expo-router";
@@ -18,7 +18,7 @@ export default () => {
     backgroundInitial,
     avatar
   } = styleSheet();
-  const { redirect } = useRouter();
+  var { handleBack } = useLayout();
   const { handleValidationUser, handleSaveUser, handleUpdateUser, handleGetCurrentUser } = useUser();
   const { handleChangeToolbar } = useLayout();
   const { isEdit } = useLocalSearchParams();
@@ -76,7 +76,7 @@ export default () => {
         />
       )}
       <View style={headerSiginView}>
-        <IconButton variant='outlined' onPress={redirect("/")}>
+        <IconButton variant='outlined' onPress={handleBack}>
           <Icon type='MaterialCommunityIcons' name='arrow-left' />
         </IconButton>
         <Text style={textSiginHeader}>{isEdit === "true" ? "Editar usuario" : "Criar usuario"}</Text>

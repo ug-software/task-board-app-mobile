@@ -80,15 +80,17 @@ export default () => {
                 variant: "container"
             });
             
-            var trigger = task.date_marked;
-            trigger.setMinutes(-15);
+            task.date_marked.setMinutes(-15);
+            var seconds = getNumberOfSecondsBetweenTwoDates(new Date(), task.date_marked);
             
             notification.schedule({
                 content: {
-                    title: "Task And Manager",
+                    title: "Task Manager",
                     body: `A tarefa ${task.name} esta para começar!`
                 },
-                trigger: trigger
+                trigger: {
+                    seconds
+                }
             });
 
             router.navigate("/schedule");
