@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "task.manager.app",
-    "slug": "task.manager.app",
+    "name": "Task Manager App",
+    "slug": "task-manager-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/adaptive-icon.png",
@@ -20,7 +20,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.ugsoftware.taskmanagerapp"
     },
     "web": {
       "bundler": "metro",
@@ -36,6 +37,9 @@
     "extra": {
       "router": {
         "origin": false
+      },
+      "eas": {
+        "projectId": "ca65690d-1ff3-4369-83cb-42920eb78fc5"
       }
     }
   }
