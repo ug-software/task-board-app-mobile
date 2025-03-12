@@ -30,4 +30,17 @@ Ao relizar este comando ele rodará o build e aparecerá algumas opções, será
 
 Basta baixar o instalador que se envontra na pasta /platforms/android/app-instaler.apk
 
-#### Telas do App
+
+### Telas do App
+
+![Tela de Login](https://raw.githubusercontent.com/ug-software/task-board-app-mobile/refs/heads/develop/assets/print-screen/login.png?token=GHSAT0AAAAAAC7WGXZW4CRWAJXYZFO2EZOGZ6RZVLA)
+
+![Tela de Cadastro](https://raw.githubusercontent.com/ug-software/task-board-app-mobile/refs/heads/develop/assets/print-screen/cadastro.png?token=GHSAT0AAAAAAC7WGXZXBDYSEEW4ZGXSJ22KZ6RZVWQ)
+
+![Tela Inicial](https://raw.githubusercontent.com/ug-software/task-board-app-mobile/refs/heads/develop/assets/print-screen/tela-inicial.png?token=GHSAT0AAAAAAC7WGXZXR2NOM4GGHXFLPFSIZ6RZWPA)
+
+![Tela de Agendamento](https://raw.githubusercontent.com/ug-software/task-board-app-mobile/refs/heads/develop/assets/print-screen/tela-de-agenda.png?token=GHSAT0AAAAAAC7WGXZXYTWWUD7VPGHB3MWIZ6RZWBQ)
+
+![Tela de Projeto](https://raw.githubusercontent.com/ug-software/task-board-app-mobile/refs/heads/develop/assets/print-screen/visualizacao-de-projetos.png?token=GHSAT0AAAAAAC7WGXZXZUNJJNADNOWL72CAZ6RZXTQ)
+
+![Tela de Perfil](https://raw.githubusercontent.com/ug-software/task-board-app-mobile/refs/heads/develop/assets/print-screen/visualizacao-de-perfil.png?token=GHSAT0AAAAAAC7WGXZX2TJDCIQPTBSS4V2AZ6RZXIA)
