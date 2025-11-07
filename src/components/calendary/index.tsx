@@ -1,7 +1,7 @@
 /** @format */
 
-import React, { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import React, { memo, useCallback, useMemo } from "react";
+import { View } from "react-native";
 import styleSheet from "./styles";
 import { calendary } from "@/src/constants";
 import { getNumberOfDaysInTheMonth } from "@/src/utils/date";
@@ -26,17 +26,21 @@ interface CalendaryProps {
   currentDate: Date
 }
 
-const Day = ({ type, value, month, year, isActive, onSelectDate }: Day) => {
+const Day = memo(({ type, value, month, year, isActive, onSelectDate }: Day) => {
   var currentDay = new Date();
-  const isCurrent =
-    currentDay.getDate() === value &&
-    currentDay.getMonth() === month &&
-    currentDay.getFullYear() === year;
   const styles = styleSheet({});
 
-  const handleSelect = onSelectDate && year && month ? () => {    
-    onSelectDate(new Date(year, month, value))
-  } : null
+  const isCurrent = useMemo(() => {
+    return currentDay.getDate() === value &&
+    currentDay.getMonth() === month &&
+    currentDay.getFullYear() === year;
+  }, [value, month, year])  
+
+  const handleSelect = useCallback(() => {   
+    if(onSelectDate && year && month){
+      onSelectDate(new Date(year, month, value))
+    }
+  }, [year, month])
 
   if (type === "current") {
     return (
@@ -60,13 +64,12 @@ const Day = ({ type, value, month, year, isActive, onSelectDate }: Day) => {
       </Typograph>
     </View>
   );
-};
+});
 
-export default ({ month, year, currentDate = new Date(), onSelectDate, ...props }: CalendaryProps) => {
+export default memo(({ month, year, currentDate = new Date(), onSelectDate, ...props }: CalendaryProps) => {
   const styles = styleSheet({});
-  const [arrayDays, setArrayDays] = useState<Day[][]>([]);
   
-  useEffect(() => {
+  const arrayDays = useMemo<Day[][]>(() => {
     var firstDay = new Date(year, month, 1);
     var days = getNumberOfDaysInTheMonth(month, year);
     var daysInArray = Array.from({ length: days }).map((_, index) => ({
@@ -87,8 +90,9 @@ export default ({ month, year, currentDate = new Date(), onSelectDate, ...props 
       (_, index) => ({ type: "next", value: index + 1, month, year })
     );
     daysInArray = [...daysPast, ...daysInArray, ...daysFirstWeekProxMouth];
-    setArrayDays(splitArray(daysInArray, 7));
-  }, [month, year]);
+    
+    return splitArray(daysInArray, 7)
+  },[month, year]);
 
   return (
     <View style={styles.whapperCalendary}>
@@ -114,4 +118,4 @@ export default ({ month, year, currentDate = new Date(), onSelectDate, ...props 
       ))}
     </View>
   );
-};
+});

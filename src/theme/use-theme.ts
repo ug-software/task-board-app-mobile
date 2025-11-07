@@ -1,10 +1,10 @@
 /** @format */
 
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import ContextTheme from "./context";
 
 export default () => {
   const theme = useContext(ContextTheme);
 
-  return theme;
+  return useMemo(() => theme, [theme]);
 };

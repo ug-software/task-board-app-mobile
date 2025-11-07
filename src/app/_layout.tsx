@@ -2,7 +2,7 @@
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import React from "react";
 import ThemeProvider from "@/src/theme";
 import defaultTheme from "@/src/theme/default-theme";
@@ -20,6 +20,7 @@ import db, { DB_NAME } from "@/src/database";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+
 export default function RootLayout() {
   const { success, error } = useMigrations(db, migrations);
   const [loaded] = useFonts({
@@ -48,9 +49,11 @@ export default function RootLayout() {
     return <ActivityIndicator />;
   }*/
 
+  const theme = useMemo(() => defaultTheme, [defaultTheme])
+
   return (
     <SQLiteProvider databaseName={DB_NAME}>
-      <ThemeProvider theme={defaultTheme}>
+      <ThemeProvider theme={theme}>
         <LoaderContext>
           <DialogContext>
             <SnackContext>

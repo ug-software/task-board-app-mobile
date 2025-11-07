@@ -8,7 +8,7 @@ export default styled()(({ theme }) => ({
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "space-around",
-    flexDirection: "row"
+    flexDirection: "row",
   },
   headerWeek: {
     width: "100%",
@@ -27,6 +27,7 @@ export default styled()(({ theme }) => ({
     justifyContent: "center",
     flex: 1,
     height: 60,
+    width: 60,
   },
   isCurrent: {
     display: "flex",

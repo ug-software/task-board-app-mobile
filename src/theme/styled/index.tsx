@@ -7,7 +7,7 @@ import lighten from "./lighten";
 import darken from "./darken";
 import alpha from "./alpha";
 import { textColorBasedOnBackground, luminance } from "./luminance";
-import React from "react";
+import React, { useMemo } from "react";
 import View from "./components/view";
 
 interface StylesSheet {
@@ -20,23 +20,27 @@ type ContextStyle = {
 };
 
 type callback<T extends {}, S> = (context: ContextStyle & T) => StylesSheet & S
+type StyledCallback<T, S> = (params: T & { theme: any; width: number }) => S;
 
-export default function styled<T extends {}>() {
-  return function<S>(callback: StylesSheet | callback<T, S> ) {
-    return function(props ?: T) {
-      var theme = useTheme();
-      var { width } = Dimensions.get('screen');
+export default function styled<T extends object = {}>() {
+  return function <S>(
+    callback: StylesSheet | callback<T, S>
+  ) {
+    return function useStyled(props?: T) {
+      const theme = useTheme();
+      const { width } = Dimensions.get("screen");
 
-      if(typeof callback === "object")
-        return callback;
+      return useMemo(() => {
+        if (typeof callback === "object") {
+          return callback as S;
+        }
 
-      if(typeof callback === "function" && props !== undefined) 
-        return callback({ theme, width, ...props });
-    
-      //@ts-ignore
-      return callback({ theme, width });
-    }
-  }
+        const base = { theme, width, ...(props || {}) } as T & { theme: any; width: number };
+
+        return (callback as StyledCallback<T, S>)(base);
+      }, [theme, width, props]);
+    };
+  };
 }
 
 export type Component = "view";

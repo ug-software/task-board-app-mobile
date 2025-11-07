@@ -22,8 +22,7 @@ export default forwardRef(
     return (
       <Pressable
         ref={ref}
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
+
         style={whapperIconButton}
         {...props}>
         {props.children}
