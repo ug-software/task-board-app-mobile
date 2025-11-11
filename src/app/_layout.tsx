@@ -49,11 +49,9 @@ export default function RootLayout() {
     return <ActivityIndicator />;
   }*/
 
-  const theme = useMemo(() => defaultTheme, [defaultTheme])
-
   return (
     <SQLiteProvider databaseName={DB_NAME}>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={defaultTheme}>
         <LoaderContext>
           <DialogContext>
             <SnackContext>
