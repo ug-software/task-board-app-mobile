@@ -1,12 +1,13 @@
 {
   "name": "taskboard-manager",
-  "main": "expo-router/entry",
   "version": "1.0.0",
+  "main": "expo-router/entry",
   "author": {
-    "email": "uiaran@hotmail.com",
     "name": "Uiaran Guilherme Campos de Lima",
+    "email": "uiaran@hotmail.com",
     "url": "https://github.com/ug-software"
   },
+  "private": false,
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
@@ -17,10 +18,10 @@
     "@expo/vector-icons": "^14.0.2",
     "@gorhom/bottom-sheet": "^4.6.4",
     "@react-native-async-storage/async-storage": "1.23.1",
-    "@react-navigation/native": "^6.0.2",
+    "@react-navigation/native": "^6.1.18",
     "babel-plugin-inline-import": "^3.0.0",
     "drizzle-orm": "^0.34.1",
-    "expo": "^52.0.0",
+    "expo": "~52.0.7",
     "expo-blur": "~13.0.3",
     "expo-constants": "~16.0.2",
     "expo-dev-client": "~4.0.29",
@@ -29,18 +30,17 @@
     "expo-font": "~12.0.9",
     "expo-image-picker": "~15.1.0",
     "expo-linking": "~6.3.1",
-    "expo-modules-autolinking": "^3.0.21",
     "expo-modules-core": "^3.0.25",
     "expo-notifications": "~0.28.19",
     "expo-router": "~3.5.24",
     "expo-splash-screen": "~0.27.7",
-    "expo-sqlite": "^14.0.6",
+    "expo-sqlite": "~14.0.6",
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.7",
     "expo-web-browser": "~13.0.3",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-native": "0.74.5",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-native": "0.76.3",
     "react-native-circular-progress-indicator": "^4.4.2",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-reanimated": "~3.10.1",
@@ -50,11 +50,10 @@
     "react-native-web": "~0.19.10"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0",
-    "@types/react": "~18.2.45",
+    "@babel/core": "^7.26.0",
+    "@types/react": "~18.3.0",
     "drizzle-kit": "^0.25.0",
-    "eas-cli": "^16.26.0",
+    "eas-cli": "^16.3.0",
     "typescript": "~5.3.3"
-  },
-  "private": false
+  }
 }
