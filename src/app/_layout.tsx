@@ -1,22 +1,20 @@
 /** @format */
+import Layout from "@/src/components/layout";
+import db, { DB_NAME } from "@/src/database";
+import ThemeProvider from "@/src/theme";
+import defaultTheme from "@/src/theme/default-theme";
+import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect, useMemo } from "react";
-import React from "react";
-import ThemeProvider from "@/src/theme";
-import defaultTheme from "@/src/theme/default-theme";
-import Layout from "@/src/components/layout";
-import LayoutContext from "../context/layout";
-import SnackContext from "../context/snack";
-import LoaderContext from "../context/loading";
-import { drizzle } from "drizzle-orm/expo-sqlite";
-import { openDatabaseSync, SQLiteProvider } from "expo-sqlite/next";
-import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
+import { SQLiteProvider } from "expo-sqlite";
+import React, { useEffect } from "react";
 import migrations from "../../drizzle/migrations";
 import DialogContext from "../context/dialog";
+import LayoutContext from "../context/layout";
+import LoaderContext from "../context/loading";
 import NotificationContext from "../context/notification";
-import db, { DB_NAME } from "@/src/database";
+import SnackContext from "../context/snack";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();

@@ -1,46 +1,50 @@
-## Bem vindo ao App Task and Time Manager
+# Welcome to your Expo app 👋
 
-Este app foi desenvolvido com o intuito de auxiliar na realização das tarefas diarias, sejam elas somente lembretes ou organização das tarefas realizadas.
-Através dele é possivel separar tarefas em projetos para que fique mais fácil saber o que e como fazer. É possivel também visualizar as disponiveis diariamente, ou seja, é possivel agendar determinadas tarefas em dias e horários especificos.
+This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-### Para Desenvolvedores
+## Get started
 
-#### Instalação:
+1. Install dependencies
 
-Para realizar a instalação do ambiente de desenvolvimento basta realizar os seguintes comandos:
+   ```bash
+   npm install
+   ```
 
-Pré-Requisitos:
-   * Node JS
-   * Editor de texto (ex: VS Code)
-   * Android Studios ( Para emular sistema Android )
+2. Start the app
 
+   ```bash
+   npx expo start
+   ```
 
-O clone do repo:  
-   ```git clone https://github.com/ug-software/task-board-app-mobile.git```
+In the output, you'll find options to open the app in a
 
-A instalação das dependências:   
-   ```npm install```
+- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
+- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
+- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
+- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
-Após a instalação rodar o seguinte comando:    
-   ```npm start```
+You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-Ao relizar este comando ele rodará o build e aparecerá algumas opções, será necessário selecionar Android ele abrirá o Expo Go no emulador caso o Emulador ( Android Studio ) esteja aberto.
+## Get a fresh project
 
-### Para instalação do App a fim de testes
+When you're ready, run:
 
-Basta baixar o instalador que se envontra na pasta /platforms/android/app-instaler.apk
+```bash
+npm run reset-project
+```
 
+This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
 
-### Telas do App
+## Learn more
 
-![Tela de Login](https://raw.githubusercontent.com/ug-software/task-board-app-mobile/refs/heads/develop/assets/print-screen/login.png?token=GHSAT0AAAAAAC7WGXZW4CRWAJXYZFO2EZOGZ6RZVLA)
+To learn more about developing your project with Expo, look at the following resources:
 
-![Tela de Cadastro](https://raw.githubusercontent.com/ug-software/task-board-app-mobile/refs/heads/develop/assets/print-screen/cadastro.png?token=GHSAT0AAAAAAC7WGXZXBDYSEEW4ZGXSJ22KZ6RZVWQ)
+- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
+- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
 
-![Tela Inicial](https://raw.githubusercontent.com/ug-software/task-board-app-mobile/refs/heads/develop/assets/print-screen/tela-inicial.png?token=GHSAT0AAAAAAC7WGXZXR2NOM4GGHXFLPFSIZ6RZWPA)
+## Join the community
 
-![Tela de Agendamento](https://raw.githubusercontent.com/ug-software/task-board-app-mobile/refs/heads/develop/assets/print-screen/tela-de-agenda.png?token=GHSAT0AAAAAAC7WGXZXYTWWUD7VPGHB3MWIZ6RZWBQ)
+Join our community of developers creating universal apps.
 
-![Tela de Projeto](https://raw.githubusercontent.com/ug-software/task-board-app-mobile/refs/heads/develop/assets/print-screen/visualizacao-de-projetos.png?token=GHSAT0AAAAAAC7WGXZXZUNJJNADNOWL72CAZ6RZXTQ)
-
-![Tela de Perfil](https://raw.githubusercontent.com/ug-software/task-board-app-mobile/refs/heads/develop/assets/print-screen/visualizacao-de-perfil.png?token=GHSAT0AAAAAAC7WGXZX2TJDCIQPTBSS4V2AZ6RZXIA)
+- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
+- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.

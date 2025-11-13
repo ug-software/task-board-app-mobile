@@ -1,15 +1,18 @@
 /** @format */
 
-import taskSchema from "./schemas/task-schema";
-import projectSchema from "./schemas/project-schema";
-import userSchema from "./schemas/user-schema";
-import notificationSchema from "./schemas/notification-schema";
-import { openDatabaseSync } from "expo-sqlite";
 import { drizzle } from "drizzle-orm/expo-sqlite";
+import { openDatabaseSync } from "expo-sqlite";
+import * as schema from "./schemas/index";
 
-const DB_NAME = "database.db";
+// Nome do banco de dados
+export const DB_NAME = "database.db";
+
+// Abre (ou cria) o banco local
 const expoDb = openDatabaseSync(DB_NAME);
-export default drizzle(expoDb);
 
-export { DB_NAME, expoDb }
-export { taskSchema, projectSchema, notificationSchema, userSchema };
+// Inicializa o Drizzle com os schemas
+export const db = drizzle(expoDb, { schema });
+
+// Exporta os schemas também, se precisar usar em migrations, etc.
+export * from "./schemas/index";
+export default db;

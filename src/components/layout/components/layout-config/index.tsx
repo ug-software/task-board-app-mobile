@@ -3,9 +3,8 @@
 import { useLayout } from "@/src/hooks";
 import useTheme from "@/src/theme/use-theme";
 import { usePathname } from "expo-router";
-import ExpoStatusBar from "expo-status-bar/build/ExpoStatusBar";
-import React from "react";
-import { ReactNode, useEffect } from "react";
+import { StatusBar } from "expo-status-bar";
+import React, { ReactNode, useEffect } from "react";
 
 interface LayoutConfigProps {
   showAppBar: boolean;
@@ -29,7 +28,7 @@ export default ({ children, showAppBar, showHeaderApp }: LayoutConfigProps) => {
 
   return (
     <>
-      <ExpoStatusBar
+      <StatusBar
         style='dark'
         backgroundColor={theme.pallet.primary.background}
       />

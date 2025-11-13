@@ -1,13 +1,13 @@
 /** @format */
 
-import React, { useEffect } from "react";
 import { Avatar, Button, Icon, IconButton, TextField } from "@/src/components";
-import { Text, View, Image, TextInput } from "react-native";
-import styleSheet from "./styles";
 import { useForm, useLayout, useUser } from "@/src/hooks";
-import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
+import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams } from "expo-router";
+import React, { useEffect } from "react";
+import { Image, Text, TextInput, View } from "react-native";
+import styleSheet from "./styles";
 
 export default () => {
   const {
